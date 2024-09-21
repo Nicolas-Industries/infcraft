@@ -4,7 +4,7 @@ package net.opencraft.entity;
 import java.util.List;
 import java.util.Random;
 import net.opencraft.block.Block;
-import net.opencraft.block.BlockFluid;
+import net.opencraft.block.LiquidBlock;
 import net.opencraft.block.material.Material;
 import net.opencraft.client.sound.StepSound;
 import net.opencraft.item.ItemStack;
@@ -13,9 +13,9 @@ import net.opencraft.nbt.NBTTagCompound;
 import net.opencraft.nbt.NBTTagDouble;
 import net.opencraft.nbt.NBTTagFloat;
 import net.opencraft.nbt.NBTTagList;
-import net.opencraft.util.AxisAlignedBB;
+import net.opencraft.physics.AABB;
 import net.opencraft.util.MathHelper;
-import net.opencraft.util.Vec3D;
+import net.opencraft.util.Vec3;
 import net.opencraft.world.World;
 
 public abstract class Entity {
@@ -37,7 +37,7 @@ public abstract class Entity {
     public float rotationPitch;
     public float prevRotationYaw;
     public float prevRotationPitch;
-    public final AxisAlignedBB boundingBox;
+    public final AABB boundingBox;
     public boolean onGround;
     public boolean isCollidedHorizontally;
     public boolean beenAttacked;
@@ -74,7 +74,7 @@ public abstract class Entity {
 
     public Entity(final World world) {
         this.preventEntitySpawning = false;
-        this.boundingBox = AxisAlignedBB.getBoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+        this.boundingBox = AABB.getBoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
         this.onGround = false;
         this.isCollidedHorizontally = false;
         this.beenAttacked = false;
@@ -223,7 +223,7 @@ public abstract class Entity {
     }
 
     public boolean isOffsetPositionInLiquid(final double xCoord, final double yCoord, final double zCoord) {
-        final AxisAlignedBB offsetBoundingBox = this.boundingBox.getOffsetBoundingBox(xCoord, yCoord, zCoord);
+        final AABB offsetBoundingBox = this.boundingBox.getOffsetBoundingBox(xCoord, yCoord, zCoord);
         return this.worldObj.getCollidingBoundingBoxes(this, offsetBoundingBox).size() <= 0 && !this.worldObj.getIsAnyLiquid(offsetBoundingBox);
     }
 
@@ -240,10 +240,10 @@ public abstract class Entity {
         final double n = xCoord;
         final double n2 = yCoord;
         final double n3 = zCoord;
-        final AxisAlignedBB copy = this.boundingBox.copy();
+        final AABB copy = this.boundingBox.copy();
         final List collidingBoundingBoxes = this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox.addCoord(xCoord, yCoord, zCoord));
         for (int i = 0; i < collidingBoundingBoxes.size(); ++i) {
-            yCoord = ((AxisAlignedBB) collidingBoundingBoxes.get(i)).calculateYOffset(this.boundingBox, yCoord);
+            yCoord = ((AABB) collidingBoundingBoxes.get(i)).calculateYOffset(this.boundingBox, yCoord);
         }
         this.boundingBox.offset(0.0, yCoord, 0.0);
         if (!this.field_9293_aM && n2 != yCoord) {
@@ -251,14 +251,14 @@ public abstract class Entity {
         }
         final boolean b = this.onGround || (n2 != yCoord && n2 < 0.0);
         for (int j = 0; j < collidingBoundingBoxes.size(); ++j) {
-            xCoord = ((AxisAlignedBB) collidingBoundingBoxes.get(j)).calculateXOffset(this.boundingBox, xCoord);
+            xCoord = ((AABB) collidingBoundingBoxes.get(j)).calculateXOffset(this.boundingBox, xCoord);
         }
         this.boundingBox.offset(xCoord, 0.0, 0.0);
         if (!this.field_9293_aM && n != xCoord) {
             yCoord = (xCoord = (zCoord = 0.0));
         }
         for (int j = 0; j < collidingBoundingBoxes.size(); ++j) {
-            zCoord = ((AxisAlignedBB) collidingBoundingBoxes.get(j)).calculateZOffset(this.boundingBox, zCoord);
+            zCoord = ((AABB) collidingBoundingBoxes.get(j)).calculateZOffset(this.boundingBox, zCoord);
         }
         this.boundingBox.offset(0.0, 0.0, zCoord);
         if (!this.field_9293_aM && n3 != zCoord) {
@@ -271,25 +271,25 @@ public abstract class Entity {
             xCoord = n;
             yCoord = this.stepHeight;
             zCoord = n3;
-            final AxisAlignedBB copy2 = this.boundingBox.copy();
+            final AABB copy2 = this.boundingBox.copy();
             this.boundingBox.setBB(copy);
             final List collidingBoundingBoxes2 = this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox.addCoord(xCoord, yCoord, zCoord));
             for (int k = 0; k < collidingBoundingBoxes2.size(); ++k) {
-                yCoord = ((AxisAlignedBB) collidingBoundingBoxes2.get(k)).calculateYOffset(this.boundingBox, yCoord);
+                yCoord = ((AABB) collidingBoundingBoxes2.get(k)).calculateYOffset(this.boundingBox, yCoord);
             }
             this.boundingBox.offset(0.0, yCoord, 0.0);
             if (!this.field_9293_aM && n2 != yCoord) {
                 yCoord = (xCoord = (zCoord = 0.0));
             }
             for (int k = 0; k < collidingBoundingBoxes2.size(); ++k) {
-                xCoord = ((AxisAlignedBB) collidingBoundingBoxes2.get(k)).calculateXOffset(this.boundingBox, xCoord);
+                xCoord = ((AABB) collidingBoundingBoxes2.get(k)).calculateXOffset(this.boundingBox, xCoord);
             }
             this.boundingBox.offset(xCoord, 0.0, 0.0);
             if (!this.field_9293_aM && n != xCoord) {
                 yCoord = (xCoord = (zCoord = 0.0));
             }
             for (int k = 0; k < collidingBoundingBoxes2.size(); ++k) {
-                zCoord = ((AxisAlignedBB) collidingBoundingBoxes2.get(k)).calculateZOffset(this.boundingBox, zCoord);
+                zCoord = ((AABB) collidingBoundingBoxes2.get(k)).calculateZOffset(this.boundingBox, zCoord);
             }
             this.boundingBox.offset(0.0, 0.0, zCoord);
             if (!this.field_9293_aM && n3 != zCoord) {
@@ -338,7 +338,7 @@ public abstract class Entity {
             if (this.distanceWalkedModified > this.nextStepDistance && k > 0) {
                 ++this.nextStepDistance;
                 final StepSound stepSound = Block.blocksList[k].stepSound;
-                if (!Block.blocksList[k].blockMaterial.getIsLiquid()) {
+                if (!Block.blocksList[k].blockMaterial.isLiquid()) {
                     this.worldObj.playSoundAtEntity(this, stepSound.stepSoundDir2(), stepSound.soundVolume() * 0.15f, stepSound.soundPitch());
                 }
                 Block.blocksList[k].onEntityWalking(this.worldObj, floor_double, floor_double2, floor_double3, this);
@@ -363,7 +363,7 @@ public abstract class Entity {
         }
     }
 
-    public AxisAlignedBB getBoundingBox() {
+    public AABB getBoundingBox() {
         return null;
     }
 
@@ -375,7 +375,7 @@ public abstract class Entity {
     }
 
     public boolean handleWaterMovement() {
-        return this.worldObj.handleMaterialAcceleration(this.boundingBox.expand(0.0, -0.4000000059604645, 0.0), Material.water, this);
+        return this.worldObj.handleMaterialAcceleration(this.boundingBox.expand(0.0, -0.4000000059604645, 0.0), Material.WATER, this);
     }
 
     public boolean isInsideOfMaterial(final Material material) {
@@ -384,7 +384,7 @@ public abstract class Entity {
         final int floor_float = MathHelper.floor_float((float) MathHelper.floor_double(double1));
         final int floor_double2 = MathHelper.floor_double(this.posZ);
         final int blockId = this.worldObj.getBlockId(floor_double, floor_float, floor_double2);
-        return blockId != 0 && Block.blocksList[blockId].blockMaterial == material && double1 < floor_float + 1 - (BlockFluid.getPercentAir(this.worldObj.getBlockMetadata(floor_double, floor_float, floor_double2)) - 0.11111111f);
+        return blockId != 0 && Block.blocksList[blockId].blockMaterial == material && double1 < floor_float + 1 - (LiquidBlock.getPercentAir(this.worldObj.getBlockMetadata(floor_double, floor_float, floor_double2)) - 0.11111111f);
     }
 
     protected float getEyeHeight() {
@@ -392,7 +392,7 @@ public abstract class Entity {
     }
 
     public boolean handleLavaMovement() {
-        return this.worldObj.isMaterialInBB(this.boundingBox.expand(0.0, -0.4000000059604645, 0.0), Material.lava);
+        return this.worldObj.isMaterialInBB(this.boundingBox.expand(0.0, -0.4000000059604645, 0.0), Material.LAVA);
     }
 
     public void moveFlying(float xCoord, float yCoord, final float zCoord) {
@@ -508,7 +508,7 @@ public abstract class Entity {
     public void addToPlayerScore(final Entity entity, final int score) {
     }
 
-    public boolean isInRangeToRenderVec3D(final Vec3D var1) {
+    public boolean isInRangeToRenderVec3D(final Vec3 var1) {
         final double n = this.posX - var1.xCoord;
         final double n2 = this.posY - var1.yCoord;
         final double n3 = this.posZ - var1.zCoord;
@@ -627,7 +627,7 @@ public abstract class Entity {
         return false;
     }
 
-    public AxisAlignedBB getCollisionBox(final Entity entity) {
+    public AABB getCollisionBox(final Entity entity) {
         return null;
     }
 

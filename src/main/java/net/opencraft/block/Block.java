@@ -1,22 +1,17 @@
 
 package net.opencraft.block;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
 import net.opencraft.block.material.Material;
 import net.opencraft.client.input.MovingObjectPosition;
-import net.opencraft.client.sound.StepSound;
-import net.opencraft.client.sound.StepSoundSand;
-import net.opencraft.client.sound.StepSoundStone;
-import net.opencraft.entity.Entity;
-import net.opencraft.entity.EntityItem;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.item.Item;
-import net.opencraft.item.ItemBlock;
-import net.opencraft.item.ItemStack;
+import net.opencraft.client.sound.*;
+import net.opencraft.entity.*;
+import net.opencraft.item.*;
+import net.opencraft.physics.AABB;
 import net.opencraft.tileentity.TileEntitySign;
-import net.opencraft.util.AxisAlignedBB;
-import net.opencraft.util.Vec3D;
+import net.opencraft.util.Vec3;
 import net.opencraft.world.IBlockAccess;
 import net.opencraft.world.World;
 
@@ -38,7 +33,7 @@ public class Block {
     public static final boolean[] canBlockGrass;
     public static final int[] lightValue;
     public static final Block stone;
-    public static final BlockGrass grass;
+    public static final GrassBlock grass;
     public static final Block dirt;
     public static final Block cobblestone;
     public static final Block planks;
@@ -54,7 +49,7 @@ public class Block {
     public static final Block oreIron;
     public static final Block oreCoal;
     public static final Block wood;
-    public static final BlockLeaves leaves;
+    public static final LeavesBlock leaves;
     public static final Block sponge;
     public static final Block glass;
     public static final Block woolRed;
@@ -73,10 +68,10 @@ public class Block {
     public static final Block woolDarkGray;
     public static final Block woolGray;
     public static final Block woolWhite;
-    public static final BlockFlower plantYellow;
-    public static final BlockFlower plantRed;
-    public static final BlockFlower mushroomBrown;
-    public static final BlockFlower mushroomRed;
+    public static final FlowerBlock plantYellow;
+    public static final FlowerBlock plantRed;
+    public static final FlowerBlock mushroomBrown;
+    public static final FlowerBlock mushroomRed;
     public static final Block blockGold;
     public static final Block blockSteel;
     public static final Block slabDouble;
@@ -87,7 +82,7 @@ public class Block {
     public static final Block mossyCobblestone;
     public static final Block obsidian;
     public static final Block torch;
-    public static final BlockFire fire;
+    public static final FireBlock fire;
     public static final Block spawner;
     public static final Block stairPlanks;
     public static final Block chest;
@@ -134,26 +129,26 @@ public class Block {
         lightOpacity = new int[256];
         canBlockGrass = new boolean[256];
         lightValue = new int[256];
-        stone = new BlockStone(1, 1).setHardness(1.5f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        grass = (BlockGrass) new BlockGrass(2).setHardness(0.6f).setStepSound(Block.soundGrassFootstep);
-        dirt = new BlockDirt(3, 2).setHardness(0.5f).setStepSound(Block.soundGravelFootstep);
-        cobblestone = new Block(4, 16, Material.rock).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        planks = new Block(5, 4, Material.wood).setHardness(2.0f).setResistance(5.0f).setStepSound(Block.soundWoodFootstep);
-        sapling = new BlockSapling(6, 15).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        bedrock = new Block(7, 17, Material.rock).setHardness(-1.0f).setResistance(6000000.0f).setStepSound(Block.soundStoneFootstep);
-        waterMoving = new BlockFluidMoving(8, Material.water).setHardness(100.0f).setLightOpacity(3);
-        waterStill = new BlockFluidStill(9, Material.water).setHardness(100.0f).setLightOpacity(3);
-        lavaMoving = new BlockFluidMoving(10, Material.lava).setHardness(0.0f).setLightValue(1.0f).setLightOpacity(255);
-        lavaStill = new BlockFluidStill(11, Material.lava).setHardness(100.0f).setLightValue(1.0f).setLightOpacity(255);
-        sand = new BlockSand(12, 18).setHardness(0.5f).setStepSound(Block.soundSandFootstep);
-        gravel = new BlockGravel(13, 19).setHardness(0.6f).setStepSound(Block.soundGravelFootstep);
-        oreGold = new BlockOre(14, 32).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
-        oreIron = new BlockOre(15, 33).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
-        oreCoal = new BlockOre(16, 34).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
-        wood = new BlockLog(17).setHardness(2.0f).setStepSound(Block.soundWoodFootstep);
-        leaves = (BlockLeaves) new BlockLeaves(18, 52).setHardness(0.2f).setLightOpacity(1).setStepSound(Block.soundGrassFootstep);
-        sponge = new BlockSponge(19).setHardness(0.6f).setStepSound(Block.soundGrassFootstep);
-        glass = new BlockGlass(20, 49, Material.glass, false).setHardness(0.3f).setStepSound(Block.soundGlassFootstep);
+        stone = new StoneBlock(1, 1).setHardness(1.5f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
+        grass = (GrassBlock) new GrassBlock(2).setHardness(0.6f).setStepSound(Block.soundGrassFootstep);
+        dirt = new DirtBlock(3, 2).setHardness(0.5f).setStepSound(Block.soundGravelFootstep);
+        cobblestone = new Block(4, 16, Material.ROCK).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
+        planks = new Block(5, 4, Material.WOOD).setHardness(2.0f).setResistance(5.0f).setStepSound(Block.soundWoodFootstep);
+        sapling = new SaplingBlock(6, 15).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
+        bedrock = new Block(7, 17, Material.ROCK).setHardness(-1.0f).setResistance(6000000.0f).setStepSound(Block.soundStoneFootstep);
+        waterMoving = new MovingLiquidBlock(8, Material.WATER).setHardness(100.0f).setLightOpacity(3);
+        waterStill = new StaticLiquidBlock(9, Material.WATER).setHardness(100.0f).setLightOpacity(3);
+        lavaMoving = new MovingLiquidBlock(10, Material.LAVA).setHardness(0.0f).setLightValue(1.0f).setLightOpacity(255);
+        lavaStill = new StaticLiquidBlock(11, Material.LAVA).setHardness(100.0f).setLightValue(1.0f).setLightOpacity(255);
+        sand = new SandBlock(12, 18).setHardness(0.5f).setStepSound(Block.soundSandFootstep);
+        gravel = new GravelBlock(13, 19).setHardness(0.6f).setStepSound(Block.soundGravelFootstep);
+        oreGold = new OreBlock(14, 32).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
+        oreIron = new OreBlock(15, 33).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
+        oreCoal = new OreBlock(16, 34).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
+        wood = new LogBlock(17).setHardness(2.0f).setStepSound(Block.soundWoodFootstep);
+        leaves = (LeavesBlock) new LeavesBlock(18, 52).setHardness(0.2f).setLightOpacity(1).setStepSound(Block.soundGrassFootstep);
+        sponge = new SpongeBlock(19).setHardness(0.6f).setStepSound(Block.soundGrassFootstep);
+        glass = new GlassBlock(20, 49, Material.GLASS, false).setHardness(0.3f).setStepSound(Block.soundGlassFootstep);
         woolRed = null;
         woolOrange = null;
         woolYellow = null;
@@ -168,39 +163,39 @@ public class Block {
         woolMagenta = null;
         woolPink = null;
         woolDarkGray = null;
-        woolGray = new Block(35, 64, Material.cloth).setHardness(0.8f).setStepSound(Block.soundClothFootstep);
+        woolGray = new Block(35, 64, Material.CLOTH).setHardness(0.8f).setStepSound(Block.soundClothFootstep);
         woolWhite = null;
-        plantYellow = (BlockFlower) new BlockFlower(37, 13).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        plantRed = (BlockFlower) new BlockFlower(38, 12).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        mushroomBrown = (BlockFlower) new BlockMushroom(39, 29).setHardness(0.0f).setStepSound(Block.soundGrassFootstep).setLightValue(0.125f);
-        mushroomRed = (BlockFlower) new BlockMushroom(40, 28).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        blockGold = new BlockOreStorage(41, 39).setHardness(3.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep);
-        blockSteel = new BlockOreStorage(42, 38).setHardness(5.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep);
-        slabDouble = new BlockSlab(43, true).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        slabSingle = new BlockSlab(44, false).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        brick = new Block(45, 7, Material.rock).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        tnt = new BlockTNT(46, 8).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        bookshelf = new BlockBookshelf(47, 35).setHardness(1.5f).setStepSound(Block.soundWoodFootstep);
-        mossyCobblestone = new Block(48, 36, Material.rock).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        obsidian = new BlockObsidian(49, 37).setHardness(10.0f).setResistance(20.0f).setStepSound(Block.soundStoneFootstep);
-        torch = new BlockTorch(50, 80).setHardness(0.0f).setLightValue(0.9375f).setStepSound(Block.soundWoodFootstep);
-        fire = (BlockFire) new BlockFire(51, 31).setHardness(0.0f).setLightValue(1.0f).setStepSound(Block.soundWoodFootstep);
-        spawner = new BlockMobSpawner(52, 65).setHardness(5.0f).setStepSound(Block.soundMetalFootstep);
-        stairPlanks = new BlockStair(53, Block.planks);
-        chest = new BlockChest(54).setHardness(2.5f).setStepSound(Block.soundWoodFootstep);
-        gears = new BlockGears(55, 62).setHardness(0.5f).setStepSound(Block.soundMetalFootstep);
-        oreDiamond = new BlockOre(56, 50).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
-        blockDiamond = new BlockOreStorage(57, 40).setHardness(5.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep);
-        workbench = new BlockWorkbench(58).setHardness(2.5f).setStepSound(Block.soundWoodFootstep);
-        crops = new BlockCrops(59, 88).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        tilledField = new BlockFarmland(60).setHardness(0.6f).setStepSound(Block.soundGravelFootstep);
-        stoneOvenIdle = new BlockFurnace(61, false).setHardness(3.5f).setStepSound(Block.soundStoneFootstep);
-        stoneOvenActive = new BlockFurnace(62, true).setHardness(3.5f).setStepSound(Block.soundStoneFootstep).setLightValue(0.875f);
-        signPost = new BlockSign(63, TileEntitySign.class, Item.sign.shiftedIndex).setHardness(1.0f).setStepSound(Block.soundWoodFootstep);
-        door = new BlockDoor(64).setHardness(3.0f).setStepSound(Block.soundWoodFootstep);
-        ladder = new BlockLadder(65, 83).setHardness(0.4f).setStepSound(Block.soundWoodFootstep);
-        rail = new BlockRail(66, 128).setHardness(1.0f).setStepSound(Block.soundMetalFootstep);
-        stairCobblestone = new BlockStair(67, Block.cobblestone);
+        plantYellow = (FlowerBlock) new FlowerBlock(37, 13).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
+        plantRed = (FlowerBlock) new FlowerBlock(38, 12).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
+        mushroomBrown = (FlowerBlock) new MushroomBlock(39, 29).setHardness(0.0f).setStepSound(Block.soundGrassFootstep).setLightValue(0.125f);
+        mushroomRed = (FlowerBlock) new MushroomBlock(40, 28).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
+        blockGold = new OreStorageBlock(41, 39).setHardness(3.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep);
+        blockSteel = new OreStorageBlock(42, 38).setHardness(5.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep);
+        slabDouble = new SlabBlock(43, true).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
+        slabSingle = new SlabBlock(44, false).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
+        brick = new Block(45, 7, Material.ROCK).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
+        tnt = new TNTBlock(46, 8).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
+        bookshelf = new BookshelfBlock(47, 35).setHardness(1.5f).setStepSound(Block.soundWoodFootstep);
+        mossyCobblestone = new Block(48, 36, Material.ROCK).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
+        obsidian = new ObsidianBlock(49, 37).setHardness(10.0f).setResistance(20.0f).setStepSound(Block.soundStoneFootstep);
+        torch = new TorchBlock(50, 80).setHardness(0.0f).setLightValue(0.9375f).setStepSound(Block.soundWoodFootstep);
+        fire = (FireBlock) new FireBlock(51, 31).setHardness(0.0f).setLightValue(1.0f).setStepSound(Block.soundWoodFootstep);
+        spawner = new SpawnerBlock(52, 65).setHardness(5.0f).setStepSound(Block.soundMetalFootstep);
+        stairPlanks = new StairBlock(53, Block.planks);
+        chest = new ChestBlock(54).setHardness(2.5f).setStepSound(Block.soundWoodFootstep);
+        gears = new GearsBlock(55, 62).setHardness(0.5f).setStepSound(Block.soundMetalFootstep);
+        oreDiamond = new OreBlock(56, 50).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
+        blockDiamond = new OreStorageBlock(57, 40).setHardness(5.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep);
+        workbench = new CraftingTableBlock(58).setHardness(2.5f).setStepSound(Block.soundWoodFootstep);
+        crops = new CropsBlock(59, 88).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
+        tilledField = new FarmlandBlock(60).setHardness(0.6f).setStepSound(Block.soundGravelFootstep);
+        stoneOvenIdle = new FurnaceBlock(61, false).setHardness(3.5f).setStepSound(Block.soundStoneFootstep);
+        stoneOvenActive = new FurnaceBlock(62, true).setHardness(3.5f).setStepSound(Block.soundStoneFootstep).setLightValue(0.875f);
+        signPost = new SignBlock(63, TileEntitySign.class, Item.sign.shiftedIndex).setHardness(1.0f).setStepSound(Block.soundWoodFootstep);
+        door = new DoorBlock(64).setHardness(3.0f).setStepSound(Block.soundWoodFootstep);
+        ladder = new LadderBlock(65, 83).setHardness(0.4f).setStepSound(Block.soundWoodFootstep);
+        rail = new RailBlock(66, 128).setHardness(1.0f).setStepSound(Block.soundMetalFootstep);
+        stairCobblestone = new StairBlock(67, Block.cobblestone);
         for (int i = 0; i < 256; ++i) {
             if (Block.blocksList[i] != null) {
                 Item.itemsList[i] = new ItemBlock(i - 256);
@@ -301,19 +296,19 @@ public class Block {
         return this.blockIndexInTexture;
     }
 
-    public AxisAlignedBB getSelectedBoundingBoxFromPool(final World world, final int xCoord, final int yCoord, final int zCoord) {
-        return AxisAlignedBB.getBoundingBoxFromPool(xCoord + this.minX, yCoord + this.minY, zCoord + this.minZ, xCoord + this.maxX, yCoord + this.maxY, zCoord + this.maxZ);
+    public AABB getSelectedBoundingBoxFromPool(final World world, final int xCoord, final int yCoord, final int zCoord) {
+        return AABB.getBoundingBoxFromPool(xCoord + this.minX, yCoord + this.minY, zCoord + this.minZ, xCoord + this.maxX, yCoord + this.maxY, zCoord + this.maxZ);
     }
 
-    public void getCollidingBoundingBoxes(final World world, final int xCoord, final int yCoord, final int zCoord, final AxisAlignedBB aabb, final ArrayList arrayList) {
-        final AxisAlignedBB collisionBoundingBoxFromPool = this.getCollisionBoundingBoxFromPool(world, xCoord, yCoord, zCoord);
-        if (collisionBoundingBoxFromPool != null && aabb.intersectsWith(collisionBoundingBoxFromPool)) {
-            arrayList.add(collisionBoundingBoxFromPool);
+    public void getCollidingBoundingBoxes(World world, int xCoord, int yCoord, int zCoord, AABB aabb, List<AABB> list) {
+        AABB aabb1 = this.getCollisionBoundingBoxFromPool(world, xCoord, yCoord, zCoord);
+        if (aabb1 != null && aabb.intersectsWith(aabb1)) {
+            list.add(aabb1);
         }
     }
 
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(final World world, final int xCoord, final int yCoord, final int zCoord) {
-        return AxisAlignedBB.getBoundingBoxFromPool(xCoord + this.minX, yCoord + this.minY, zCoord + this.minZ, xCoord + this.maxX, yCoord + this.maxY, zCoord + this.maxZ);
+    public AABB getCollisionBoundingBoxFromPool(final World world, final int xCoord, final int yCoord, final int zCoord) {
+        return AABB.getBoundingBoxFromPool(xCoord + this.minX, yCoord + this.minY, zCoord + this.minZ, xCoord + this.maxX, yCoord + this.maxY, zCoord + this.maxZ);
     }
 
     public boolean isOpaqueCube() {
@@ -390,15 +385,15 @@ public class Block {
         return this.blockResistance / 5.0f;
     }
 
-    public MovingObjectPosition collisionRayTrace(final World world, final int xCoord, final int yCoord, final int zCoord, Vec3D var1, Vec3D var2) {
+    public MovingObjectPosition collisionRayTrace(final World world, final int xCoord, final int yCoord, final int zCoord, Vec3 var1, Vec3 var2) {
         var1 = var1.addVector(-xCoord, -yCoord, -zCoord);
         var2 = var2.addVector(-xCoord, -yCoord, -zCoord);
-        Vec3D intermediateWithXValue = var1.getIntermediateWithXValue(var2, this.minX);
-        Vec3D intermediateWithXValue2 = var1.getIntermediateWithXValue(var2, this.maxX);
-        Vec3D intermediateWithYValue = var1.getIntermediateWithYValue(var2, this.minY);
-        Vec3D intermediateWithYValue2 = var1.getIntermediateWithYValue(var2, this.maxY);
-        Vec3D intermediateWithZValue = var1.getIntermediateWithZValue(var2, this.minZ);
-        Vec3D intermediateWithZValue2 = var1.getIntermediateWithZValue(var2, this.maxZ);
+        Vec3 intermediateWithXValue = var1.getIntermediateWithXValue(var2, this.minX);
+        Vec3 intermediateWithXValue2 = var1.getIntermediateWithXValue(var2, this.maxX);
+        Vec3 intermediateWithYValue = var1.getIntermediateWithYValue(var2, this.minY);
+        Vec3 intermediateWithYValue2 = var1.getIntermediateWithYValue(var2, this.maxY);
+        Vec3 intermediateWithZValue = var1.getIntermediateWithZValue(var2, this.minZ);
+        Vec3 intermediateWithZValue2 = var1.getIntermediateWithZValue(var2, this.maxZ);
         if (!this.isVecInsideYZBounds(intermediateWithXValue)) {
             intermediateWithXValue = null;
         }
@@ -417,7 +412,7 @@ public class Block {
         if (!this.isVecInsideXYBounds(intermediateWithZValue2)) {
             intermediateWithZValue2 = null;
         }
-        Vec3D vec3D = null;
+        Vec3 vec3D = null;
         if (intermediateWithXValue != null && (vec3D == null || var1.distanceTo(intermediateWithXValue) < var1.distanceTo(vec3D))) {
             vec3D = intermediateWithXValue;
         }
@@ -461,15 +456,15 @@ public class Block {
         return new MovingObjectPosition(xCoord, yCoord, zCoord, integer4, vec3D.addVector(xCoord, yCoord, zCoord));
     }
 
-    private boolean isVecInsideYZBounds(final Vec3D var1) {
+    private boolean isVecInsideYZBounds(final Vec3 var1) {
         return var1 != null && var1.yCoord >= this.minY && var1.yCoord <= this.maxY && var1.zCoord >= this.minZ && var1.zCoord <= this.maxZ;
     }
 
-    private boolean isVecInsideXZBounds(final Vec3D var1) {
+    private boolean isVecInsideXZBounds(final Vec3 var1) {
         return var1 != null && var1.xCoord >= this.minX && var1.xCoord <= this.maxX && var1.zCoord >= this.minZ && var1.zCoord <= this.maxZ;
     }
 
-    private boolean isVecInsideXYBounds(final Vec3D var1) {
+    private boolean isVecInsideXYBounds(final Vec3 var1) {
         return var1 != null && var1.xCoord >= this.minX && var1.xCoord <= this.maxX && var1.yCoord >= this.minY && var1.yCoord <= this.maxY;
     }
 
@@ -497,7 +492,7 @@ public class Block {
     public void onBlockClicked(final World world, final int xCoord, final int yCoord, final int zCoord, final EntityPlayer entityPlayer) {
     }
 
-    public void velocityToAddToEntity(final World world, final int xCoord, final int yCoord, final int zCoord, final Entity entity, final Vec3D var1) {
+    public void velocityToAddToEntity(final World world, final int xCoord, final int yCoord, final int zCoord, final Entity entity, final Vec3 var1) {
     }
 
     public void setBlockBoundsBasedOnState(final IBlockAccess blockAccess, final int xCoord, final int yCoord, final int zCoord) {

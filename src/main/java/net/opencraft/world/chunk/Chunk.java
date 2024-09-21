@@ -2,13 +2,14 @@
 package net.opencraft.world.chunk;
 
 import net.opencraft.entity.Entity;
-import net.opencraft.block.BlockContainer;
+import net.opencraft.physics.AABB;
+import net.opencraft.block.ContainerBlock;
 import net.opencraft.block.Block;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.opencraft.util.AxisAlignedBB;
+
 import net.opencraft.EnumSkyBlock;
 import net.opencraft.util.MathHelper;
 import net.opencraft.tileentity.TileEntity;
@@ -324,7 +325,7 @@ public class Chunk {
         final int n = xCoord + yCoord * 1024 + zCoord * 1024 * 1024;
         TileEntity tileEntity = (TileEntity) this.chunkTileEntityMap.get(n);
         if (tileEntity == null) {
-            ((BlockContainer) Block.blocksList[this.getBlockID(xCoord, yCoord, zCoord)]).onBlockAdded(this.worldObj, this.xPosition * 16 + xCoord, yCoord, this.zPosition * 16 + zCoord);
+            ((ContainerBlock) Block.blocksList[this.getBlockID(xCoord, yCoord, zCoord)]).onBlockAdded(this.worldObj, this.xPosition * 16 + xCoord, yCoord, this.zPosition * 16 + zCoord);
             tileEntity = (TileEntity) this.chunkTileEntityMap.get(n);
         }
         return tileEntity;
@@ -340,7 +341,7 @@ public class Chunk {
         tileEntity.xCoord = this.xPosition * 16 + xCoord;
         tileEntity.yCoord = yCoord;
         tileEntity.zCoord = this.zPosition * 16 + zCoord;
-        if (this.getBlockID(xCoord, yCoord, zCoord) == 0 || !(Block.blocksList[this.getBlockID(xCoord, yCoord, zCoord)] instanceof BlockContainer)) {
+        if (this.getBlockID(xCoord, yCoord, zCoord) == 0 || !(Block.blocksList[this.getBlockID(xCoord, yCoord, zCoord)] instanceof ContainerBlock)) {
             System.out.println("Attempted to place a tile entity where there was no entity tile!");
             return;
         }
@@ -380,7 +381,7 @@ public class Chunk {
         this.isModified = true;
     }
 
-    public void getEntitiesWithinAABBForEntity(final Entity entity, final AxisAlignedBB aabb, final List list) {
+    public void getEntitiesWithinAABBForEntity(final Entity entity, final AABB aabb, final List list) {
         int floor_double = MathHelper.floor_double((aabb.minY - 2.0) / 16.0);
         int floor_double2 = MathHelper.floor_double((aabb.maxY + 2.0) / 16.0);
         if (floor_double < 0) {
@@ -400,7 +401,7 @@ public class Chunk {
         }
     }
 
-    public void getEntitiesOfTypeWithinAAAB(final Class class1, final AxisAlignedBB aabb, final List list) {
+    public void getEntitiesOfTypeWithinAAAB(final Class class1, final AABB aabb, final List list) {
         int floor_double = MathHelper.floor_double((aabb.minY - 2.0) / 16.0);
         int floor_double2 = MathHelper.floor_double((aabb.maxY + 2.0) / 16.0);
         if (floor_double < 0) {

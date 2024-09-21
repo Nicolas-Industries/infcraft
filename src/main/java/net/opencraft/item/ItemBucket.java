@@ -5,7 +5,7 @@ import net.opencraft.block.material.Material;
 import net.opencraft.client.input.MovingObjectPosition;
 import net.opencraft.entity.EntityPlayer;
 import net.opencraft.util.MathHelper;
-import net.opencraft.util.Vec3D;
+import net.opencraft.util.Vec3;
 import net.opencraft.world.World;
 
 public class ItemBucket extends Item {
@@ -24,7 +24,7 @@ public class ItemBucket extends Item {
         final float n = 1.0f;
         final float n2 = gi.prevRotationPitch + (gi.rotationPitch - gi.prevRotationPitch) * n;
         final float n3 = gi.prevRotationYaw + (gi.rotationYaw - gi.prevRotationYaw) * n;
-        final Vec3D vector = Vec3D.createVector(gi.prevPosX + (gi.posX - gi.prevPosX) * n, gi.prevPosY + (gi.posY - gi.prevPosY) * n, gi.prevPosZ + (gi.posZ - gi.prevPosZ) * n);
+        final Vec3 vector = Vec3.newTemp(gi.prevPosX + (gi.posX - gi.prevPosX) * n, gi.prevPosY + (gi.posY - gi.prevPosY) * n, gi.prevPosZ + (gi.posZ - gi.prevPosZ) * n);
         final float cos = MathHelper.cos(-n3 * 0.017453292f - 3.1415927f);
         final float sin = MathHelper.sin(-n3 * 0.017453292f - 3.1415927f);
         final float n4 = -MathHelper.cos(-n2 * 0.017453292f);
@@ -42,11 +42,11 @@ public class ItemBucket extends Item {
             int blockY = rayTraceBlocks_do_do.blockY;
             int blockZ = rayTraceBlocks_do_do.blockZ;
             if (this.isFull == 0) {
-                if (fe.getBlockMaterial(blockX, blockY, blockZ) == Material.water && fe.getBlockMetadata(blockX, blockY, blockZ) == 0) {
+                if (fe.getBlockMaterial(blockX, blockY, blockZ) == Material.WATER && fe.getBlockMetadata(blockX, blockY, blockZ) == 0) {
                     fe.setBlockWithNotify(blockX, blockY, blockZ, 0);
                     return new ItemStack(Item.bucketWater);
                 }
-                if (fe.getBlockMaterial(blockX, blockY, blockZ) == Material.lava && fe.getBlockMetadata(blockX, blockY, blockZ) == 0) {
+                if (fe.getBlockMaterial(blockX, blockY, blockZ) == Material.LAVA && fe.getBlockMetadata(blockX, blockY, blockZ) == 0) {
                     fe.setBlockWithNotify(blockX, blockY, blockZ, 0);
                     return new ItemStack(Item.bucketLava);
                 }
