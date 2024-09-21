@@ -36,7 +36,7 @@ public class RenderSkyboxCube {
         GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glDepthMask(false);
 
-        for(int j = 0; j < 3; ++j) {
+        for(int j = 0; j < 4; ++j) {
             GlStateManager.pushMatrix();
             float f = ((float) (j % 2) / 2.0F - 0.5F) / 256.0F;
             float f1 = ((float) (j / 2) / 2.0F - 0.5F) / 256.0F;
@@ -49,38 +49,38 @@ public class RenderSkyboxCube {
                 // Bind the texture for the current face
                 mc.renderEngine.bindTexture(mc.renderEngine.getTexture(this.locations[i]));
 
-                tessellator.startDrawingQuads();
+                tessellator.beginQuads();
 
                 if (i == 0) { // Front face
-                    tessellator.addVertexWithUV(-1.0D, -1.0D, 1.0D, 0.0D, 0.0D);
-                    tessellator.addVertexWithUV(1.0D, -1.0D, 1.0D, 1.0D, 0.0D);
-                    tessellator.addVertexWithUV(1.0D, 1.0D, 1.0D, 1.0D, 1.0D);
-                    tessellator.addVertexWithUV(-1.0D, 1.0D, 1.0D, 0.0D, 1.0D);
+                    tessellator.vertexUV(-1.0D, -1.0D, 1.0D, 0.0D, 0.0D);
+                    tessellator.vertexUV(1.0D, -1.0D, 1.0D, 1.0D, 0.0D);
+                    tessellator.vertexUV(1.0D, 1.0D, 1.0D, 1.0D, 1.0D);
+                    tessellator.vertexUV(-1.0D, 1.0D, 1.0D, 0.0D, 1.0D);
                 } else if (i == 3) { // Left face
-                    tessellator.addVertexWithUV(-1.0D, -1.0D, -1.0D, 0.0D, 0.0D);
-                    tessellator.addVertexWithUV(-1.0D, -1.0D, 1.0D, 1.0D, 0.0D);
-                    tessellator.addVertexWithUV(-1.0D, 1.0D, 1.0D, 1.0D, 1.0D);
-                    tessellator.addVertexWithUV(-1.0D, 1.0D, -1.0D, 0.0D, 1.0D);
+                    tessellator.vertexUV(-1.0D, -1.0D, -1.0D, 0.0D, 0.0D);
+                    tessellator.vertexUV(-1.0D, -1.0D, 1.0D, 1.0D, 0.0D);
+                    tessellator.vertexUV(-1.0D, 1.0D, 1.0D, 1.0D, 1.0D);
+                    tessellator.vertexUV(-1.0D, 1.0D, -1.0D, 0.0D, 1.0D);
                 } else if (i == 2) { // Back face
-                    tessellator.addVertexWithUV(1.0D, -1.0D, -1.0D, 0.0D, 0.0D);
-                    tessellator.addVertexWithUV(-1.0D, -1.0D, -1.0D, 1.0D, 0.0D);
-                    tessellator.addVertexWithUV(-1.0D, 1.0D, -1.0D, 1.0D, 1.0D);
-                    tessellator.addVertexWithUV(1.0D, 1.0D, -1.0D, 0.0D, 1.0D);
+                    tessellator.vertexUV(1.0D, -1.0D, -1.0D, 0.0D, 0.0D);
+                    tessellator.vertexUV(-1.0D, -1.0D, -1.0D, 1.0D, 0.0D);
+                    tessellator.vertexUV(-1.0D, 1.0D, -1.0D, 1.0D, 1.0D);
+                    tessellator.vertexUV(1.0D, 1.0D, -1.0D, 0.0D, 1.0D);
                 } else if (i == 1) { // Right face
-                    tessellator.addVertexWithUV(1.0D, -1.0D, 1.0D, 0.0D, 0.0D);
-                    tessellator.addVertexWithUV(1.0D, -1.0D, -1.0D, 1.0D, 0.0D);
-                    tessellator.addVertexWithUV(1.0D, 1.0D, -1.0D, 1.0D, 1.0D);
-                    tessellator.addVertexWithUV(1.0D, 1.0D, 1.0D, 0.0D, 1.0D);
+                    tessellator.vertexUV(1.0D, -1.0D, 1.0D, 0.0D, 0.0D);
+                    tessellator.vertexUV(1.0D, -1.0D, -1.0D, 1.0D, 0.0D);
+                    tessellator.vertexUV(1.0D, 1.0D, -1.0D, 1.0D, 1.0D);
+                    tessellator.vertexUV(1.0D, 1.0D, 1.0D, 0.0D, 1.0D);
                 } else if (i == 4) { // Bottom face
-                    tessellator.addVertexWithUV(-1.0D, -1.0D, -1.0D, 0.0D, 0.0D);
-                    tessellator.addVertexWithUV(1.0D, -1.0D, -1.0D, 1.0D, 0.0D);
-                    tessellator.addVertexWithUV(1.0D, -1.0D, 1.0D, 1.0D, 1.0D);
-                    tessellator.addVertexWithUV(-1.0D, -1.0D, 1.0D, 0.0D, 1.0D);
+                    tessellator.vertexUV(-1.0D, -1.0D, -1.0D, 0.0D, 0.0D);
+                    tessellator.vertexUV(1.0D, -1.0D, -1.0D, 1.0D, 0.0D);
+                    tessellator.vertexUV(1.0D, -1.0D, 1.0D, 1.0D, 1.0D);
+                    tessellator.vertexUV(-1.0D, -1.0D, 1.0D, 0.0D, 1.0D);
                 } else if (i == 5) { // Top face
-                    tessellator.addVertexWithUV(-1.0D, 1.0D, 1.0D, 0.0D, 0.0D);
-                    tessellator.addVertexWithUV(1.0D, 1.0D, 1.0D, 1.0D, 0.0D);
-                    tessellator.addVertexWithUV(1.0D, 1.0D, -1.0D, 1.0D, 1.0D);
-                    tessellator.addVertexWithUV(-1.0D, 1.0D, -1.0D, 0.0D, 1.0D);
+                    tessellator.vertexUV(-1.0D, 1.0D, 1.0D, 0.0D, 0.0D);
+                    tessellator.vertexUV(1.0D, 1.0D, 1.0D, 1.0D, 0.0D);
+                    tessellator.vertexUV(1.0D, 1.0D, -1.0D, 1.0D, 1.0D);
+                    tessellator.vertexUV(-1.0D, 1.0D, -1.0D, 0.0D, 1.0D);
                 }
 
                 tessellator.draw();
