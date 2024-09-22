@@ -1,0 +1,34 @@
+/target*
+/output*
+/opencraft/*
+!/opencraft/resources*
+/opencraft/saves
+/opencraft/options.txt
+*.dat
+
+# compiled classes
+*.class
+
+# Maven output
+**/out
+**/gen
+**/target
+
+# IntelliJ
+**/.idea
+*.iml
+
+# Eclipse
+**/bin
+*.prefs
+*.project
+*.classpath
+
+# macOS
+**.DS_Store
+
+# VS Code
+.vscode/
+
+# eclipse again
+/.settings/

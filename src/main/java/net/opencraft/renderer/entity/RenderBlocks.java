@@ -1,14 +1,14 @@
 
 package net.opencraft.renderer.entity;
 
-import org.lwjgl.opengl.GL11;
-
+import net.opencraft.OpenCraft;
 import net.opencraft.blocks.*;
 import net.opencraft.blocks.material.Material;
 import net.opencraft.renderer.Tessellator;
 import net.opencraft.util.Mth;
 import net.opencraft.world.IBlockAccess;
 import net.opencraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 public class RenderBlocks {
 

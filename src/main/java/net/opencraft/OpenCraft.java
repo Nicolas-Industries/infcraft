@@ -1,11 +1,9 @@
 package net.opencraft;
 
-import static org.joml.Math.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.*;
 
 import java.io.File;
-import java.net.URL;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -57,7 +55,7 @@ public class OpenCraft implements Runnable {
 	public boolean hideQuitButton;
 	public volatile boolean isGamePaused;
 	public Renderer renderer;
-	public FontRenderer fontRenderer;
+	public FontRenderer font;
 	public GuiScreen currentScreen;
 	public LoadingScreenRenderer loadingScreen;
 	public EntityRenderer entityRenderer;
@@ -125,7 +123,7 @@ public class OpenCraft implements Runnable {
 		this.tempDisplayWidth = width;
 		this.tempDisplayHeight = height;
 		this.fullscreen = boolean6;
-		//(new SleepingForeverThread("Timer hack thread")).start();
+		(new SleepingForeverThread("Timer hack thread")).start();
 		this.width = width;
 		this.height = height;
 		this.fullscreen = boolean6;
@@ -168,9 +166,8 @@ public class OpenCraft implements Runnable {
 		mcDataDir = getMinecraftDir();
 		options = new GameSettings(oc, mcDataDir);
 		renderer = new Renderer(options);
-		fontRenderer = new FontRenderer(options, "/assets/default.png", renderer);
-		//loadScreen();
-		System.out.println("waos");
+		font = new FontRenderer(options, "/assets/default.png", renderer);
+		loadScreen();
 		Keyboard.create();
 		Mouse.create();
 		mouseHelper = new MouseHelper(null);
@@ -207,7 +204,8 @@ public class OpenCraft implements Runnable {
 		displayGuiScreen(new GuiMainMenu());
 		effectRenderer = new EffectRenderer(world, renderer);
 		try {
-			new DownloadResourcesJob().start();
+			DownloadResourcesJob job = new DownloadResourcesJob(mcDataDir);
+			job.start();
 		} catch (Exception ex4) {
 			ex4.printStackTrace();
 		}
@@ -245,7 +243,7 @@ public class OpenCraft implements Runnable {
 		t.draw();
 		glEnable(3008);
 		glAlphaFunc(516, 0.1f);
-		fontRenderer.drawShadow("Loading...", 8, height / 2 - 16, -1);
+		font.drawStringWithShadow2("Loading...", 8, height / 2 - 16, -1);
 		Display.swapBuffers();
 	}
 
@@ -305,7 +303,6 @@ public class OpenCraft implements Runnable {
 		running = true;
 		try {
 			init();
-			System.out.println("alr");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			displayUnexpectedThrowable(new UnexpectedThrowable("Failed to start game", exception));
@@ -316,9 +313,9 @@ public class OpenCraft implements Runnable {
 			int n = 0;
 			while (running) {
 				AABB.clearBoundingBoxPool();
-				if (Display.isCloseRequested())
+				if (Display.isCloseRequested()) {
 					shutdown();
-				
+				}
 				if (isGamePaused) {
 					final float renderPartialTicks = timer.renderPartialTicks;
 					timer.updateTimer();
@@ -355,11 +352,19 @@ public class OpenCraft implements Runnable {
 				else
 					prevFrameTime = System.nanoTime();
 				
-				Thread.yield();
+				// Thread.yield();
 				Display.update();
-				if (Display.wasResized())
-					resize();
-				
+				if (Display.wasResized()) {
+					width = Display.getWidth();
+					height = Display.getHeight();
+					if (width <= 0) {
+						width = 1;
+					}
+					if (height <= 0) {
+						height = 1;
+					}
+					resize(width, height);
+				}
 				if (options.limitFramerate)
 					Thread.sleep(5L);
 				
@@ -591,7 +596,7 @@ public class OpenCraft implements Runnable {
 			}
 			if (currentScreen != null) {
 				setIngameNotInFocus();
-				resize();
+				resize(width, height);
 			}
 			System.out.println(
 					new StringBuilder().append("Size: ").append(width).append(", ").append(height).toString());
@@ -600,12 +605,17 @@ public class OpenCraft implements Runnable {
 		}
 	}
 
-	private void resize() {
-		width = max(1, Display.getWidth());
-		height = max(1, Display.getHeight());
-		
+	private void resize(int integer1, int integer2) {
+		if (integer1 <= 0) {
+			integer1 = 1;
+		}
+		if (integer2 <= 0) {
+			integer2 = 1;
+		}
+		width = integer1;
+		height = integer2;
 		if (currentScreen != null) {
-			final ScaledResolution scaledResolution = new ScaledResolution(width, height);
+			final ScaledResolution scaledResolution = new ScaledResolution(integer1, integer2);
 			currentScreen.setWorldAndResolution(oc, scaledResolution.getScaledWidth(),
 					scaledResolution.getScaledHeight());
 		}
@@ -795,7 +805,7 @@ public class OpenCraft implements Runnable {
 		}
 		if ((world = fe) != null) {
 			playerController.func_717_a(fe);
-			fe.h = fontRenderer;
+			fe.h = font;
 			if (!isMultiplayerWorld()) {
 				player = (EntityPlayerSP) fe.func_4085_a(EntityPlayerSP.class);
 				fe.player = player;
@@ -863,23 +873,20 @@ public class OpenCraft implements Runnable {
 		SandBlock.fallInstantly = false;
 	}
 
-	public void registerSound(String string, final URL resourceURL) {
+	public void installResource(String string, final File file) {
 		final int index = string.indexOf("/");
-		final String soundType = string.substring(0, index);
+		final String substring = string.substring(0, index);
 		string = string.substring(index + 1);
-
-		System.out.println("Registering sound: " + string + " (" + soundType + ") from " + resourceURL.getPath());
-
-		if (soundType.startsWith("sound")) {
-			sndManager.addSound(string, resourceURL);
-		} else if (soundType.startsWith("newsound")) {
-			sndManager.addSound(string, resourceURL);
-		} else if (soundType.equalsIgnoreCase("music")) {
-			sndManager.addIngameMusic(string, resourceURL);
-		} else if (soundType.equalsIgnoreCase("newmusic")) {
-			sndManager.addIngameMusic(string, resourceURL);
-		} else if (soundType.equalsIgnoreCase("menumusic")) {
-			sndManager.addMenuMusic(string, resourceURL);
+		if (substring.equalsIgnoreCase("sound")) {
+			sndManager.addSound(string, file);
+		} else if (substring.equalsIgnoreCase("newsound")) {
+			sndManager.addSound(string, file);
+		} else if (substring.equalsIgnoreCase("music")) {
+			sndManager.addIngameMusic(string, file);
+		} else if (substring.equalsIgnoreCase("newmusic")) {
+			sndManager.addIngameMusic(string, file);
+		} else if (substring.equalsIgnoreCase("menumusic")) {
+			sndManager.addMenuMusic(string, file);
 		}
 	}
 
