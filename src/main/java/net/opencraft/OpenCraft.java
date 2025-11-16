@@ -31,6 +31,7 @@ import net.opencraft.tests.DownloadResourcesJob;
 import net.opencraft.util.*;
 import net.opencraft.world.World;
 import net.opencraft.world.WorldRenderer;
+import org.lwjgl.system.Platform;
 
 public class OpenCraft implements Runnable {
 	public static final String PROJECT_NAME_LOWERCASE = "opencraft";
@@ -147,6 +148,8 @@ public class OpenCraft implements Runnable {
 	}
 
 	public void init() {
+        if (Platform.get() == Platform.LINUX)
+            glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
 		glfwInit();
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
