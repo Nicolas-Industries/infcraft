@@ -3,9 +3,8 @@ package net.opencraft.world.gen;
 
 import java.util.Random;
 import net.opencraft.an;
-import net.opencraft.dh;
 
-public class NoiseGeneratorOctaves extends dh {
+public class NoiseGeneratorOctaves {
 
     private an[] a;
     private int b;

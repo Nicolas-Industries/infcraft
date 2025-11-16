@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL11.*;
 import java.io.File;
 
 import net.opencraft.client.Main;
+import net.opencraft.server.Server;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWWindowFocusCallback;
 import org.lwjgl.opengl.*;
@@ -298,6 +299,8 @@ public class OpenCraft implements Runnable {
 	public void stop() {
 		try {
 			System.out.println("Stopping!");
+			// Stop integrated server if running
+			stopIntegratedServer();
 			changeWorld1(null);
 			try {
 				GLAllocation.deleteTexturesAndDisplayLists();
@@ -707,6 +710,11 @@ public class OpenCraft implements Runnable {
 			}
 		}
 
+		// Process network data
+		if (clientNetworkManager != null) {
+			clientNetworkManager.processNetworkData();
+		}
+
 		// Reset mouse events after all processing
 		mouse.reset();
 		if (world != null) {
@@ -722,6 +730,27 @@ public class OpenCraft implements Runnable {
 			}
 			if (!isGamePaused && !isMultiplayerWorld()) {
 				world.tick();
+			} else if (!isGamePaused && isMultiplayerWorld()) {
+				// Send player position update to server if connected
+				if (player != null && clientNetworkManager != null) {
+					try {
+						// Only send updates periodically to reduce network traffic
+						// Send more frequently (every 5 ticks) but only if significant movement
+						if (ticksRan % 5 == 0) { // Send about 4 times per second
+							// Check if player has moved significantly before sending an update
+							if (hasPlayerMovedSignificantly()) {
+								net.opencraft.shared.network.packets.PacketPlayerPosition posPacket =
+									new net.opencraft.shared.network.packets.PacketPlayerPosition(
+										player.posX, player.posY, player.posZ,
+										player.rotationYaw, player.rotationPitch, player.onGround);
+								clientNetworkManager.sendPacket(posPacket);
+							}
+						}
+					} catch (Exception e) {
+						System.err.println("Error sending player position: " + e.getMessage());
+					}
+				}
+				world.tick();
 			}
 			if (!isGamePaused) {
 				world.randomDisplayUpdates(Mth.floor_double(player.posX), Mth.floor_double(player.posY),
@@ -734,13 +763,68 @@ public class OpenCraft implements Runnable {
 		systemTime = System.currentTimeMillis();
 	}
 
+	private Object integratedServer; // For singleplayer integrated server - will be implemented properly
+
 	public boolean isMultiplayerWorld() {
-		return false;
+		return integratedServer != null;
+	}
+
+	/**
+	 * Start an integrated server for singleplayer mode
+	 */
+	public void startIntegratedServer(String worldName) {
+		File saveDir = getGameDir();
+		// For now, just store the world name as a placeholder
+		// The actual server will be implemented properly later
+		integratedServer = worldName;
+		//integratedServer = new Server(worldName, new File(saveDir, "saves"));
+		//integratedServer.start();
+	}
+
+	/**
+	 * Stop the integrated server
+	 */
+	public void stopIntegratedServer() {
+		if (integratedServer != null) {
+			//integratedServer.stop();
+			integratedServer = null;
+		}
+	}
+
+	/**
+	 * Connect to a multiplayer server
+	 */
+	private net.opencraft.client.network.ClientNetworkManager clientNetworkManager;
+
+	public boolean connectToMultiplayer(String serverAddress, int port) {
+		// Initialize client network manager if not already done
+		if (clientNetworkManager == null) {
+			clientNetworkManager = new net.opencraft.client.network.ClientNetworkManager(this);
+		}
+
+		// Connect to the remote server
+		boolean connected = clientNetworkManager.connectToRemoteServer(serverAddress, port);
+		if (connected) {
+			System.out.println("Successfully connected to multiplayer server: " + serverAddress + ":" + port);
+		} else {
+			System.out.println("Failed to connect to multiplayer server: " + serverAddress + ":" + port);
+		}
+		return connected;
 	}
 
 	public void startWorld(final String string) {
 		changeWorld1(null);
 		System.gc();
+
+		// Start integrated server for singleplayer
+		startIntegratedServer(string);
+
+		// Connect to integrated server
+		if (clientNetworkManager == null) {
+			clientNetworkManager = new net.opencraft.client.network.ClientNetworkManager(this);
+		}
+		clientNetworkManager.connectToIntegratedServer();
+
 		final World world = new World(new File(getGameDir(), "saves"), string);
 		if (world.isNewWorld) {
 			changeWorld2(world, "Generating level");
@@ -864,6 +948,39 @@ public class OpenCraft implements Runnable {
 		if(gameDir == null)
 			gameDir = new File(PROJECT_NAME_LOWERCASE);
 		return gameDir;
+	}
+
+	// Track last position for movement optimization
+	private double lastSentX = Double.MAX_VALUE;
+	private double lastSentY = Double.MAX_VALUE;
+	private double lastSentZ = Double.MAX_VALUE;
+
+	/**
+	 * Check if player has moved significantly since last update
+	 */
+	private boolean hasPlayerMovedSignificantly() {
+		if (player == null) {
+			return false;
+		}
+
+		// Calculate distance moved since last update
+		double deltaX = player.posX - lastSentX;
+		double deltaY = player.posY - lastSentY;
+		double deltaZ = player.posZ - lastSentZ;
+		double distanceSquared = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
+
+		// Only send update if player moved more than threshold
+		// Using squared distance to avoid sqrt calculation
+		boolean moved = distanceSquared > 0.0625; // 0.25^2 (quarter block threshold)
+
+		if (moved) {
+			// Update last sent position
+			lastSentX = player.posX;
+			lastSentY = player.posY;
+			lastSentZ = player.posZ;
+		}
+
+		return moved;
 	}
 
 	public float getTickDelta() {
