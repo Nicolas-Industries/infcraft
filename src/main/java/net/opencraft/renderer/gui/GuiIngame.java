@@ -1,12 +1,15 @@
 
 package net.opencraft.renderer.gui;
 
+import static org.joml.Math.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import net.opencraft.OpenCraft;
 import net.opencraft.ScaledResolution;
 import net.opencraft.blocks.material.Material;
+import net.opencraft.client.Main;
 import net.opencraft.inventory.InventoryPlayer;
 import net.opencraft.item.ItemStack;
 import net.opencraft.renderer.Tessellator;
@@ -17,6 +20,8 @@ import net.opencraft.renderer.font.FontRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class GuiIngame extends GuiElement {
+    // probably not the right name, but this is the effect
+    public static final int GL_FULLBRIGHT_RENDERING = 32826;
 
     private static RenderItem itemRenderer = new RenderItem();
     private List<ChatLine> chatMessageList;
@@ -40,19 +45,19 @@ public class GuiIngame extends GuiElement {
         final ScaledResolution scaledResolution = new ScaledResolution(this.mc.width, this.mc.height);
         final int scaledWidth = scaledResolution.getScaledWidth();
         final int scaledHeight = scaledResolution.getScaledHeight();
-        final FontRenderer fontRenderer = this.mc.fontRenderer;
+        final FontRenderer font = this.mc.font;
         this.mc.entityRenderer.setupOverlayRendering();
         GL11.glEnable(3042);
         if (this.mc.options.fancyGraphics) {
             this.renderVignette(this.mc.player.getEntityBrightness(float1), scaledWidth, scaledHeight);
         }
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        GL11.glBindTexture(3553, this.mc.renderer.getTexture("/assets/gui/gui.png"));
+        GL11.glBindTexture(3553, this.mc.renderer.loadTexture("/assets/gui/gui.png"));
         final InventoryPlayer inventory = this.mc.player.inventory;
         this.zLevel = -90.0f;
         this.drawTexturedModalRect(scaledWidth / 2 - 91, scaledHeight - 22, 0, 0, 182, 22);
         this.drawTexturedModalRect(scaledWidth / 2 - 91 - 1 + inventory.currentItem * 20, scaledHeight - 22 - 1, 0, 22, 24, 22);
-        GL11.glBindTexture(3553, this.mc.renderer.getTexture("/assets/gui/icons.png"));
+        GL11.glBindTexture(3553, this.mc.renderer.loadTexture("/assets/gui/icons.png"));
         GL11.glEnable(3042);
         GL11.glBlendFunc(775, 769);
         this.drawTexturedModalRect(scaledWidth / 2 - 7, scaledHeight / 2 - 7, 0, 0, 16, 16);
@@ -63,7 +68,7 @@ public class GuiIngame extends GuiElement {
         }
         final int health = this.mc.player.health;
         final int prevHealth = this.mc.player.prevHealth;
-        this.rand.setSeed((long) (this.updateCounter * 312871));
+        this.rand.setSeed((long) (this.updateCounter * 312871L));
         if (this.mc.playerController.shouldDrawHUD()) {
             final int i = this.mc.player.getPlayerArmorValue();
             for (int j = 0; j < 10; ++j) {
@@ -105,7 +110,7 @@ public class GuiIngame extends GuiElement {
                 }
             }
             if (this.mc.player.isInsideOfMaterial(Material.WATER)) {
-                for (int j = (int) Math.ceil((this.mc.player.air - 2) * 10.0 / 300.0), integer5 = (int) Math.ceil(this.mc.player.air * 10.0 / 300.0) - j, k = 0; k < j + integer5; ++k) {
+                for (int j = (int) ceil((this.mc.player.air - 2) * 10.0 / 300.0), integer5 = (int) ceil(this.mc.player.air * 10.0 / 300.0) - j, k = 0; k < j + integer5; ++k) {
                     if (k < j) {
                         this.drawTexturedModalRect(scaledWidth / 2 - 91 + k * 8, scaledHeight - 32 - 9, 16, 18, 9, 9);
                     } else {
@@ -114,8 +119,8 @@ public class GuiIngame extends GuiElement {
                 }
             }
         }
-        GL11.glDisable(3042);
-        GL11.glEnable(32826);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL_FULLBRIGHT_RENDERING);
         GL11.glPushMatrix();
         GL11.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
         RenderHelper.enableStandardItemLighting();
@@ -126,27 +131,29 @@ public class GuiIngame extends GuiElement {
             this.renderInventorySlot(i, j, integer5, float1);
         }
         RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(32826);
+        GL11.glDisable(GL_FULLBRIGHT_RENDERING);
         if (this.mc.options.showDebugInfo) {
-            fontRenderer.drawStringWithShadow2("nCraft Infdev (" + this.mc.debug + ")", 2, 2, 16777215);
-            fontRenderer.drawStringWithShadow2(this.mc.debugInfoRenders(), 2, 12, 16777215);
-            fontRenderer.drawStringWithShadow2(this.mc.func_6262_n(), 2, 22, 16777215);
-            fontRenderer.drawStringWithShadow2(this.mc.debugInfoEntities(), 2, 32, 16777215);
+            font.drawStringWithShadow2(Main.TITLE +" (" + this.mc.debug + ")", 2, 2, 16777215);
+            font.drawStringWithShadow2(this.mc.debugInfoRenders(), 2, 12, 16777215);
+            font.drawStringWithShadow2(this.mc.entityRenderingInfo(), 2, 22, 16777215);
+            font.drawStringWithShadow2(this.mc.debugInfoEntities(), 2, 32, 16777215);
+            // display current coordinates and orientation
+            font.drawStringWithShadow2("X: " + this.mc.player.posX + " Y: " + this.mc.player.posY + " Z: " + this.mc.player.posZ, 2, 42, 16777215);
+            font.drawStringWithShadow2("Yaw: " + this.mc.player.rotationYaw + " Pitch: " + this.mc.player.rotationPitch, 2, 52, 16777215);
             final long maxMemory = Runtime.getRuntime().maxMemory();
             final long totalMemory = Runtime.getRuntime().totalMemory();
-            final long n2 = totalMemory - Runtime.getRuntime().freeMemory();
-            final String string = new StringBuilder().append("Used memory: ").append(n2 * 100L / maxMemory).append("% (").append(n2 / 1024L / 1024L).append("MB) of ").append(maxMemory / 1024L / 1024L).append("MB").toString();
-            this.drawString(fontRenderer, string, scaledWidth - fontRenderer.getStringWidth(string) - 2, 2, 14737632);
-            final String string2 = new StringBuilder().append("Allocated memory: ").append(totalMemory * 100L / maxMemory).append("% (").append(totalMemory / 1024L / 1024L).append("MB)").toString();
-            this.drawString(fontRenderer, string2, scaledWidth - fontRenderer.getStringWidth(string2) - 2, 12, 14737632);
-        } else {
-            fontRenderer.drawStringWithShadow2("nCraft Infdev", 2, 2, 16777215);
+            final long allocatedMemory = totalMemory - Runtime.getRuntime().freeMemory();
+            final String string = "Used memory: " + allocatedMemory * 100L / maxMemory + "% (" + allocatedMemory / 1024L / 1024L + "MB) of " + maxMemory / 1024L / 1024L + "MB";
+            this.drawString(font, string, scaledWidth - font.getStringWidth(string) - 2, 2, 14737632);
+            final String string2 = "Allocated memory: " + totalMemory * 100L / maxMemory + "% (" + totalMemory / 1024L / 1024L + "MB)";
+            this.drawString(font, string2, scaledWidth - font.getStringWidth(string2) - 2, 12, 14737632);
         }
+        
         int i = 10;
         final boolean b2 = true;
         for (int integer5 = 0; integer5 < this.chatMessageList.size() && integer5 < i; ++integer5) {
-            if (((ChatLine) this.chatMessageList.get(integer5)).updateCounter < 200 || b2) {
-                fontRenderer.drawStringWithShadow2(((ChatLine) this.chatMessageList.get(integer5)).message, 2, scaledHeight - 8 - integer5 * 9 - 20, 16777215);
+            if ((chatMessageList.get(integer5)).updateCounter < 200 || b2) {
+                font.drawStringWithShadow2(((ChatLine) this.chatMessageList.get(integer5)).message, 2, scaledHeight - 8 - integer5 * 9 - 20, 16777215);
             }
         }
     }
@@ -164,7 +171,7 @@ public class GuiIngame extends GuiElement {
         GL11.glDepthMask(false);
         GL11.glBlendFunc(0, 769);
         GL11.glColor4f(this.prevVignetteBrightness, this.prevVignetteBrightness, this.prevVignetteBrightness, 1.0f);
-        GL11.glBindTexture(3553, this.mc.renderer.getTexture("/assets/misc/vignette.png"));
+        GL11.glBindTexture(3553, this.mc.renderer.loadTexture("/assets/misc/vignette.png"));
         final Tessellator instance = Tessellator.instance;
         instance.beginQuads();
         instance.vertexUV(0.0, integer3, -90.0, 0.0, 1.0);
@@ -191,11 +198,11 @@ public class GuiIngame extends GuiElement {
             GL11.glScalef(1.0f / n2, (n2 + 1.0f) / 2.0f, 1.0f);
             GL11.glTranslatef((float) (-(integer2 + 8)), (float) (-(integer3 + 12)), 0.0f);
         }
-        GuiIngame.itemRenderer.drawItemIntoGui(this.mc.fontRenderer, this.mc.renderer, itemStack, integer2, integer3);
+        GuiIngame.itemRenderer.drawItemIntoGui(this.mc.font, this.mc.renderer, itemStack, integer2, integer3);
         if (n > 0.0f) {
             GL11.glPopMatrix();
         }
-        GuiIngame.itemRenderer.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.renderer, itemStack, integer2, integer3);
+        GuiIngame.itemRenderer.renderItemOverlayIntoGUI(this.mc.font, this.mc.renderer, itemStack, integer2, integer3);
     }
 
     public void updateTick() {

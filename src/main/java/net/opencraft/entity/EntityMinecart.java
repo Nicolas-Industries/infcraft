@@ -1,6 +1,8 @@
 
 package net.opencraft.entity;
 
+import static org.joml.Math.*;
+
 import java.util.List;
 
 import net.opencraft.blocks.Block;
@@ -100,12 +102,12 @@ public class EntityMinecart extends Entity implements IInventory {
                     }
                     final ItemStack itemStack = stackInSlot;
                     itemStack.stackSize -= stackSize;
-                    final EntityItem entity = new EntityItem(this.worldObj, this.posX + n, this.posY + n2, this.posZ + n3, new ItemStack(stackInSlot.itemID, stackSize, stackInSlot.itemDamage));
+                    final EntityItem entity = new EntityItem(this.world, this.posX + n, this.posY + n2, this.posZ + n3, new ItemStack(stackInSlot.itemID, stackSize, stackInSlot.itemDamage));
                     final float n4 = 0.05f;
                     entity.motionX = (float) this.rand.nextGaussian() * n4;
                     entity.motionY = (float) this.rand.nextGaussian() * n4 + 0.2f;
                     entity.motionZ = (float) this.rand.nextGaussian() * n4;
-                    this.worldObj.entityJoinedWorld(entity);
+                    this.world.entityJoinedWorld(entity);
                 }
             }
         }
@@ -127,14 +129,14 @@ public class EntityMinecart extends Entity implements IInventory {
         final int floor_double = Mth.floor_double(this.posX);
         int floor_double2 = Mth.floor_double(this.posY);
         final int floor_double3 = Mth.floor_double(this.posZ);
-        if (this.worldObj.getBlockId(floor_double, floor_double2 - 1, floor_double3) == Block.rail.blockID) {
+        if (this.world.getBlockId(floor_double, floor_double2 - 1, floor_double3) == Block.rail.blockID) {
             --floor_double2;
         }
         final double n = 0.4;
         final double n2 = 0.0078125;
-        if (this.worldObj.getBlockId(floor_double, floor_double2, floor_double3) == Block.rail.blockID) {
+        if (this.world.getBlockId(floor_double, floor_double2, floor_double3) == Block.rail.blockID) {
             final Vec3 pos = this.getPos(this.posX, this.posY, this.posZ);
-            final int blockMetadata = this.worldObj.getBlockMetadata(floor_double, floor_double2, floor_double3);
+            final int blockMetadata = this.world.getBlockMetadata(floor_double, floor_double2, floor_double3);
             this.posY = floor_double2;
             if (blockMetadata >= 2 && blockMetadata <= 5) {
                 this.posY = floor_double2 + 1;
@@ -154,12 +156,12 @@ public class EntityMinecart extends Entity implements IInventory {
             final int[][] array = EntityMinecart.MATRIX[blockMetadata];
             double n3 = array[1][0] - array[0][0];
             double n4 = array[1][2] - array[0][2];
-            final double sqrt = Math.sqrt(n3 * n3 + n4 * n4);
+            final double sqrt = sqrt(n3 * n3 + n4 * n4);
             if (this.motionX * n3 + this.motionZ * n4 < 0.0) {
                 n3 = -n3;
                 n4 = -n4;
             }
-            double n5 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
+            double n5 = sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.motionX = n5 * n3 / sqrt;
             this.motionZ = n5 * n4 / sqrt;
             double n6 = 0.0;
@@ -219,7 +221,7 @@ public class EntityMinecart extends Entity implements IInventory {
             final Vec3 pos2 = this.getPos(this.posX, this.posY, this.posZ);
             if (pos2 != null && pos != null) {
                 final double n11 = (pos.y - pos2.y) * 0.05;
-                n5 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
+                n5 = sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
                 if (n5 > 0.0) {
                     this.motionX = this.motionX / n5 * (n5 + n11);
                     this.motionZ = this.motionZ / n5 * (n5 + n11);
@@ -229,7 +231,7 @@ public class EntityMinecart extends Entity implements IInventory {
             final int floor_double4 = Mth.floor_double(this.posX);
             final int floor_double5 = Mth.floor_double(this.posZ);
             if (floor_double4 != floor_double || floor_double5 != floor_double3) {
-                n5 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
+                n5 = sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
                 this.motionX = n5 * (floor_double4 - floor_double);
                 this.motionZ = n5 * (floor_double5 - floor_double3);
             }
@@ -262,7 +264,7 @@ public class EntityMinecart extends Entity implements IInventory {
         final double n12 = this.prevPosX - this.posX;
         final double n13 = this.prevPosZ - this.posZ;
         if (n12 * n12 + n13 * n13 > 0.001) {
-            this.rotationYaw = (float) (Math.atan2(n13, n12) * 180.0 / 3.141592653589793);
+            this.rotationYaw = (float) toRadians(atan2(n13, n12));
             if (this.isInReverse) {
                 this.rotationYaw += 180.0f;
             }
@@ -278,7 +280,7 @@ public class EntityMinecart extends Entity implements IInventory {
             this.isInReverse = !this.isInReverse;
         }
         this.setRotation(this.rotationYaw, this.rotationPitch);
-        final List entitiesWithinAABBExcludingEntity = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.20000000298023224, 0.0, 0.20000000298023224));
+        final List entitiesWithinAABBExcludingEntity = this.world.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.20000000298023224, 0.0, 0.20000000298023224));
         if (entitiesWithinAABBExcludingEntity != null && entitiesWithinAABBExcludingEntity.size() > 0) {
             for (int i = 0; i < entitiesWithinAABBExcludingEntity.size(); ++i) {
                 final Entity entity = (Entity) entitiesWithinAABBExcludingEntity.get(i);
@@ -296,11 +298,11 @@ public class EntityMinecart extends Entity implements IInventory {
         final int floor_double = Mth.floor_double(double1);
         int floor_double2 = Mth.floor_double(double2);
         final int floor_double3 = Mth.floor_double(double3);
-        if (this.worldObj.getBlockId(floor_double, floor_double2 - 1, floor_double3) == Block.rail.blockID) {
+        if (this.world.getBlockId(floor_double, floor_double2 - 1, floor_double3) == Block.rail.blockID) {
             --floor_double2;
         }
-        if (this.worldObj.getBlockId(floor_double, floor_double2, floor_double3) == Block.rail.blockID) {
-            final int blockMetadata = this.worldObj.getBlockMetadata(floor_double, floor_double2, floor_double3);
+        if (this.world.getBlockId(floor_double, floor_double2, floor_double3) == Block.rail.blockID) {
+            final int blockMetadata = this.world.getBlockMetadata(floor_double, floor_double2, floor_double3);
             double2 = floor_double2;
             if (blockMetadata >= 2 && blockMetadata <= 5) {
                 double2 = floor_double2 + 1;
@@ -308,7 +310,7 @@ public class EntityMinecart extends Entity implements IInventory {
             final int[][] array = EntityMinecart.MATRIX[blockMetadata];
             double n = array[1][0] - array[0][0];
             double n2 = array[1][2] - array[0][2];
-            final double sqrt = Math.sqrt(n * n + n2 * n2);
+            final double sqrt = sqrt(n * n + n2 * n2);
             n /= sqrt;
             n2 /= sqrt;
             double1 += n * double4;
@@ -327,11 +329,11 @@ public class EntityMinecart extends Entity implements IInventory {
         final int floor_double = Mth.floor_double(double1);
         int floor_double2 = Mth.floor_double(double2);
         final int floor_double3 = Mth.floor_double(double3);
-        if (this.worldObj.getBlockId(floor_double, floor_double2 - 1, floor_double3) == Block.rail.blockID) {
+        if (this.world.getBlockId(floor_double, floor_double2 - 1, floor_double3) == Block.rail.blockID) {
             --floor_double2;
         }
-        if (this.worldObj.getBlockId(floor_double, floor_double2, floor_double3) == Block.rail.blockID) {
-            final int blockMetadata = this.worldObj.getBlockMetadata(floor_double, floor_double2, floor_double3);
+        if (this.world.getBlockId(floor_double, floor_double2, floor_double3) == Block.rail.blockID) {
+            final int blockMetadata = this.world.getBlockMetadata(floor_double, floor_double2, floor_double3);
             double2 = floor_double2;
             if (blockMetadata >= 2 && blockMetadata <= 5) {
                 double2 = floor_double2 + 1;

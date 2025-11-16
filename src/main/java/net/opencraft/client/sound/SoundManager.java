@@ -1,16 +1,18 @@
 package net.opencraft.client.sound;
 
-import java.io.File;
-import java.util.Random;
+import static net.opencraft.tests.DownloadResourcesJob.SOUNDS_PATH;
+import static org.joml.Math.*;
 
 import net.opencraft.client.config.GameSettings;
 import net.opencraft.entity.EntityLiving;
-import net.opencraft.util.Mth;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 import paulscode.sound.codecs.CodecJOrbis;
 import paulscode.sound.codecs.CodecWav;
 import paulscode.sound.libraries.LibraryLWJGLOpenAL;
+
+import java.net.URL;
+import java.util.Random;
 
 public class SoundManager {
     private SoundSystem sndSystem;
@@ -24,6 +26,41 @@ public class SoundManager {
     private Random rand = new Random();
     public int ticksBeforeMusic = this.rand.nextInt(12000);
     public String currentMusicTheme = "menu";
+
+    public enum SoundType {
+        MENUMUSIC,
+        SOUND("newsound", "sound3"),
+        MUSIC("newmusic"),
+        STREAMING;
+
+        public final String[] alternateNames;
+
+        SoundType(String...alternateNames) {
+            if(alternateNames == null) {
+                this.alternateNames = new String[0];
+            } else {
+                this.alternateNames = alternateNames;
+            }
+        }
+
+        public static SoundType fromString(String name) {
+            for(SoundType type : values()) {
+                if(name.contains(type.name().toLowerCase())) {
+                    return type;
+                }
+                for(String alternateName : type.alternateNames) {
+                    if(name.contains(alternateName)) {
+                        return type;
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+    public boolean containsSound(String soundName) {
+        return soundPoolSounds.contains(soundName) || soundPoolStreaming.contains(soundName) || soundPoolIngameMusic.contains(soundName) || soundPoolMenuMusic.contains(soundName);
+    }
 
     public void loadSoundSettings(GameSettings var1) {
         this.soundPoolStreaming.isGetRandomSound = false;
@@ -75,20 +112,35 @@ public class SoundManager {
         this.sndSystem.cleanup();
     }
 
-    public void addSound(String var1, File var2) {
-        this.soundPoolSounds.addSound(var1, var2);
+    public void registerSound(final URL resourceURL) {
+        String name = resourceURL.getPath().substring(resourceURL.getPath().lastIndexOf(SOUNDS_PATH) + SOUNDS_PATH.length());
+        name = name.substring(name.indexOf("/") + 1).replace("%20", " ").replace("/", ".").replaceAll("[0-9]", "");
+        final String path = resourceURL.getPath();
+
+        if(!switch(SoundType.fromString(path)) {
+            case MENUMUSIC -> addMenuMusic(name, resourceURL);
+            case SOUND -> addSound(name, resourceURL);
+            case MUSIC -> addIngameMusic(name, resourceURL);
+            case STREAMING -> true; // TODO: investigate streaming sounds
+            case null, default -> {
+                System.err.println("Unknown sound type: " + path);
+                yield false;
+            }
+        }) {
+            System.err.println("Failed to load sound from " + resourceURL.getPath());
+        }
     }
 
-    public void addStreaming(String var1, File var2) {
-        this.soundPoolStreaming.addSound(var1, var2);
+    public boolean addSound(String name, URL resourceURL) {
+        return soundPoolSounds.addSound(name, resourceURL) != null;
     }
 
-    public void addIngameMusic(String var1, File var2) {
-        this.soundPoolIngameMusic.addSound(var1, var2);
+    public boolean addIngameMusic(String name, URL resourceURL) {
+        return soundPoolIngameMusic.addSound(name, resourceURL) != null;
     }
 
-    public void addMenuMusic(String var1, File var2) {
-        this.soundPoolMenuMusic.addSound(var1, var2);
+    public boolean addMenuMusic(String name, URL resourceURL) {
+        return soundPoolMenuMusic.addSound(name, resourceURL) != null;
     }
 
     public void playRandomMusicIfReady() {
@@ -101,6 +153,8 @@ public class SoundManager {
                         this.sndSystem.stop("BgMusic");
                         this.sndSystem.backgroundMusic("BgMusic", var1.soundUrl, var1.soundName, false);
                         this.sndSystem.play("BgMusic");
+                    } else {
+                        System.err.println("No menu music found!");
                     }
                 } else if (this.currentMusicTheme.equals("ingame")) {
                     if (this.ticksBeforeMusic > 0) {
@@ -120,25 +174,28 @@ public class SoundManager {
     }
 
     public void stopSound(String var1) {
+    	if (sndSystem == null)
+    		return; // TODO: Temporary fix to OpenCraft problem
+    	
         this.sndSystem.stop(var1);
     }
 
     public void setListener(EntityLiving var1, float var2) {
-        if(this.loaded && this.options.sound) {
-            if(var1 != null) {
+        if (this.loaded && this.options.sound) {
+            if (var1 != null) {
                 float var3 = var1.prevRotationYaw + (var1.rotationYaw - var1.prevRotationYaw) * var2;
-                double var4 = var1.prevPosX + (var1.posX - var1.prevPosX) * (double)var2;
-                double var6 = var1.prevPosY + (var1.posY - var1.prevPosY) * (double)var2;
-                double var8 = var1.prevPosZ + (var1.posZ - var1.prevPosZ) * (double)var2;
-                float var10 = Mth.cos(-var3 * ((float)Math.PI / 180.0F) - (float)Math.PI);
-                float var11 = Mth.sin(-var3 * ((float)Math.PI / 180.0F) - (float)Math.PI);
+                double var4 = var1.prevPosX + (var1.posX - var1.prevPosX) * (double) var2;
+                double var6 = var1.prevPosY + (var1.posY - var1.prevPosY) * (double) var2;
+                double var8 = var1.prevPosZ + (var1.posZ - var1.prevPosZ) * (double) var2;
+                float var10 = cos(toRadians(-var3) - PI_f);
+                float var11 = sin(toRadians(-var3) - PI_f);
                 float var12 = -var11;
                 float var13 = 0.0F;
                 float var14 = -var10;
                 float var15 = 0.0F;
                 float var16 = 1.0F;
                 float var17 = 0.0F;
-                this.sndSystem.setListenerPosition((float)var4, (float)var6, (float)var8);
+                this.sndSystem.setListenerPosition((float) var4, (float) var6, (float) var8);
                 this.sndSystem.setListenerOrientation(var12, var13, var14, var15, var16, var17);
             }
         }
@@ -170,6 +227,9 @@ public class SoundManager {
 
     public void playSound(String var1, float var2, float var3, float var4, float var5, float var6) {
         if(this.loaded && this.options.sound) {
+            if(!soundPoolSounds.contains(var1)) {
+                System.err.println("Sound not found: " + var1);
+            }
             SoundPoolEntry var7 = this.soundPoolSounds.getRandomSoundFromSoundPool(var1);
             if(var7 != null && var5 > 0.0F) {
                 this.playedSoundsCount = (this.playedSoundsCount + 1) % 256;

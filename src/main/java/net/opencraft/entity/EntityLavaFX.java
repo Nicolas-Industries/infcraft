@@ -1,6 +1,8 @@
 
 package net.opencraft.entity;
 
+import static org.joml.Math.*;
+
 import net.opencraft.renderer.Tessellator;
 import net.opencraft.world.World;
 
@@ -20,7 +22,7 @@ public class EntityLavaFX extends EntityFX {
         this.particleRed = particleRed;
         this.particleScale *= this.rand.nextFloat() * 2.0f + 0.2f;
         this.lavaParticleScale = this.particleScale;
-        this.particleMaxAge = (int) (16.0 / (Math.random() * 0.8 + 0.2));
+        this.particleMaxAge = (int) (16.0 / (random() * 0.8 + 0.2));
         this.noClip = false;
         this.particleTextureIndex = 49;
     }
@@ -46,7 +48,7 @@ public class EntityLavaFX extends EntityFX {
             this.setEntityDead();
         }
         if (this.rand.nextFloat() > this.particleAge / (float) this.particleMaxAge) {
-            this.worldObj.spawnParticle("smoke", this.posX, this.posY, this.posZ, this.motionX, this.motionY, this.motionZ);
+            this.world.spawnParticle("smoke", this.posX, this.posY, this.posZ, this.motionX, this.motionY, this.motionZ);
         }
         this.motionY -= 0.03;
         this.moveEntity(this.motionX, this.motionY, this.motionZ);

@@ -1,6 +1,8 @@
 
 package net.opencraft.entity;
 
+import static org.joml.Math.*;
+
 import java.util.List;
 
 import net.opencraft.blocks.Block;
@@ -72,17 +74,17 @@ public class EntityLiving extends Entity {
         this.attackTime = 0;
         this.unused_flag = false;
         this.field_9326_T = -1;
-        this.field_9325_U = (float) (Math.random() * 0.8999999761581421 + 0.10000000149011612);
+        this.field_9325_U = (float) (random() * 0.8999999761581421 + 0.10000000149011612);
         this.entityAge = 0;
         this.isJumping = false;
         this.defaultPitch = 0.0f;
         this.moveSpeed = 0.7f;
         this.health = 10;
         this.preventEntitySpawning = true;
-        this.field_9363_r = (float) (Math.random() + 1.0) * 0.01f;
+        this.field_9363_r = (float) (random() + 1.0) * 0.01f;
         this.setPosition(this.posX, this.posY, this.posZ);
-        this.field_9365_p = (float) Math.random() * 12398.0f;
-        this.rotationYaw = (float) (Math.random() * 3.1415927410125732 * 2.0);
+        this.field_9365_p = (float) random() * 12398.0f;
+        this.rotationYaw = (float) (random() * PI_TIMES_2);
         this.ae = 1.0f;
         this.stepHeight = 0.5f;
     }
@@ -114,7 +116,7 @@ public class EntityLiving extends Entity {
             this.livingSoundTime = -80;
             final String livingSound = this.livingSound();
             if (livingSound != null) {
-                this.worldObj.playSoundAtEntity(this, livingSound, 1.0f, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2f + 1.0f);
+                this.world.playSound(this, livingSound, 1.0f, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2f + 1.0f);
             }
         }
         if (this.isEntityAlive() && this.isEntityInsideOpaqueBlock()) {
@@ -125,7 +127,7 @@ public class EntityLiving extends Entity {
             if (this.air == -20) {
                 this.air = 0;
                 for (int i = 0; i < 8; ++i) {
-                    this.worldObj.spawnParticle("bubble", this.posX + (this.rand.nextFloat() - this.rand.nextFloat()), this.posY + (this.rand.nextFloat() - this.rand.nextFloat()), this.posZ + (this.rand.nextFloat() - this.rand.nextFloat()), this.motionX, this.motionY, this.motionZ);
+                    this.world.spawnParticle("bubble", this.posX + (this.rand.nextFloat() - this.rand.nextFloat()), this.posY + (this.rand.nextFloat() - this.rand.nextFloat()), this.posZ + (this.rand.nextFloat() - this.rand.nextFloat()), this.motionX, this.motionY, this.motionZ);
                 }
                 this.attackEntityFrom(null, 2);
             }
@@ -149,7 +151,7 @@ public class EntityLiving extends Entity {
                 this.onEntityDeath();
                 this.setEntityDead();
                 for (int i = 0; i < 20; ++i) {
-                    this.worldObj.spawnParticle("explode", this.posX + this.rand.nextFloat() * this.width * 2.0f - this.width, this.posY + this.rand.nextFloat() * this.height, this.posZ + this.rand.nextFloat() * this.width * 2.0f - this.width, this.rand.nextGaussian() * 0.02, this.rand.nextGaussian() * 0.02, this.rand.nextGaussian() * 0.02);
+                    this.world.spawnParticle("explode", this.posX + this.rand.nextFloat() * this.width * 2.0f - this.width, this.posY + this.rand.nextFloat() * this.height, this.posZ + this.rand.nextFloat() * this.width * 2.0f - this.width, this.rand.nextGaussian() * 0.02, this.rand.nextGaussian() * 0.02, this.rand.nextGaussian() * 0.02);
                 }
             }
         }
@@ -165,7 +167,7 @@ public class EntityLiving extends Entity {
             final double yPosition = this.rand.nextGaussian() * 0.02;
             final double zPosition = this.rand.nextGaussian() * 0.02;
             final double n = 10.0;
-            this.worldObj.spawnParticle("explode", this.posX + this.rand.nextFloat() * this.width * 2.0f - this.width - xPosition * n, this.posY + this.rand.nextFloat() * this.height - yPosition * n, this.posZ + this.rand.nextFloat() * this.width * 2.0f - this.width - zPosition * n, xPosition, yPosition, zPosition);
+            this.world.spawnParticle("explode", this.posX + this.rand.nextFloat() * this.width * 2.0f - this.width - xPosition * n, this.posY + this.rand.nextFloat() * this.height - yPosition * n, this.posZ + this.rand.nextFloat() * this.width * 2.0f - this.width - zPosition * n, xPosition, yPosition, zPosition);
         }
     }
 
@@ -190,7 +192,7 @@ public class EntityLiving extends Entity {
         if (sqrt_double > 0.05f) {
             n4 = 1.0f;
             n3 = sqrt_double * 3.0f;
-            renderYawOffset = (float) Math.atan2(n2, n) * 180.0f / 3.1415927f - 90.0f;
+            renderYawOffset = (float) toRadians(atan2(n2, n)) - 90.0f;
         }
         if (!this.onGround) {
             n4 = 0.0f;
@@ -282,18 +284,18 @@ public class EntityLiving extends Entity {
         if (entity != null) {
             double nya2;
             double nya3;
-            for (nya2 = entity.posX - this.posX, nya3 = entity.posZ - this.posZ; nya2 * nya2 + nya3 * nya3 < 1.0E-4; nya2 = (Math.random() - Math.random()) * 0.01, nya3 = (Math.random() - Math.random()) * 0.01) {
+            for (nya2 = entity.posX - this.posX, nya3 = entity.posZ - this.posZ; nya2 * nya2 + nya3 * nya3 < 1.0E-4; nya2 = (random() - random()) * 0.01, nya3 = (random() - random()) * 0.01) {
             }
-            this.attackedAtYaw = (float) (Math.atan2(nya3, nya2) * 180.0 / 3.1415927410125732) - this.rotationYaw;
+            this.attackedAtYaw = (float) toRadians(atan2(nya3, nya2)) - this.rotationYaw;
             this.knockBack(entity, nya1, nya2, nya3);
         } else {
-            this.attackedAtYaw = (float) ((int) (Math.random() * 2.0) * 180);
+            this.attackedAtYaw = (float) ((int) (random() * 2.0) * 180);
         }
         if (this.health <= 0) {
-            this.worldObj.playSoundAtEntity(this, this.getDeathSound(), 1.0f, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2f + 1.0f);
+            this.world.playSound(this, this.getDeathSound(), 1.0f, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2f + 1.0f);
             this.onDeath(entity);
         } else {
-            this.worldObj.playSoundAtEntity(this, this.getHurtSound(), 1.0f, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2f + 1.0f);
+            this.world.playSound(this, this.getHurtSound(), 1.0f, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2f + 1.0f);
         }
         return true;
     }
@@ -343,13 +345,13 @@ public class EntityLiving extends Entity {
 
     @Override
     protected void fall(final float nya1) {
-        final int nya2 = (int) Math.ceil((double) (nya1 - 3.0f));
+        final int nya2 = (int) ceil((double) (nya1 - 3.0f));
         if (nya2 > 0) {
             this.attackEntityFrom(null, nya2);
-            final int blockId = this.worldObj.getBlockId(Mth.floor_double(this.posX), Mth.floor_double(this.posY - 0.20000000298023224 - this.yOffset), Mth.floor_double(this.posZ));
+            final int blockId = this.world.getBlockId(Mth.floor_double(this.posX), Mth.floor_double(this.posY - 0.20000000298023224 - this.yOffset), Mth.floor_double(this.posZ));
             if (blockId > 0) {
                 final StepSound stepSound = Block.blocksList[blockId].stepSound;
-                this.worldObj.playSoundAtEntity(this, stepSound.stepSoundDir2(), stepSound.soundVolume() * 0.5f, stepSound.soundPitch() * 0.75f);
+                this.world.playSound(this, stepSound.stepSoundDir2(), stepSound.soundVolume() * 0.5f, stepSound.soundPitch() * 0.75f);
             }
         }
     }
@@ -414,7 +416,7 @@ public class EntityLiving extends Entity {
         final int floor_double = Mth.floor_double(this.posX);
         final int floor_double2 = Mth.floor_double(this.boundingBox.minY);
         final int floor_double3 = Mth.floor_double(this.posZ);
-        return this.worldObj.getBlockId(floor_double, floor_double2, floor_double3) == Block.ladder.blockID || this.worldObj.getBlockId(floor_double, floor_double2 + 1, floor_double3) == Block.ladder.blockID;
+        return this.world.getBlockId(floor_double, floor_double2, floor_double3) == Block.ladder.blockID || this.world.getBlockId(floor_double, floor_double2 + 1, floor_double3) == Block.ladder.blockID;
     }
 
     public void writeEntityToNBT(final NBTTagCompound nbtTagCompound) {
@@ -441,7 +443,7 @@ public class EntityLiving extends Entity {
 
     public void onLivingUpdate() {
         ++this.entityAge;
-        final Entity player = this.worldObj.getPlayer();
+        final Entity player = this.world.getPlayer();
         if (player != null) {
             final double n = player.posX - this.posX;
             final double n2 = player.posY - this.posY;
@@ -481,7 +483,7 @@ public class EntityLiving extends Entity {
         this.moveForward *= 0.98f;
         this.randomYawVelocity *= 0.9f;
         this.moveEntityWithHeading(this.moveStrafing, this.moveForward);
-        final List entitiesWithinAABBExcludingEntity = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.20000000298023224, 0.0, 0.20000000298023224));
+        final List entitiesWithinAABBExcludingEntity = this.world.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(0.20000000298023224, 0.0, 0.20000000298023224));
         if (entitiesWithinAABBExcludingEntity != null && entitiesWithinAABBExcludingEntity.size() > 0) {
             for (int i = 0; i < entitiesWithinAABBExcludingEntity.size(); ++i) {
                 final Entity entity = (Entity) entitiesWithinAABBExcludingEntity.get(i);
@@ -519,7 +521,7 @@ public class EntityLiving extends Entity {
 
     public boolean getCanSpawnHere(final double nya1, final double nya2, final double nya3) {
         this.setPosition(nya1, nya2 + this.height / 2.0f, nya3);
-        return this.worldObj.checkIfAABBIsClear1(this.boundingBox) && this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).size() == 0 && !this.worldObj.getIsAnyLiquid(this.boundingBox);
+        return this.world.checkIfAABBIsClear1(this.boundingBox) && this.world.getCollidingBoundingBoxes(this, this.boundingBox).size() == 0 && !this.world.getIsAnyLiquid(this.boundingBox);
     }
 
     @Override

@@ -1,6 +1,8 @@
 
 package net.opencraft.entity;
 
+import static org.joml.Math.*;
+
 import net.opencraft.blocks.Block;
 import net.opencraft.blocks.material.Material;
 import net.opencraft.item.ItemStack;
@@ -21,15 +23,15 @@ public class EntityItem extends Entity {
         super(world);
         this.age = 0;
         this.health = 5;
-        this.hoverStart = (float) (Math.random() * 3.141592653589793 * 2.0);
+        this.hoverStart = (float) (random() * PI_TIMES_2);
         this.setSize(0.25f, 0.25f);
         this.yOffset = this.height / 2.0f;
         this.setPosition(xCoord, yCoord, zCoord);
         this.item = itemStack;
-        this.rotationYaw = (float) (Math.random() * 360.0);
-        this.motionX = (float) (Math.random() * 0.20000000298023224 - 0.10000000149011612);
+        this.rotationYaw = (float) (random() * 360.0);
+        this.motionX = (float) (random() * 0.20000000298023224 - 0.10000000149011612);
         this.motionY = 0.20000000298023224;
-        this.motionZ = (float) (Math.random() * 0.20000000298023224 - 0.10000000149011612);
+        this.motionZ = (float) (random() * 0.20000000298023224 - 0.10000000149011612);
         this.canTriggerWalking = false;
     }
 
@@ -37,7 +39,7 @@ public class EntityItem extends Entity {
         super(world);
         this.age = 0;
         this.health = 5;
-        this.hoverStart = (float) (Math.random() * 3.141592653589793 * 2.0);
+        this.hoverStart = (float) (random() * PI_TIMES_2);
         this.setSize(0.25f, 0.25f);
         this.yOffset = this.height / 2.0f;
     }
@@ -52,11 +54,11 @@ public class EntityItem extends Entity {
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
         this.motionY -= 0.03999999910593033;
-        if (this.worldObj.getBlockMaterial(Mth.floor_double(this.posX), Mth.floor_double(this.posY), Mth.floor_double(this.posZ)) == Material.LAVA) {
+        if (this.world.getBlockMaterial(Mth.floor_double(this.posX), Mth.floor_double(this.posY), Mth.floor_double(this.posZ)) == Material.LAVA) {
             this.motionY = 0.20000000298023224;
             this.motionX = (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2f;
             this.motionZ = (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2f;
-            this.worldObj.playSoundAtEntity((Entity) this, "random.fizz", 0.4f, 2.0f + this.rand.nextFloat() * 0.4f);
+            this.world.playSound((Entity) this, "random.fizz", 0.4f, 2.0f + this.rand.nextFloat() * 0.4f);
         }
         this.pushOutOfBlocks(this.posX, this.posY, this.posZ);
         this.handleWaterMovement();
@@ -78,7 +80,7 @@ public class EntityItem extends Entity {
 
     @Override
     public boolean handleWaterMovement() {
-        return this.worldObj.handleMaterialAcceleration(this.boundingBox, Material.WATER, this);
+        return this.world.handleMaterialAcceleration(this.boundingBox, Material.WATER, this);
     }
 
     private boolean pushOutOfBlocks(final double double1, final double double2, final double double3) {
@@ -88,13 +90,13 @@ public class EntityItem extends Entity {
         final double n = double1 - floor_double;
         final double n2 = double2 - floor_double2;
         final double n3 = double3 - floor_double3;
-        if (Block.opaqueCubeLookup[this.worldObj.getBlockId(floor_double, floor_double2, floor_double3)]) {
-            final boolean b = !Block.opaqueCubeLookup[this.worldObj.getBlockId(floor_double - 1, floor_double2, floor_double3)];
-            final boolean b2 = !Block.opaqueCubeLookup[this.worldObj.getBlockId(floor_double + 1, floor_double2, floor_double3)];
-            final boolean b3 = !Block.opaqueCubeLookup[this.worldObj.getBlockId(floor_double, floor_double2 - 1, floor_double3)];
-            final boolean b4 = !Block.opaqueCubeLookup[this.worldObj.getBlockId(floor_double, floor_double2 + 1, floor_double3)];
-            final boolean b5 = !Block.opaqueCubeLookup[this.worldObj.getBlockId(floor_double, floor_double2, floor_double3 - 1)];
-            final boolean b6 = !Block.opaqueCubeLookup[this.worldObj.getBlockId(floor_double, floor_double2, floor_double3 + 1)];
+        if (Block.opaqueCubeLookup[this.world.getBlockId(floor_double, floor_double2, floor_double3)]) {
+            final boolean b = !Block.opaqueCubeLookup[this.world.getBlockId(floor_double - 1, floor_double2, floor_double3)];
+            final boolean b2 = !Block.opaqueCubeLookup[this.world.getBlockId(floor_double + 1, floor_double2, floor_double3)];
+            final boolean b3 = !Block.opaqueCubeLookup[this.world.getBlockId(floor_double, floor_double2 - 1, floor_double3)];
+            final boolean b4 = !Block.opaqueCubeLookup[this.world.getBlockId(floor_double, floor_double2 + 1, floor_double3)];
+            final boolean b5 = !Block.opaqueCubeLookup[this.world.getBlockId(floor_double, floor_double2, floor_double3 - 1)];
+            final boolean b6 = !Block.opaqueCubeLookup[this.world.getBlockId(floor_double, floor_double2, floor_double3 + 1)];
             int n4 = -1;
             double n5 = 9999.0;
             if (b && n < n5) {
@@ -173,7 +175,7 @@ public class EntityItem extends Entity {
     @Override
     public void onCollideWithPlayer(final EntityPlayer entityPlayer) {
         if (this.delayBeforeCanPickup == 0 && entityPlayer.inventory.addItemStackToInventory(this.item)) {
-            this.worldObj.playSoundAtEntity((Entity) this, "random.pop", 0.2f, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7f + 1.0f) * 2.0f);
+            this.world.playSound((Entity) this, "random.pop", 0.2f, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7f + 1.0f) * 2.0f);
             entityPlayer.onItemPickup(this);
             this.setEntityDead();
         }

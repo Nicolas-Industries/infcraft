@@ -6,8 +6,9 @@ import net.opencraft.OpenCraftError;
 import net.opencraft.ScaledResolution;
 import net.opencraft.renderer.gui.IProgressUpdate;
 
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 
 public class LoadingScreenRenderer implements IProgressUpdate {
 
@@ -94,7 +95,7 @@ public class LoadingScreenRenderer implements IProgressUpdate {
             GL11.glTranslatef(0.0f, 0.0f, -200.0f);
             GL11.glClear(16640);
             final Tessellator instance = Tessellator.instance;
-            GL11.glBindTexture(3553, this.mc.renderer.getTexture("/assets/dirt.png"));
+            GL11.glBindTexture(3553, this.mc.renderer.loadTexture("/assets/dirt.png"));
             final float n = 32.0f;
             instance.beginQuads();
             instance.setColorOpaque_I(4210752);
@@ -123,9 +124,9 @@ public class LoadingScreenRenderer implements IProgressUpdate {
                 instance.draw();
                 GL11.glEnable(3553);
             }
-            this.mc.fontRenderer.drawStringWithShadow2(this.currentlyDisplayedText, (scaledWidth - this.mc.fontRenderer.getStringWidth(this.currentlyDisplayedText)) / 2, scaledHeight / 2 - 4 - 16, 16777215);
-            this.mc.fontRenderer.drawStringWithShadow2(this.field_1004_a, (scaledWidth - this.mc.fontRenderer.getStringWidth(this.field_1004_a)) / 2, scaledHeight / 2 - 4 + 8, 16777215);
-            Display.update();
+            this.mc.font.drawStringWithShadow2(this.currentlyDisplayedText, (scaledWidth - this.mc.font.getStringWidth(this.currentlyDisplayedText)) / 2, scaledHeight / 2 - 4 - 16, 16777215);
+            this.mc.font.drawStringWithShadow2(this.field_1004_a, (scaledWidth - this.mc.font.getStringWidth(this.field_1004_a)) / 2, scaledHeight / 2 - 4 + 8, 16777215);
+            glfwSwapBuffers(this.mc.window);
             try {
                 Thread.yield();
             } catch (Exception ex) {

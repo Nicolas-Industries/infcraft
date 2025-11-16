@@ -1,6 +1,8 @@
 
 package net.opencraft.renderer.culling;
 
+import static org.joml.Math.*;
+
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -28,7 +30,7 @@ public class Frustum extends ClippingHelper {
     }
 
     private void normalize(final float[][] arr, final int integer) {
-        final float sqrt_float = Mth.sqrt_float(arr[integer][0] * arr[integer][0] + arr[integer][1] * arr[integer][1] + arr[integer][2] * arr[integer][2]);
+        final float sqrt_float = sqrt(arr[integer][0] * arr[integer][0] + arr[integer][1] * arr[integer][1] + arr[integer][2] * arr[integer][2]);
         final float[] array = arr[integer];
         final int n = 0;
         array[n] /= sqrt_float;
@@ -47,8 +49,8 @@ public class Frustum extends ClippingHelper {
         this.projectionMatrixBuffer.clear();
         this.modelviewMatrixBuffer.clear();
         this.floatBuffer16.clear();
-        GL11.glGetFloat(2983, this.projectionMatrixBuffer);
-        GL11.glGetFloat(2982, this.modelviewMatrixBuffer);
+        GL11.glGetFloatv(2983, this.projectionMatrixBuffer);
+        GL11.glGetFloatv(2982, this.modelviewMatrixBuffer);
         this.projectionMatrixBuffer.flip().limit(16);
         this.projectionMatrixBuffer.get(this.projectionMatrix);
         this.modelviewMatrixBuffer.flip().limit(16);

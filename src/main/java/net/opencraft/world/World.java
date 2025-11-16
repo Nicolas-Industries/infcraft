@@ -1,20 +1,12 @@
 
 package net.opencraft.world;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
-import net.opencraft.CompressedStreamTools;
-import net.opencraft.EnumSkyBlock;
-import net.opencraft.Explosion;
-import net.opencraft.NextTickListEntry;
+import static org.joml.Math.*;
+
+import java.io.*;
+import java.util.*;
+
+import net.opencraft.*;
 import net.opencraft.blocks.Block;
 import net.opencraft.blocks.LiquidBlock;
 import net.opencraft.blocks.material.Material;
@@ -28,10 +20,7 @@ import net.opencraft.renderer.gui.IProgressUpdate;
 import net.opencraft.tileentity.TileEntity;
 import net.opencraft.util.Mth;
 import net.opencraft.util.Vec3;
-import net.opencraft.world.chunk.Chunk;
-import net.opencraft.world.chunk.ChunkCache;
-import net.opencraft.world.chunk.ChunkProviderGenerate;
-import net.opencraft.world.chunk.ChunkProviderLoadOrGenerate;
+import net.opencraft.world.chunk.*;
 import net.opencraft.world.chunk.storage.ChunkLoader;
 
 public class World implements IBlockAccess {
@@ -678,7 +667,7 @@ public class World implements IBlockAccess {
         return null;
     }
 
-    public void playSoundAtEntity(final Entity entity, final String soundName, final float volume, final float pitch) {
+    public void playSound(final Entity entity, final String soundName, final float volume, final float pitch) {
         for (int i = 0; i < this.worldAccesses.size(); ++i) {
             float n = 16.0f;
             if (volume > 1.0f) {
@@ -778,18 +767,14 @@ public class World implements IBlockAccess {
     }
 
     public int calculateSkylightSubtracted(final float float1) {
-        float n = 1.0f - (Mth.cos(this.getCelestialAngle(float1) * 3.1415927f * 2.0f) * 2.0f + 0.5f);
-        if (n < 0.0f) {
-            n = 0.0f;
-        }
-        if (n > 1.0f) {
-            n = 1.0f;
-        }
+        float n = 1.0f - (cos(this.getCelestialAngle(float1) * PI_TIMES_2_f) * 2.0f + 0.5f);
+        n = clamp(0, 1, n);
+        
         return (int) (n * 11.0f);
     }
 
     public Vec3 getSkyColor(final float float1) {
-        float n = Mth.cos(this.getCelestialAngle(float1) * 3.1415927f * 2.0f) * 2.0f + 0.5f;
+        float n = cos(this.getCelestialAngle(float1) * PI_TIMES_2_f) * 2.0f + 0.5f;
         if (n < 0.0f) {
             n = 0.0f;
         }
@@ -814,13 +799,13 @@ public class World implements IBlockAccess {
             --n;
         }
         final float n2 = n;
-        n = 1.0f - (float) ((Math.cos(n * 3.141592653589793) + 1.0) / 2.0);
+        n = 1.0f - ((cos(n * PI_f) + 1.0f) * 0.5f);
         n = n2 + (n - n2) / 3.0f;
         return n;
     }
 
     public Vec3 drawClouds(final float float1) {
-        float n = Mth.cos(this.getCelestialAngle(float1) * 3.1415927f * 2.0f) * 2.0f + 0.5f;
+        float n = cos(this.getCelestialAngle(float1) * PI_TIMES_2_f) * 2.0f + 0.5f;
         if (n < 0.0f) {
             n = 0.0f;
         }
@@ -837,7 +822,7 @@ public class World implements IBlockAccess {
     }
 
     public Vec3 getFogColor(final float float1) {
-        float n = Mth.cos(this.getCelestialAngle(float1) * 3.1415927f * 2.0f) * 2.0f + 0.5f;
+        float n = cos(this.getCelestialAngle(float1) * PI_TIMES_2_f) * 2.0f + 0.5f;
         if (n < 0.0f) {
             n = 0.0f;
         }
@@ -858,7 +843,7 @@ public class World implements IBlockAccess {
     }
 
     public float getStarBrightness(final float float1) {
-        float n = 1.0f - (Mth.cos(this.getCelestialAngle(float1) * 3.1415927f * 2.0f) * 2.0f + 0.75f);
+        float n = 1.0f - (cos(this.getCelestialAngle(float1) * PI_TIMES_2_f) * 2.0f + 0.75f);
         if (n < 0.0f) {
             n = 0.0f;
         }
@@ -1223,7 +1208,6 @@ public class World implements IBlockAccess {
     public void tick() {
         this.chunkProvider.unload100OldestChunks();
         if (!this.loadedEntityList.contains(this.player) && this.player != null) {
-            System.out.println("DOHASDOSHIH!");
             this.entityJoinedWorld(this.player);
         }
         final int calculateSkylightSubtracted = this.calculateSkylightSubtracted(1.0f);

@@ -1,9 +1,11 @@
 
 package net.opencraft.renderer.gui;
 
-import net.opencraft.SharedConstants;
+import net.opencraft.client.Main;
 import net.opencraft.renderer.*;
-import net.opencraft.util.Mth;
+
+import static org.joml.Math.*;
+
 import org.lwjgl.opengl.GL11;
 
 public class GuiMainMenu extends GuiScreen {
@@ -15,6 +17,7 @@ public class GuiMainMenu extends GuiScreen {
 
     public GuiMainMenu() {
         this.updateCounter = 0.0f;
+        // TODO: Arrays are not the best always...
         this.splashes = new String[]{"Pre-beta!", "As seen on TV!", "Awesome!", "100% pure!", "May contain nuts!", "Better than Prey!", "More polygons!", "Sexy!", "Limited edition!", "Flashing letters!", "Made by Notch!", "Coming soon!", "Best in class!", "When it's finished!", "Absolutely dragon free!", "Excitement!", "More than 5000 sold!", "One of a kind!", "700+ hits on YouTube!", "Indev!", "Spiders everywhere!", "Check it out!", "Holy cow, man!", "It's a game!", "Made in Sweden!", "Uses LWJGL!", "Reticulating splines!", "OpenCraft!", "Yaaay!", "Alpha version!", "Singleplayer!", "Keyboard compatible!", "Undocumented!", "Ingots!", "Exploding creepers!", "That's not a moon!", "l33t!", "Create!", "Survive!", "Dungeon!", "Exclusive!", "The bee's knees!", "Down with O.P.P.!", "Closed source!", "Classy!", "Wow!", "Not on steam!", "9.95 euro!", "Half price!", "Oh man!", "Check it out!", "Awesome community!", "Pixels!", "Teetsuuuuoooo!", "Kaaneeeedaaaa!", "Now with difficulty!", "Enhanced!", "90% bug free!", "Pretty!", "12 herbs and spices!", "Fat free!", "Absolutely no memes!", "Free dental!", "Ask your doctor!", "Minors welcome!", "Cloud computing!", "Legal in Finland!", "Hard to label!", "Technically good!", "Bringing home the bacon!", "Indie!", "GOTY!", "Ceci n'est pas une title screen!", "Euclidian!", "Now in 3D!", "Inspirational!", "Herregud!", "Complex cellular automata!", "Yes, sir!", "Played by cowboys!", "OpenGL 1.1!", "Thousands of colors!", "Try it!", "Age of Wonders is better!", "Try the mushroom stew!", "Sensational!", "Hot tamale, hot hot tamale!", "Play him off, keyboard cat!", "Guaranteed!", "Macroscopic!", "Bring it on!", "Random splash!", "Call your mother!", "Monster infighting!", "Loved by millions!", "Ultimate edition!", "Freaky!", "You've got a brand new key!", "Water proof!", "Uninflammable!", "Whoa, dude!", "All inclusive!", "Tell your friends!", "NP is not in P!", "Notch <3 Ez!", "Music by C418!"};
         this.currentSplash = this.splashes[(int) (Math.random() * this.splashes.length)];
     }
@@ -58,7 +61,7 @@ public class GuiMainMenu extends GuiScreen {
         this.panorama.render(partialTicks);
         //this.drawDefaultBackground();
         final Tessellator instance = Tessellator.instance;
-        GL11.glBindTexture(3553, this.id.renderer.getTexture("/assets/gui/logo.png"));
+        GL11.glBindTexture(3553, this.id.renderer.loadTexture("/assets/gui/logo.png"));
         final int integer3 = 256;
         final int integer4 = 49;
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -67,12 +70,12 @@ public class GuiMainMenu extends GuiScreen {
         GL11.glPushMatrix();
         GL11.glTranslatef((float) (this.width / 2 + 90), 70.0f, 0.0f);
         GL11.glRotatef(-20.0f, 0.0f, 0.0f, 1.0f);
-        float n = 1.8f - Mth.abs(Mth.sin(System.currentTimeMillis() % 1000L / 1000.0f * 3.1415927f * 2.0f) * 0.1f);
+        float n = 1.8f - abs(sin(System.currentTimeMillis() % 1000L / 1000.0f * PI_TIMES_2_f) * 0.1f);
         n = n * 100.0f / (this.fontRenderer.getStringWidth(this.currentSplash) + 32);
         GL11.glScalef(n, n, n);
         this.drawCenteredString(this.fontRenderer, this.currentSplash, 0, -8, 16776960);
         GL11.glPopMatrix();
-        final String gameVersion = "OpenCraft ".concat(SharedConstants.VERSION_STRING);
+        final String gameVersion = Main.TITLE;
         this.drawString(this.fontRenderer, gameVersion, 4, this.height - 12, 0xFFFFFF);
         final long maxMemory = Runtime.getRuntime().maxMemory();
         final long totalMemory = Runtime.getRuntime().totalMemory();

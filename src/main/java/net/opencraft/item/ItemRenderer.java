@@ -10,10 +10,10 @@ import net.opencraft.renderer.entity.*;
 import net.opencraft.util.Mth;
 
 import static net.opencraft.OpenCraft.*;
+import static net.opencraft.entity.EntityRenderer.gluPerspective;
+import static org.joml.Math.*;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.Project;
 
 public class ItemRenderer {
 
@@ -38,7 +38,7 @@ public class ItemRenderer {
     public void renderItemInFirstPerson(final float float1) {
     	GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
-        Project.gluPerspective(70.0F, (float) oc.width / (float) oc.height, 0.05F, 10.0F);
+        gluPerspective(70.0F, (float) oc.width / (float) oc.height, 0.05F, 10.0F);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
     	
         final float n = this.d + (this.c - this.d) * float1;
@@ -55,17 +55,17 @@ public class ItemRenderer {
             final float n2 = 0.8f;
             if (this.f) {
                 final float n3 = (this.e + float1) / 8.0f;
-                final float n4 = Mth.sin(n3 * 3.1415927f);
-                final float n5 = Mth.sin(Mth.sqrt_float(n3) * 3.1415927f);
-                GL11.glTranslatef(-n5 * 0.4f, Mth.sin(Mth.sqrt_float(n3) * 3.1415927f * 2.0f) * 0.2f, -n4 * 0.2f);
+                final float n4 = sin(n3 * PI_f);
+                final float n5 = sin(sqrt(n3) * PI_f);
+                GL11.glTranslatef(-n5 * 0.4f, sin(sqrt(n3) * PI_TIMES_2_f) * 0.2f, -n4 * 0.2f);
             }
             GL11.glTranslatef(0.7f * n2, -0.65f * n2 - (1.0f - n) * 0.6f, -0.9f * n2);
             GL11.glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
             GL11.glEnable(32826);
             if (this.f) {
                 final float n3 = (this.e + float1) / 8.0f;
-                final float n4 = Mth.sin(n3 * n3 * 3.1415927f);
-                final float n5 = Mth.sin(Mth.sqrt_float(n3) * 3.1415927f);
+                final float n4 = sin(n3 * n3 * PI_f);
+                final float n5 = sin(sqrt(n3) * PI_f);
                 GL11.glRotatef(-n4 * 20.0f, 0.0f, 1.0f, 0.0f);
                 GL11.glRotatef(-n5 * 20.0f, 0.0f, 0.0f, 1.0f);
                 GL11.glRotatef(-n5 * 80.0f, 1.0f, 0.0f, 0.0f);
@@ -73,13 +73,13 @@ public class ItemRenderer {
             final float n3 = 0.4f;
             GL11.glScalef(n3, n3, n3);
             if (this.b.itemID < 256 && Block.blocksList[this.b.itemID].getRenderType() == 0) {
-                GL11.glBindTexture(3553, this.a.renderer.getTexture("/assets/terrain.png"));
+                GL11.glBindTexture(3553, this.a.renderer.loadTexture("/assets/terrain.png"));
                 this.g.renderBlockOnInventory(Block.blocksList[this.b.itemID]);
             } else {
                 if (this.b.itemID < 256) {
-                    GL11.glBindTexture(3553, this.a.renderer.getTexture("/assets/terrain.png"));
+                    GL11.glBindTexture(3553, this.a.renderer.loadTexture("/assets/terrain.png"));
                 } else {
-                    GL11.glBindTexture(3553, this.a.renderer.getTexture("/assets/gui/items.png"));
+                    GL11.glBindTexture(3553, this.a.renderer.loadTexture("/assets/gui/items.png"));
                 }
                 final Tessellator instance = Tessellator.instance;
                 final float n5 = (this.b.getIconIndex() % 16 * 16 + 0) / 256.0f;
@@ -167,21 +167,21 @@ public class ItemRenderer {
             final float n2 = 0.8f;
             if (this.f) {
                 final float n3 = (this.e + float1) / 8.0f;
-                final float n4 = Mth.sin(n3 * 3.1415927f);
-                final float n5 = Mth.sin(Mth.sqrt_float(n3) * 3.1415927f);
-                GL11.glTranslatef(-n5 * 0.3f, Mth.sin(Mth.sqrt_float(n3) * 3.1415927f * 2.0f) * 0.4f, -n4 * 0.4f);
+                final float n4 = sin(n3 * PI_f);
+                final float n5 = sin(sqrt(n3) * PI_f);
+                GL11.glTranslatef(-n5 * 0.3f, sin(sqrt(n3) * PI_TIMES_2_f) * 0.4f, -n4 * 0.4f);
             }
             GL11.glTranslatef(0.8f * n2, -0.75f * n2 - (1.0f - n) * 0.6f, -0.9f * n2);
             GL11.glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
             GL11.glEnable(32826);
             if (this.f) {
                 final float n3 = (this.e + float1) / 8.0f;
-                final float n4 = Mth.sin(n3 * n3 * 3.1415927f);
-                final float n5 = Mth.sin(Mth.sqrt_float(n3) * 3.1415927f);
+                final float n4 = sin(n3 * n3 * PI_f);
+                final float n5 = sin(sqrt(n3) * PI_f);
                 GL11.glRotatef(n5 * 70.0f, 0.0f, 1.0f, 0.0f);
                 GL11.glRotatef(-n4 * 20.0f, 0.0f, 0.0f, 1.0f);
             }
-            GL11.glBindTexture(3553, this.a.renderer.a(this.a.player.skinUrl, this.a.player.addToPlayerScore()));
+            GL11.glBindTexture(3553, this.a.renderer.loadAndBindTexture(this.a.player.skinUrl, this.a.player.addToPlayerScore()));
             GL11.glTranslatef(-1.0f, 3.6f, 3.5f);
             GL11.glRotatef(120.0f, 0.0f, 0.0f, 1.0f);
             GL11.glRotatef(200.0f, 1.0f, 0.0f, 0.0f);
@@ -201,7 +201,7 @@ public class ItemRenderer {
     public void renderOverlays(final float float1) {
         GL11.glDisable(3008);
         if (this.a.player.fire > 0) {
-            final int xCoord = this.a.renderer.getTexture("/assets/terrain.png");
+            final int xCoord = this.a.renderer.loadTexture("/assets/terrain.png");
             GL11.glBindTexture(3553, xCoord);
             this.d(float1);
         }
@@ -209,14 +209,14 @@ public class ItemRenderer {
             final int xCoord = Mth.floor_double(this.a.player.posX);
             final int floor_double = Mth.floor_double(this.a.player.posY);
             final int floor_double2 = Mth.floor_double(this.a.player.posZ);
-            GL11.glBindTexture(3553, this.a.renderer.getTexture("/assets/terrain.png"));
+            GL11.glBindTexture(3553, this.a.renderer.loadTexture("/assets/terrain.png"));
             final int blockId = this.a.world.getBlockId(xCoord, floor_double, floor_double2);
             if (Block.blocksList[blockId] != null) {
                 this.a(float1, Block.blocksList[blockId].getBlockTextureFromSide(2));
             }
         }
         if (this.a.player.isInsideOfMaterial(Material.WATER)) {
-            final int xCoord = this.a.renderer.getTexture("/assets/water.png");
+            final int xCoord = this.a.renderer.loadTexture("/assets/water.png");
             GL11.glBindTexture(3553, xCoord);
             this.c(float1);
         }
