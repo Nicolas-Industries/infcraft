@@ -1,4 +1,3 @@
-
 package net.opencraft.item;
 
 import net.opencraft.blocks.Block;
@@ -42,7 +41,8 @@ public class ItemBlock extends Item {
             final Block block = Block.blocksList[this.blockID];
             if (fe.setBlockWithNotify(xCoord, yCoord, zCoord, this.blockID)) {
                 Block.blocksList[this.blockID].onBlockPlaced(fe, xCoord, yCoord, zCoord, integer7);
-                fe.playSoundEffect(xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, block.stepSound.stepSoundDir2(), (block.stepSound.soundVolume() + 1.0f) / 2.0f, block.stepSound.soundPitch() * 0.8f);
+                // Use dig sound for placement
+                fe.playSoundEffect(xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, block.digSound.digSoundDir(), (block.digSound.soundVolume() + 1.0f) / 2.0f, block.digSound.soundPitch() * 0.8f);
                 --hw.stackSize;
             }
         }

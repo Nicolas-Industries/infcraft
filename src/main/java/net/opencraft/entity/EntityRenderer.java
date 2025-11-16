@@ -303,7 +303,7 @@ public class EntityRenderer {
         if (this.mc.skipRenderWorld) {
             return;
         }
-        final ScaledResolution scaledResolution = new ScaledResolution(this.mc.width, this.mc.height);
+        final ScaledResolution scaledResolution = new ScaledResolution(this.mc.width, this.mc.height, this.mc.options);
         final int scaledWidth = scaledResolution.getScaledWidth();
         int scaledHeight = scaledResolution.getScaledHeight();
         final int n = (int) (mc.mouse.position.x * scaledWidth / this.mc.width);
@@ -497,7 +497,7 @@ public class EntityRenderer {
     }
 
     public void setupOverlayRendering() {
-        final ScaledResolution scaledResolution = new ScaledResolution(this.mc.width, this.mc.height);
+        final ScaledResolution scaledResolution = new ScaledResolution(this.mc.width, this.mc.height, this.mc.options);
         final int scaledWidth = scaledResolution.getScaledWidth();
         final int scaledHeight = scaledResolution.getScaledHeight();
         GL11.glClear(256);

@@ -49,8 +49,24 @@ public class GuiSlider extends GuiButton {
                 if (this.decimalPlace != 0.0f) {
                     this.sliderValue = Mth.roundToDecimalPlace(this.sliderValue, this.decimalPlace);
                 }
-                this.mc.options.setOptionFloatValue(this.keyId, this.sliderValue);
-                this.displayString = this.displayStringName + ": " + this.sliderValue;
+                if (this.keyId < 0) {
+                    // Handle integer options (like GUI scale) - use absolute value for option ID
+                    // For GUI scale, update the temporary value instead of immediately applying
+                    if (-this.keyId == 11) { // GUI scale option
+                        this.mc.options.tempGuiScale = (int) this.sliderValue;
+                    } else {
+                        this.mc.options.setOptionValue(-this.keyId, (int) this.sliderValue);
+                    }
+                } else {
+                    this.mc.options.setOptionFloatValue(this.keyId, this.sliderValue);
+                }
+                // Update display string based on the option
+                if (this.keyId == -11) { // GUI scale option
+                    String scaleString = this.sliderValue == 0 ? "AUTO" : ((int) this.sliderValue) + "x";
+                    this.displayString = this.displayStringName + ": " + scaleString;
+                } else {
+                    this.displayString = this.displayStringName + ": " + this.sliderValue;
+                }
                 return true;
             }
         }
@@ -67,8 +83,24 @@ public class GuiSlider extends GuiButton {
             if (this.decimalPlace != 0.0f) {
                 this.sliderValue = Mth.roundToDecimalPlace(this.sliderValue, this.decimalPlace);
             }
-            this.mc.options.setOptionFloatValue(this.keyId, this.sliderValue);
-            this.displayString = this.displayStringName + ": " + this.sliderValue;
+            if (this.keyId < 0) {
+                // Handle integer options (like GUI scale) - use absolute value for option ID
+                // For GUI scale, update the temporary value instead of immediately applying
+                if (-this.keyId == 11) { // GUI scale option
+                    this.mc.options.tempGuiScale = (int) this.sliderValue;
+                } else {
+                    this.mc.options.setOptionValue(-this.keyId, (int) this.sliderValue);
+                }
+            } else {
+                this.mc.options.setOptionFloatValue(this.keyId, this.sliderValue);
+            }
+            // Update display string based on the option
+            if (this.keyId == -11) { // GUI scale option
+                String scaleString = this.sliderValue == 0 ? "AUTO" : ((int) this.sliderValue) + "x";
+                this.displayString = this.displayStringName + ": " + scaleString;
+            } else {
+                this.displayString = this.displayStringName + ": " + this.sliderValue;
+            }
         }
     }
 

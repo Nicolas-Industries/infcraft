@@ -1,4 +1,3 @@
-
 package net.opencraft.blocks;
 
 import java.util.List;
@@ -26,6 +25,14 @@ public class Block {
     public static final StepSound soundGlassFootstep;
     public static final StepSound soundClothFootstep;
     public static final StepSound soundSandFootstep;
+    // Add dig sound presets
+    public static final DigSound digStone;
+    public static final DigSound digWood;
+    public static final DigSound digGravel;
+    public static final DigSound digGrass;
+    public static final DigSound digGlass;
+    public static final DigSound digCloth;
+    public static final DigSound digSand;
     public static final Block[] blocksList;
     public static final boolean[] tickOnLoad;
     public static final boolean[] opaqueCubeLookup;
@@ -110,6 +117,7 @@ public class Block {
     public double maxY;
     public double maxZ;
     public StepSound stepSound;
+    public DigSound digSound;
     public float blockParticleGravity;
     public final Material blockMaterial;
 
@@ -123,32 +131,40 @@ public class Block {
         soundGlassFootstep = new StepSoundStone("stone", 1.0f, 1.0f);
         soundClothFootstep = new StepSound("cloth", 1.0f, 1.0f);
         soundSandFootstep = new StepSoundSand("sand", 1.0f, 1.0f);
+        // Dig sound presets (map to available assets)
+        digStone = new DigSound("stone", 1.0f, 1.0f);
+        digWood = new DigSound("wood", 1.0f, 1.0f);
+        digGravel = new DigSound("gravel", 1.0f, 1.0f);
+        digGrass = new DigSound("grass", 1.0f, 1.0f);
+        digGlass = new DigSoundGlass("glass", 1.0f, 1.0f);
+        digCloth = new DigSound("cloth", 1.0f, 1.0f);
+        digSand = new DigSound("sand", 1.0f, 1.0f);
         blocksList = new Block[256];
         tickOnLoad = new boolean[256];
         opaqueCubeLookup = new boolean[256];
         lightOpacity = new int[256];
         canBlockGrass = new boolean[256];
         lightValue = new int[256];
-        stone = new StoneBlock(1, 1).setHardness(1.5f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        grass = (GrassBlock) new GrassBlock(2).setHardness(0.6f).setStepSound(Block.soundGrassFootstep);
-        dirt = new DirtBlock(3, 2).setHardness(0.5f).setStepSound(Block.soundGravelFootstep);
-        cobblestone = new Block(4, 16, Material.ROCK).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        planks = new Block(5, 4, Material.WOOD).setHardness(2.0f).setResistance(5.0f).setStepSound(Block.soundWoodFootstep);
-        sapling = new SaplingBlock(6, 15).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        bedrock = new Block(7, 17, Material.ROCK).setHardness(-1.0f).setResistance(6000000.0f).setStepSound(Block.soundStoneFootstep);
+        stone = new StoneBlock(1, 1).setHardness(1.5f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        grass = (GrassBlock) new GrassBlock(2).setHardness(0.6f).setStepSound(Block.soundGrassFootstep).setDigSound(Block.digGrass);
+        dirt = new DirtBlock(3, 2).setHardness(0.5f).setStepSound(Block.soundGravelFootstep).setDigSound(Block.digGravel);
+        cobblestone = new Block(4, 16, Material.ROCK).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        planks = new Block(5, 4, Material.WOOD).setHardness(2.0f).setResistance(5.0f).setStepSound(Block.soundWoodFootstep).setDigSound(Block.digWood);
+        sapling = new SaplingBlock(6, 15).setHardness(0.0f).setStepSound(Block.soundGrassFootstep).setDigSound(Block.digGrass);
+        bedrock = new Block(7, 17, Material.ROCK).setHardness(-1.0f).setResistance(6000000.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
         waterMoving = new MovingLiquidBlock(8, Material.WATER).setHardness(100.0f).setLightOpacity(3);
         waterStill = new StaticLiquidBlock(9, Material.WATER).setHardness(100.0f).setLightOpacity(3);
         lavaMoving = new MovingLiquidBlock(10, Material.LAVA).setHardness(0.0f).setLightValue(1.0f).setLightOpacity(255);
         lavaStill = new StaticLiquidBlock(11, Material.LAVA).setHardness(100.0f).setLightValue(1.0f).setLightOpacity(255);
-        sand = new SandBlock(12, 18).setHardness(0.5f).setStepSound(Block.soundSandFootstep);
-        gravel = new GravelBlock(13, 19).setHardness(0.6f).setStepSound(Block.soundGravelFootstep);
-        oreGold = new OreBlock(14, 32).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
-        oreIron = new OreBlock(15, 33).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
-        oreCoal = new OreBlock(16, 34).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
-        wood = new LogBlock(17).setHardness(2.0f).setStepSound(Block.soundWoodFootstep);
-        leaves = (LeavesBlock) new LeavesBlock(18, 52).setHardness(0.2f).setLightOpacity(1).setStepSound(Block.soundGrassFootstep);
-        sponge = new SpongeBlock(19).setHardness(0.6f).setStepSound(Block.soundGrassFootstep);
-        glass = new GlassBlock(20, 49, Material.GLASS, false).setHardness(0.3f).setStepSound(Block.soundGlassFootstep);
+        sand = new SandBlock(12, 18).setHardness(0.5f).setStepSound(Block.soundSandFootstep).setDigSound(Block.digSand);
+        gravel = new GravelBlock(13, 19).setHardness(0.6f).setStepSound(Block.soundGravelFootstep).setDigSound(Block.digGravel);
+        oreGold = new OreBlock(14, 32).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        oreIron = new OreBlock(15, 33).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        oreCoal = new OreBlock(16, 34).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        wood = new LogBlock(17).setHardness(2.0f).setStepSound(Block.soundWoodFootstep).setDigSound(Block.digWood);
+        leaves = (LeavesBlock) new LeavesBlock(18, 52).setHardness(0.2f).setLightOpacity(1).setStepSound(Block.soundGrassFootstep).setDigSound(Block.digGrass);
+        sponge = new SpongeBlock(19).setHardness(0.6f).setStepSound(Block.soundGrassFootstep).setDigSound(Block.digGrass);
+        glass = new GlassBlock(20, 49, Material.GLASS, false).setHardness(0.3f).setStepSound(Block.soundGlassFootstep).setDigSound(Block.digGlass);
         woolRed = null;
         woolOrange = null;
         woolYellow = null;
@@ -163,39 +179,39 @@ public class Block {
         woolMagenta = null;
         woolPink = null;
         woolDarkGray = null;
-        woolGray = new Block(35, 64, Material.CLOTH).setHardness(0.8f).setStepSound(Block.soundClothFootstep);
+        woolGray = new Block(35, 64, Material.CLOTH).setHardness(0.8f).setStepSound(Block.soundClothFootstep).setDigSound(Block.digCloth);
         woolWhite = null;
-        plantYellow = (FlowerBlock) new FlowerBlock(37, 13).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        plantRed = (FlowerBlock) new FlowerBlock(38, 12).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        mushroomBrown = (FlowerBlock) new MushroomBlock(39, 29).setHardness(0.0f).setStepSound(Block.soundGrassFootstep).setLightValue(0.125f);
-        mushroomRed = (FlowerBlock) new MushroomBlock(40, 28).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        blockGold = new OreStorageBlock(41, 39).setHardness(3.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep);
-        blockSteel = new OreStorageBlock(42, 38).setHardness(5.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep);
-        slabDouble = new SlabBlock(43, true).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        slabSingle = new SlabBlock(44, false).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        brick = new Block(45, 7, Material.ROCK).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        tnt = new TNTBlock(46, 8).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        bookshelf = new BookshelfBlock(47, 35).setHardness(1.5f).setStepSound(Block.soundWoodFootstep);
-        mossyCobblestone = new Block(48, 36, Material.ROCK).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep);
-        obsidian = new ObsidianBlock(49, 37).setHardness(10.0f).setResistance(20.0f).setStepSound(Block.soundStoneFootstep);
-        torch = new TorchBlock(50, 80).setHardness(0.0f).setLightValue(0.9375f).setStepSound(Block.soundWoodFootstep);
-        fire = (FireBlock) new FireBlock(51, 31).setHardness(0.0f).setLightValue(1.0f).setStepSound(Block.soundWoodFootstep);
-        spawner = new SpawnerBlock(52, 65).setHardness(5.0f).setStepSound(Block.soundMetalFootstep);
-        stairPlanks = new StairBlock(53, Block.planks);
-        chest = new ChestBlock(54).setHardness(2.5f).setStepSound(Block.soundWoodFootstep);
-        gears = new GearsBlock(55, 62).setHardness(0.5f).setStepSound(Block.soundMetalFootstep);
-        oreDiamond = new OreBlock(56, 50).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep);
-        blockDiamond = new OreStorageBlock(57, 40).setHardness(5.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep);
-        workbench = new CraftingTableBlock(58).setHardness(2.5f).setStepSound(Block.soundWoodFootstep);
-        crops = new CropsBlock(59, 88).setHardness(0.0f).setStepSound(Block.soundGrassFootstep);
-        tilledField = new FarmlandBlock(60).setHardness(0.6f).setStepSound(Block.soundGravelFootstep);
-        stoneOvenIdle = new FurnaceBlock(61, false).setHardness(3.5f).setStepSound(Block.soundStoneFootstep);
-        stoneOvenActive = new FurnaceBlock(62, true).setHardness(3.5f).setStepSound(Block.soundStoneFootstep).setLightValue(0.875f);
-        signPost = new SignBlock(63, TileEntitySign.class, Item.sign.shiftedIndex).setHardness(1.0f).setStepSound(Block.soundWoodFootstep);
-        door = new DoorBlock(64).setHardness(3.0f).setStepSound(Block.soundWoodFootstep);
-        ladder = new LadderBlock(65, 83).setHardness(0.4f).setStepSound(Block.soundWoodFootstep);
-        rail = new RailBlock(66, 128).setHardness(1.0f).setStepSound(Block.soundMetalFootstep);
-        stairCobblestone = new StairBlock(67, Block.cobblestone);
+        plantYellow = (FlowerBlock) new FlowerBlock(37, 13).setHardness(0.0f).setStepSound(Block.soundGrassFootstep).setDigSound(Block.digGrass);
+        plantRed = (FlowerBlock) new FlowerBlock(38, 12).setHardness(0.0f).setStepSound(Block.soundGrassFootstep).setDigSound(Block.digGrass);
+        mushroomBrown = (FlowerBlock) new MushroomBlock(39, 29).setHardness(0.0f).setStepSound(Block.soundGrassFootstep).setLightValue(0.125f).setDigSound(Block.digGrass);
+        mushroomRed = (FlowerBlock) new MushroomBlock(40, 28).setHardness(0.0f).setStepSound(Block.soundGrassFootstep).setDigSound(Block.digGrass);
+        blockGold = new OreStorageBlock(41, 39).setHardness(3.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep).setDigSound(Block.digStone);
+        blockSteel = new OreStorageBlock(42, 38).setHardness(5.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep).setDigSound(Block.digStone);
+        slabDouble = new SlabBlock(43, true).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        slabSingle = new SlabBlock(44, false).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        brick = new Block(45, 7, Material.ROCK).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        tnt = new TNTBlock(46, 8).setHardness(0.0f).setStepSound(Block.soundGrassFootstep).setDigSound(Block.digGrass);
+        bookshelf = new BookshelfBlock(47, 35).setHardness(1.5f).setStepSound(Block.soundWoodFootstep).setDigSound(Block.digWood);
+        mossyCobblestone = new Block(48, 36, Material.ROCK).setHardness(2.0f).setResistance(10.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        obsidian = new ObsidianBlock(49, 37).setHardness(10.0f).setResistance(20.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        torch = new TorchBlock(50, 80).setHardness(0.0f).setLightValue(0.9375f).setStepSound(Block.soundWoodFootstep).setDigSound(Block.digWood);
+        fire = (FireBlock) new FireBlock(51, 31).setHardness(0.0f).setLightValue(1.0f).setStepSound(Block.soundWoodFootstep).setDigSound(Block.digWood);
+        spawner = new SpawnerBlock(52, 65).setHardness(5.0f).setStepSound(Block.soundMetalFootstep).setDigSound(Block.digStone);
+        stairPlanks = new StairBlock(53, Block.planks).setDigSound(Block.digWood);
+        chest = new ChestBlock(54).setHardness(2.5f).setStepSound(Block.soundWoodFootstep).setDigSound(Block.digWood);
+        gears = new GearsBlock(55, 62).setHardness(0.5f).setStepSound(Block.soundMetalFootstep).setDigSound(Block.digStone);
+        oreDiamond = new OreBlock(56, 50).setHardness(3.0f).setResistance(5.0f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        blockDiamond = new OreStorageBlock(57, 40).setHardness(5.0f).setResistance(10.0f).setStepSound(Block.soundMetalFootstep).setDigSound(Block.digStone);
+        workbench = new CraftingTableBlock(58).setHardness(2.5f).setStepSound(Block.soundWoodFootstep).setDigSound(Block.digWood);
+        crops = new CropsBlock(59, 88).setHardness(0.0f).setStepSound(Block.soundGrassFootstep).setDigSound(Block.digGrass);
+        tilledField = new FarmlandBlock(60).setHardness(0.6f).setStepSound(Block.soundGravelFootstep).setDigSound(Block.digGravel);
+        stoneOvenIdle = new FurnaceBlock(61, false).setHardness(3.5f).setStepSound(Block.soundStoneFootstep).setDigSound(Block.digStone);
+        stoneOvenActive = new FurnaceBlock(62, true).setHardness(3.5f).setStepSound(Block.soundStoneFootstep).setLightValue(0.875f).setDigSound(Block.digStone);
+        signPost = new SignBlock(63, TileEntitySign.class, Item.sign.shiftedIndex).setHardness(1.0f).setStepSound(Block.soundWoodFootstep).setDigSound(Block.digWood);
+        door = new DoorBlock(64).setHardness(3.0f).setStepSound(Block.soundWoodFootstep).setDigSound(Block.digWood);
+        ladder = new LadderBlock(65, 83).setHardness(0.4f).setStepSound(Block.soundWoodFootstep).setDigSound(Block.digWood);
+        rail = new RailBlock(66, 128).setHardness(1.0f).setStepSound(Block.soundMetalFootstep).setDigSound(Block.digStone);
+        stairCobblestone = new StairBlock(67, Block.cobblestone).setDigSound(Block.digStone);
         for (int i = 0; i < 256; ++i) {
             if (Block.blocksList[i] != null) {
                 Item.itemsList[i] = new ItemBlock(i - 256);
@@ -205,6 +221,7 @@ public class Block {
 
     protected Block(final int blockid, final Material material) {
         this.stepSound = Block.soundPowderFootstep;
+        this.digSound = new DigSound("stone", 1.0f, 1.0f);
         this.blockParticleGravity = 1.0f;
         if (Block.blocksList[blockid] != null) {
             throw new IllegalArgumentException(new StringBuilder().append("Slot ").append(blockid).append(" is already occupied by ").append(Block.blocksList[blockid]).append(" when adding ").append(this).toString());
@@ -225,6 +242,11 @@ public class Block {
 
     protected Block setStepSound(final StepSound soundName) {
         this.stepSound = soundName;
+        return this;
+    }
+
+    protected Block setDigSound(final DigSound digSound) {
+        this.digSound = digSound;
         return this;
     }
 

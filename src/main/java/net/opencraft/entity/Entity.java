@@ -545,6 +545,9 @@ public abstract class Entity {
         nbt.setShort("Fire", (short) this.fire);
         nbt.setShort("Air", (short) this.air);
         nbt.setBoolean("OnGround", this.onGround);
+        nbt.setDouble("LastTickPosX", this.lastTickPosX);
+        nbt.setDouble("LastTickPosY", this.lastTickPosY);
+        nbt.setDouble("LastTickPosZ", this.lastTickPosZ);
         this.writeEntityToNBT(nbt);
     }
 
@@ -552,7 +555,7 @@ public abstract class Entity {
         final NBTTagList tagList = nbt.getTagList("Pos");
         final NBTTagList tagList2 = nbt.getTagList("Motion");
         final NBTTagList tagList3 = nbt.getTagList("Rotation");
-        this.setPosition(0.0, 0.0, 0.0);
+        // Load position values directly without calling setPosition first
         this.motionX = ((NBTTagDouble) tagList2.tagAt(0)).doubleValue;
         this.motionY = ((NBTTagDouble) tagList2.tagAt(1)).doubleValue;
         this.motionZ = ((NBTTagDouble) tagList2.tagAt(2)).doubleValue;
@@ -578,7 +581,13 @@ public abstract class Entity {
         this.fire = nbt.getShort("Fire");
         this.air = nbt.getShort("Air");
         this.onGround = nbt.getBoolean("OnGround");
-        this.setPosition(this.posX, this.posY, this.posZ);
+        this.lastTickPosX = nbt.getDouble("LastTickPosX");
+        this.lastTickPosY = nbt.getDouble("LastTickPosY");
+        this.lastTickPosZ = nbt.getDouble("LastTickPosZ");
+        // After setting position, we need to ensure visual position matches saved position
+        // Reset ySize to 0 so that posY calculation doesn't cause offset
+        this.setPosition(this.posX, this.posY+1, this.posZ);
+        this.ySize = 0.0f; // Reset ySize after position is set to prevent vertical offset
         this.readEntityFromNBT(nbt);
     }
 

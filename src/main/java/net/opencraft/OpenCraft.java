@@ -230,7 +230,7 @@ public class OpenCraft implements Runnable {
 	}
 
 	private void loadScreen() {
-		final ScaledResolution scaledResolution = new ScaledResolution(width, height);
+		final ScaledResolution scaledResolution = new ScaledResolution(width, height, options);
 		final int scaledWidth = scaledResolution.getScaledWidth();
 		final int scaledHeight = scaledResolution.getScaledHeight();
 		glClear(16640);
@@ -279,7 +279,7 @@ public class OpenCraft implements Runnable {
 
 		if ((currentScreen = screen) != null) {
 			setIngameNotInFocus();
-			final ScaledResolution scaledResolution = new ScaledResolution(width, height);
+			final ScaledResolution scaledResolution = new ScaledResolution(width, height, options);
 			screen.setWorldAndResolution(oc, scaledResolution.getScaledWidth(), scaledResolution.getScaledHeight());
 			skipRenderWorld = false;
 		} else {
@@ -454,6 +454,13 @@ public class OpenCraft implements Runnable {
 		}
 		inGameHasFocus = true;
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		// Center the mouse cursor when focus is regained for camera control
+		glfwSetCursorPos(window, width / 2.0, height / 2.0);
+		// Reset mouse position and delta tracking to avoid camera movement from cursor movement during GUI interaction
+		mouse.position.x = width / 2.0;
+		mouse.position.y = height / 2.0;
+		mouse.position.prevX = width / 2.0;
+		mouse.position.prevY = height / 2.0;
 		displayGuiScreen(null);
 		mouseTicksRan = ticksRan + 10000;
 	}
@@ -557,7 +564,7 @@ public class OpenCraft implements Runnable {
 		}
 	}
 
-	private void resize(int width, int height) {
+	public void resize(int width, int height) {
 		if (width <= 0) {
 			width = 1;
 		}
@@ -567,7 +574,7 @@ public class OpenCraft implements Runnable {
 		this.width = width;
 		this.height = height;
 		if (currentScreen != null) {
-			final ScaledResolution scaledResolution = new ScaledResolution(width, height);
+			final ScaledResolution scaledResolution = new ScaledResolution(width, height, options);
 			currentScreen.setWorldAndResolution(oc, scaledResolution.getScaledWidth(),
 					scaledResolution.getScaledHeight());
 		}

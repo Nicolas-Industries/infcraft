@@ -192,27 +192,37 @@ public class EntityLiving extends Entity {
         if (sqrt_double > 0.05f) {
             n4 = 1.0f;
             n3 = sqrt_double * 3.0f;
-            // Calculate movement-based rotation from actual movement
-            float movementYaw = (float) toDegrees(atan2(n2, n)) - 90.0f;
-
-            // Set both renderYawOffset and rotationYaw based on movement to keep them in sync
-            this.renderYawOffset = movementYaw;
-            if (Math.abs(this.rotationYaw - movementYaw) < 90.0f) { // Only update if not too different
-                this.rotationYaw = movementYaw;
-            }
+            renderYawOffset = (float) toRadians(atan2(n2, n)) - 90.0f;
         }
         if (!this.onGround) {
             n4 = 0.0f;
         }
         this.rotationYawHead += (n4 - this.rotationYawHead) * 0.3f;
-        // Simplified rotation handling to prevent desync
         float n5;
-        for (n5 = this.renderYawOffset - this.prevRenderYawOffset; n5 < -180.0f; n5 += 360.0f) {
+        for (n5 = renderYawOffset - this.renderYawOffset; n5 < -180.0f; n5 += 360.0f) {
         }
         while (n5 >= 180.0f) {
             n5 -= 360.0f;
         }
-        // Remove the complex renderYawOffset adjustment that causes desync
+        this.renderYawOffset += n5 * 0.1f;
+        float n6;
+        for (n6 = this.rotationYaw - this.renderYawOffset; n6 < -180.0f; n6 += 360.0f) {
+        }
+        while (n6 >= 180.0f) {
+            n6 -= 360.0f;
+        }
+        final boolean b = n6 < -90.0f || n6 >= 90.0f;
+        if (n6 < -75.0f) {
+            n6 = -75.0f;
+        }
+        if (n6 >= 75.0f) {
+            n6 = 75.0f;
+        }
+        this.renderYawOffset = this.rotationYaw - n6;
+        this.renderYawOffset += n6 * 0.1f;
+        if (b) {
+            n3 *= -1.0f;
+        }
         while (this.rotationYaw - this.prevRotationYaw < -180.0f) {
             this.prevRotationYaw -= 360.0f;
         }

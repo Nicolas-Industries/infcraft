@@ -33,7 +33,7 @@ public class PlayerController {
         final int blockMetadata = theWorld.getBlockMetadata(xCoord, yCoord, zCoord);
         final boolean setBlockWithNotify = theWorld.setBlockWithNotify(xCoord, yCoord, zCoord, 0);
         if (block != null && setBlockWithNotify) {
-            this.mc.sndManager.playSound(block.stepSound.stepSoundDir(), xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, (block.stepSound.soundVolume() + 1.0f) / 2.0f, block.stepSound.soundPitch() * 0.8f);
+            this.mc.sndManager.playSound(block.digSound.digSoundDir(), xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, (block.stepSound.soundVolume() + 1.0f) / 2.0f, block.stepSound.soundPitch() * 0.8f);
             block.onBlockDestroyedByPlayer(theWorld, xCoord, yCoord, zCoord, blockMetadata);
         }
         return setBlockWithNotify;

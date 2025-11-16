@@ -41,7 +41,10 @@ public abstract class GuiScreen extends GuiElement {
 
     protected void onMouseButtonPressed(final int x, final int y, final int mouseButtonNumber) {
         if (mouseButtonNumber == MouseInput.ButtonEvent.BUTTON_1_PRESS.buttonNumber()) {
-			for(GuiElement guiElement : this.controlList) {
+			// Create a copy of the control list to avoid ConcurrentModificationException
+			// when actionPerformed modifies the list (e.g., through resize operations)
+			ArrayList<GuiElement> controlListCopy = new ArrayList<>(this.controlList);
+			for(GuiElement guiElement : controlListCopy) {
 				final GuiButton iq = (GuiButton) guiElement;
 				if(iq.mousePressed(x, y)) {
 					this.id.sndManager.playSoundFX("random.click", 1.0f, 1.0f);
@@ -53,7 +56,9 @@ public abstract class GuiScreen extends GuiElement {
 
     protected void onMouseButtonReleased(final int x, final int y, final int button) {
         if(button == MouseInput.ButtonEvent.BUTTON_1_RELEASE.buttonNumber()) {
-			for(GuiElement guiElement : this.controlList) {
+			// Create a copy of the control list to avoid ConcurrentModificationException
+			ArrayList<GuiElement> controlListCopy = new ArrayList<>(this.controlList);
+			for(GuiElement guiElement : controlListCopy) {
                 if(guiElement instanceof GuiButton guiButton) {
                     guiButton.mouseReleased(x, y);
                 }

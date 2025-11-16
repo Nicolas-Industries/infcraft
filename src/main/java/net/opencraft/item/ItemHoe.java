@@ -1,4 +1,3 @@
-
 package net.opencraft.item;
 
 import net.opencraft.blocks.Block;
@@ -19,7 +18,7 @@ public class ItemHoe extends Item {
         final int blockId = fe.getBlockId(xCoord, yCoord, zCoord);
         if ((!fe.getBlockMaterial(xCoord, yCoord + 1, zCoord).isSolid() && blockId == Block.grass.blockID) || blockId == Block.dirt.blockID) {
             final Block tilledField = Block.tilledField;
-            fe.playSoundEffect(xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, tilledField.stepSound.stepSoundDir2(), (tilledField.stepSound.soundVolume() + 1.0f) / 2.0f, tilledField.stepSound.soundPitch() * 0.8f);
+            fe.playSoundEffect(xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, tilledField.digSound.digSoundDir(), (tilledField.digSound.soundVolume() + 1.0f) / 2.0f, tilledField.digSound.soundPitch() * 0.8f);
             fe.setBlockWithNotify(xCoord, yCoord, zCoord, tilledField.blockID);
             hw.damageItem(1);
             if (fe.rand.nextInt(8) == 0 && blockId == Block.grass.blockID) {

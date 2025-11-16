@@ -29,8 +29,8 @@ public class SoundManager {
 
     public enum SoundType {
         MENUMUSIC,
-        SOUND("newsound", "sound3"),
-        MUSIC("newmusic"),
+        SOUND("sound"),
+        MUSIC("music"),
         STREAMING;
 
         public final String[] alternateNames;

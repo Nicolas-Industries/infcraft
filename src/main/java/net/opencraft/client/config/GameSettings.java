@@ -32,6 +32,8 @@ public class GameSettings {
     public boolean anaglyph;
     public boolean limitFramerate;
     public boolean fancyGraphics;
+    public int guiScale; // 0=auto, 1=1x, 2=2x, 3=3x, etc.
+    public int tempGuiScale; // Temporary storage for GUI scale in options screen
     public BiMap<PlayerInput, Integer> keyBindings = EnumHashBiMap.create(PlayerInput.class);
     protected OpenCraft mc;
     private final File optionsFile;
@@ -70,7 +72,9 @@ public class GameSettings {
         this.anaglyph = false;
         this.limitFramerate = false;
         this.fancyGraphics = true;
-        this.numberOfOptions = 10;
+        this.guiScale = 0; // 0=auto, 1=1x, 2=2x, etc.
+        this.tempGuiScale = this.guiScale; // Initialize temp to current value
+        this.numberOfOptions = 11; // Updated to include GUI scale
         this.difficulty = 2;
         this.thirdPersonView = false;
         this.fov = 100.0F;
@@ -159,6 +163,33 @@ public class GameSettings {
         this.saveOptions();
     }
 
+    public void setOptionValue(int option, int value) {
+        if (option == 11) { // GUI scale option
+            // Store in temporary variable instead of applying immediately
+            this.tempGuiScale = value;
+            // Ensure GUI scale is reasonable - 0 is auto, 1+ are fixed scales
+            if (this.tempGuiScale < 0) this.tempGuiScale = 0;
+            // Calculate maximum scale based on resolution (at least 1, max 8, or based on resolution)
+            int maxScale = 8; // Default max
+            if (this.mc != null) {
+                // Calculate based on current window resolution
+                maxScale = Math.min(8, Math.max(this.mc.width / 320, this.mc.height / 240));
+            }
+            if (this.tempGuiScale > maxScale) this.tempGuiScale = maxScale;
+        }
+    }
+
+    public void applyGuiScale() {
+        // Apply the temporary value to the actual setting
+        this.guiScale = this.tempGuiScale;
+        this.saveOptions();
+
+        // Trigger a resize to update the display immediately
+        if (this.mc != null) {
+            this.mc.resize(this.mc.width, this.mc.height);
+        }
+    }
+
     public String getKeyBinding(final int integer) {
         if (integer == 0) {
             return new StringBuilder().append("Music: ").append(this.music ? "ON" : "OFF").toString();
@@ -190,10 +221,20 @@ public class GameSettings {
         if (integer == 9) {
             return new StringBuilder().append("Graphics: ").append(this.fancyGraphics ? "FANCY" : "FAST").toString();
         }
+        if (integer == 11) {
+            return new StringBuilder().append("GUI Scale: ").append(getGuiScaleString()).toString();
+        }
         if (integer == 101) {
             return new StringBuilder().append("Test: ").append(this.fov).toString();
         }
         return "";
+    }
+
+    private String getGuiScaleString() {
+        if (guiScale == 0) {
+            return "AUTO";
+        }
+        return guiScale + "x";
     }
 
     public void loadOptions() {
@@ -240,6 +281,9 @@ public class GameSettings {
                 if(split[0].equals("minimumBrightness")) {
                     this.minimumBrightness = Float.parseFloat(split[1]);
                 }
+                if(split[0].equals("guiScale")) {
+                    this.guiScale = Integer.parseInt(split[1]);
+                }
                 for(PlayerInput input : PlayerInput.values()) {
                     if(split[0].equals("key_" + input.name())) {
                         this.keyBindings.put(input, Integer.parseInt(split[1]));
@@ -266,6 +310,7 @@ public class GameSettings {
             s.println("fancyGraphics:" + fancyGraphics);
             s.println("FOV:" + fov);
             s.println("minimumBrightness:" + this.minimumBrightness);
+            s.println("guiScale:" + this.guiScale);
             for(PlayerInput input : PlayerInput.values()) {
                 s.println("key_" + input.name() + ":" + keyBindings.get(input));
             }

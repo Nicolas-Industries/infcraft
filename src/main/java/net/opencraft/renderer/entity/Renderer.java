@@ -2,6 +2,7 @@
 package net.opencraft.renderer.entity;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -157,45 +158,50 @@ public class Renderer {
 	/**
 	 * Binds the specified image to the specified texture ID.
 	 */
-	public void bindTexture(final BufferedImage bufferedImage, final int textureID) {
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexParameteri(GL_TEXTURE_2D, 10241, 9728);
-		glTexParameteri(GL_TEXTURE_2D, 10240, 9728);
-		if (this.h) {
-			glTexParameteri(GL_TEXTURE_2D, 10242, 10496);
-			glTexParameteri(GL_TEXTURE_2D, 10243, 10496);
-		} else {
-			glTexParameteri(GL_TEXTURE_2D, 10242, 10497);
-			glTexParameteri(GL_TEXTURE_2D, 10243, 10497);
-		}
-		final int width = bufferedImage.getWidth();
-		final int height = bufferedImage.getHeight();
-		final int[] array = new int[width * height];
-		final byte[] array2 = new byte[width * height * 4];
-		bufferedImage.getRGB(0, 0, width, height, array, 0, width);
-		for (int i = 0; i < array.length; ++i) {
-			final int n = array[i] >> 24 & 0xFF;
-			int n2 = array[i] >> 16 & 0xFF;
-			int n3 = array[i] >> 8 & 0xFF;
-			int n4 = array[i] & 0xFF;
-			if (this.settings != null && this.settings.anaglyph) {
-				final int n5 = (n2 * 30 + n3 * 59 + n4 * 11) / 100;
-				final int n6 = (n2 * 30 + n3 * 70) / 100;
-				final int n7 = (n2 * 30 + n4 * 70) / 100;
-				n2 = n5;
-				n3 = n6;
-				n4 = n7;
-			}
-			array2[i * 4 + 0] = (byte) n2;
-			array2[i * 4 + 1] = (byte) n3;
-			array2[i * 4 + 2] = (byte) n4;
-			array2[i * 4 + 3] = (byte) n;
-		}
-		this.byteBuffer.clear();
-		this.byteBuffer.put(array2);
-		this.byteBuffer.position(0).limit(array2.length);
-		glTexImage2D(GL_TEXTURE_2D, 0, 6408, width, height, 0, 6408, 5121, this.byteBuffer);
-	}
+    /**
+     * Binds the specified image to the specified texture ID.
+     */
+    public void bindTexture(final BufferedImage bufferedImage, final int textureID) {
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        // Use named constants for clarity and LWJGL3 compatibility
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        if (this.h) {
+            // Use CLAMP_TO_EDGE to prevent repeating and use edge texels
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        } else {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        }
+        final int width = bufferedImage.getWidth();
+        final int height = bufferedImage.getHeight();
+        final int[] array = new int[width * height];
+        final byte[] array2 = new byte[width * height * 4];
+        bufferedImage.getRGB(0, 0, width, height, array, 0, width);
+        for (int i = 0; i < array.length; ++i) {
+            final int n = array[i] >> 24 & 0xFF;
+            int n2 = array[i] >> 16 & 0xFF;
+            int n3 = array[i] >> 8 & 0xFF;
+            int n4 = array[i] & 0xFF;
+            if (this.settings != null && this.settings.anaglyph) {
+                final int n5 = (n2 * 30 + n3 * 59 + n4 * 11) / 100;
+                final int n6 = (n2 * 30 + n3 * 70) / 100;
+                final int n7 = (n2 * 30 + n4 * 70) / 100;
+                n2 = n5;
+                n3 = n6;
+                n4 = n7;
+            }
+            array2[i * 4 + 0] = (byte) n2;
+            array2[i * 4 + 1] = (byte) n3;
+            array2[i * 4 + 2] = (byte) n4;
+            array2[i * 4 + 3] = (byte) n;
+        }
+        this.byteBuffer.clear();
+        this.byteBuffer.put(array2);
+        this.byteBuffer.position(0).limit(array2.length);
+        glTexImage2D(GL_TEXTURE_2D, 0, 6408, width, height, 0, 6408, 5121, this.byteBuffer);
+    }
 
 	/**
 	 * Deletes the texture with the specified ID.

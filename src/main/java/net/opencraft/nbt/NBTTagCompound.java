@@ -67,6 +67,10 @@ public class NBTTagCompound extends NBTBase {
         this.tagMap.put(string1, new NBTTagString(string2).setKey(string1));
     }
 
+    public void setDouble(final String string, final double double2) {
+        this.tagMap.put(string, new NBTTagDouble(double2).setKey(string));
+    }
+
     public void setByteArray(final String string, final byte[] arr) {
         this.tagMap.put(string, new NBTTagByteArray(arr).setKey(string));
     }
@@ -148,6 +152,13 @@ public class NBTTagCompound extends NBTBase {
 
     public boolean getBoolean(final String string) {
         return this.getByte(string) != 0;
+    }
+
+    public double getDouble(final String string) {
+        if (!this.tagMap.containsKey(string)) {
+            return 0.0;
+        }
+        return ((NBTTagDouble) this.tagMap.get(string)).doubleValue;
     }
 
     public String toString() {

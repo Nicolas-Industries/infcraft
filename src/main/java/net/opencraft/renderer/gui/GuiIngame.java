@@ -42,7 +42,7 @@ public class GuiIngame extends GuiElement {
     }
 
     public void renderGameOverlay(final float float1, final boolean boolean2, final int integer3, final int integer4) {
-        final ScaledResolution scaledResolution = new ScaledResolution(this.mc.width, this.mc.height);
+        final ScaledResolution scaledResolution = new ScaledResolution(this.mc.width, this.mc.height, this.mc.options);
         final int scaledWidth = scaledResolution.getScaledWidth();
         final int scaledHeight = scaledResolution.getScaledHeight();
         final FontRenderer font = this.mc.font;
