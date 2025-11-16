@@ -84,6 +84,9 @@ public class OpenCraft implements Runnable {
 	public boolean isRaining;
 	long systemTime;
 
+	// Track keyboard state to prevent continuous triggering of key-based actions
+	private java.util.Set<Integer> prevPressedKeys = new java.util.HashSet<>();
+
 	/** Holds the function called when the window is resized, otherwise the function would be garbage collected */
 	private GLFWFramebufferSizeCallback frameBufferResizeCallback;
 	private GLFWWindowFocusCallback windowFocusCallback;
@@ -174,6 +177,7 @@ public class OpenCraft implements Runnable {
 		GLUtil.setupDebugMessageCallback();
 
 		mouse = new MouseInput(window);
+		mouse.gameInstance = this; // Set reference for immediate GUI event processing
 		keyboard = new KeyboardInput(window);
 
 		timer = new Timer(20.0f);
@@ -604,15 +608,22 @@ public class OpenCraft implements Runnable {
 		}
 
 		if (currentScreen == null || currentScreen.allowUserInput) {
-			for(MouseInput.ButtonEvent event : mouse.buttons.events) {
-				if (System.currentTimeMillis() - systemTime > 200L) {
-					continue;
-				}
-				final int eventDWheel = (int) mouse.scroll.y;
-				if (eventDWheel != 0) {
-					player.inventory.changeCurrentItem(eventDWheel);
-				}
-				if (currentScreen == null) {
+			// Handle scroll wheel separately from mouse buttons
+			final int eventDWheel = (int) mouse.scroll.y;
+			if (eventDWheel != 0) {
+				player.inventory.changeCurrentItem(eventDWheel);
+			}
+			// Reset scroll values after processing to prevent repetition in the same tick
+			mouse.scroll.x = 0;
+			mouse.scroll.y = 0;
+
+			// Process mouse events for appropriate context only - once per event
+			if (currentScreen == null) {
+				// Process mouse events for world context only
+				for(MouseInput.ButtonEvent event : mouse.buttons.events) {
+					if (System.currentTimeMillis() - systemTime > 200L) {
+						continue;
+					}
 					if (!inGameHasFocus && event.isPress()) {
 						setIngameFocus();
 					} else {
@@ -621,52 +632,63 @@ public class OpenCraft implements Runnable {
 							mouseTicksRan = ticksRan;
 						}
 					}
-				} else {
-					if (currentScreen == null) {
-						continue;
-					}
-					currentScreen.handleMouseEvent(event);
 				}
 			}
+			// For GUI screens, mouse events will be processed in handleInputEvents() method later
+			// and should not be processed here to prevent double-processing
+
+			// Process keys that were just pressed (not held down from previous tick)
 			for(Integer key : keyboard.pressedKeys) {
-				if(key == GLFW_KEY_ESCAPE) {
-					displayInGameMenu();
-				}
+				// Only process keys that weren't pressed in the previous tick to prevent continuous triggering
+				if (!prevPressedKeys.contains(key)) {
+					if(key == GLFW_KEY_ESCAPE) {
+						displayInGameMenu();
+					}
 
-				if(key == GLFW_KEY_F5) {
-					options.thirdPersonView = !options.thirdPersonView;
-					isRaining = !isRaining;
-				}
+					if(key == GLFW_KEY_F5) {
+						options.thirdPersonView = !options.thirdPersonView;
+						isRaining = !isRaining;
+					}
 
-				if(key == options.keyBindings.get(GameSettings.PlayerInput.INVENTORY)) {
-					if(currentScreen instanceof GuiInventory)
-						displayGuiScreen(null);
-					else if(currentScreen == null)
-						displayGuiScreen(new GuiInventory(player.inventory));
-				}
+					if(key == options.keyBindings.get(GameSettings.PlayerInput.INVENTORY)) {
+						if(currentScreen instanceof GuiInventory)
+							displayGuiScreen(null);
+						else if(currentScreen == null)
+							displayGuiScreen(new GuiInventory(player.inventory));
+					}
 
-				if(key == options.keyBindings.get(GameSettings.PlayerInput.DROP))
-					player.dropPlayerItemWithRandomChoice(player.inventory.decrStackSize(player.inventory.currentItem, 1), false);
+					if(key == options.keyBindings.get(GameSettings.PlayerInput.DROP))
+						player.dropPlayerItemWithRandomChoice(player.inventory.decrStackSize(player.inventory.currentItem, 1), false);
 
-				for(int i = 0; i < 9; ++i) {
-					if(key == GLFW_KEY_0 + i) {
-						player.inventory.currentItem = i;
+					for(int i = 0; i < 9; ++i) {
+						if(key == GLFW_KEY_0 + i) {
+							player.inventory.currentItem = i;
+						}
 					}
 				}
 			}
+
+			// Update the previous pressed keys set for next tick
+			prevPressedKeys.clear();
+			prevPressedKeys.addAll(keyboard.pressedKeys);
 			if (currentScreen == null) {
-				if (mouse.isButton1Pressed() && ticksRan - mouseTicksRan >= timer.tps / 4.0f
+				// Only process clicks if not already cooling down from previous click
+				// This prevents the issue where startup mouse state or air-clicking causes blocking behavior
+				if (leftClickCounter <= 0 && mouse.isButton1Pressed() && ticksRan - mouseTicksRan >= timer.tps / 4.0f
 						&& inGameHasFocus) {
 					clickMouse(0);
 					mouseTicksRan = ticksRan;
 				}
-				if(mouse.isButton2Pressed() && ticksRan - mouseTicksRan >= timer.tps / 4.0f
+				if(leftClickCounter <= 0 && mouse.isButton2Pressed() && ticksRan - mouseTicksRan >= timer.tps / 4.0f
 						&& inGameHasFocus) {
 					clickMouse(1);
 					mouseTicksRan = ticksRan;
 				}
 			}
-			func_6254_a(0, currentScreen == null && mouse.isButton1Pressed() && inGameHasFocus);
+			// Only call func_6254_a if not currently cooling down from a previous click
+			if (leftClickCounter <= 0) {
+				func_6254_a(0, currentScreen == null && mouse.isButton1Pressed() && inGameHasFocus);
+			}
 		}
 		if (currentScreen != null) {
 			mouseTicksRan = ticksRan + 10000;
@@ -677,6 +699,9 @@ public class OpenCraft implements Runnable {
 				currentScreen.updateScreen();
 			}
 		}
+
+		// Reset mouse events after all processing
+		mouse.reset();
 		if (world != null) {
 			world.difficultySetting = options.difficulty;
 			if (!isGamePaused) {

@@ -74,10 +74,11 @@ public class EntityArrow extends Entity {
         this.motionY = yCoord;
         this.motionZ = zCoord;
         final float sqrt_double2 = Mth.sqrt_double(xCoord * xCoord + zCoord * zCoord);
-        final float n = (float) (toRadians(atan2(xCoord, zCoord)));
+        // atan2 returns radians, convert to degrees for Minecraft format
+        final float n = (float) (toDegrees(atan2(xCoord, zCoord)));
         this.rotationYaw = n;
         this.prevRotationYaw = n;
-        final float n2 = (float) (toRadians(atan2(yCoord, (double) sqrt_double2)));
+        final float n2 = (float) (toDegrees(atan2(yCoord, (double) sqrt_double2)));
         this.rotationPitch = n2;
         this.prevRotationPitch = n2;
         this.ticksInGround = 0;
@@ -168,8 +169,9 @@ public class EntityArrow extends Entity {
         this.posY += this.motionY;
         this.posZ += this.motionZ;
         final float n3 = Mth.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-        this.rotationYaw = (float) (toRadians(atan2(this.motionX, this.motionZ)));
-        this.rotationPitch = (float) (toRadians(atan2(this.motionY, (double) n3)));
+        // atan2 returns radians, but rotationYaw is in degrees - convert properly
+        this.rotationYaw = (float) (toDegrees(atan2(this.motionX, this.motionZ)));
+        this.rotationPitch = (float) (toDegrees(atan2(this.motionY, (double) n3)));
         while (this.rotationPitch - this.prevRotationPitch < -180.0f) {
             this.prevRotationPitch -= 360.0f;
         }

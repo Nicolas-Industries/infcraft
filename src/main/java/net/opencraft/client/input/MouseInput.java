@@ -1,5 +1,6 @@
 package net.opencraft.client.input;
 
+import net.opencraft.OpenCraft;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
@@ -10,12 +11,15 @@ import java.util.Set;
 
 public class MouseInput {
 
-	public MouseButtonCallback buttons = new MouseButtonCallback();
+	private MouseButtonCallback callbackInstance;
+	public MouseButtonCallback buttons; // Keep public for backward compatibility
 	public CursorPosCallback position = new CursorPosCallback();
 	public ScrollCallback scroll = new ScrollCallback();
 
 	public MouseInput(long window) {
-		GLFW.glfwSetMouseButtonCallback(window, buttons);
+		callbackInstance = new MouseButtonCallback(this);
+		buttons = callbackInstance; // Maintain the field for backward compatibility
+		GLFW.glfwSetMouseButtonCallback(window, callbackInstance);
 		GLFW.glfwSetCursorPosCallback(window, position);
 		GLFW.glfwSetScrollCallback(window, scroll);
 	}
@@ -54,6 +58,8 @@ public class MouseInput {
 		}
 	}
 
+	public OpenCraft gameInstance; // Reference to the game instance for immediate GUI processing
+
 	public static final class MouseButtonCallback extends GLFWMouseButtonCallback {
 		public Set<Integer> pressedButtons = new HashSet<>();
 		public Set<ButtonEvent> events = new HashSet<>();
@@ -63,21 +69,38 @@ public class MouseInput {
 		@Override
 		public void invoke(long window, int button, int action, int mods) {
 			this.mods = mods;
+			ButtonEvent event = null;
+
 			if (action == GLFW.GLFW_PRESS) {
 				pressedButtons.add(button);
 				if(button == GLFW.GLFW_MOUSE_BUTTON_1) {
-					events.add(ButtonEvent.BUTTON_1_PRESS);
+					event = ButtonEvent.BUTTON_1_PRESS;
 				} else if(button == GLFW.GLFW_MOUSE_BUTTON_2) {
-					events.add(ButtonEvent.BUTTON_2_PRESS);
+					event = ButtonEvent.BUTTON_2_PRESS;
 				}
 			} else if (action == GLFW.GLFW_RELEASE) {
 				pressedButtons.remove(button);
 				if(button == GLFW.GLFW_MOUSE_BUTTON_1) {
-					events.add(ButtonEvent.BUTTON_1_RELEASE);
+					event = ButtonEvent.BUTTON_1_RELEASE;
 				} else if(button == GLFW.GLFW_MOUSE_BUTTON_2) {
-					events.add(ButtonEvent.BUTTON_2_RELEASE);
+					event = ButtonEvent.BUTTON_2_RELEASE;
 				}
 			}
+
+			if (event != null) {
+				if (this_.gameInstance != null && this_.gameInstance.currentScreen != null) {
+					// Process GUI event immediately instead of batching
+					this_.gameInstance.currentScreen.handleMouseEvent(event);
+				} else {
+					// Add to batch for world context processing
+					events.add(event);
+				}
+			}
+		}
+
+		private MouseInput this_;
+		public MouseButtonCallback(MouseInput mouseInput) {
+			this_ = mouseInput;
 		}
 	}
 

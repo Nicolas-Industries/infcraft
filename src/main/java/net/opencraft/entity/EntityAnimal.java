@@ -13,6 +13,26 @@ public abstract class EntityAnimal extends EntityCreature {
     }
 
     @Override
+    protected boolean shouldWander() {
+        // Passive animals should wander more frequently but consider their current location
+        // If they're on a good spot (grass), they should be less likely to wander far
+        int currentBlockBelow = this.world.getBlockId(
+            (int) this.posX,
+            (int) (this.posY - 1.0),
+            (int) this.posZ
+        );
+
+        // If on grass, reduce wandering tendency; if not on grass, increase it
+        if (currentBlockBelow == net.opencraft.blocks.Block.grass.blockID) {
+            // On grass, 30% chance to wander (prefer staying in good spot)
+            return this.rand.nextInt(10) < 3;
+        } else {
+            // Not on grass, 80% chance to wander (search for better spot)
+            return this.rand.nextInt(10) < 8;
+        }
+    }
+
+    @Override
     protected float getBlockPathWeight(final int xCoord, final int yCoord, final int zCoord) {
         if (this.world.getBlockId(xCoord, yCoord - 1, zCoord) == Block.grass.blockID) {
             return 10.0f;

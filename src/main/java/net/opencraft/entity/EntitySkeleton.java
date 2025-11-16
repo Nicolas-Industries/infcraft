@@ -42,7 +42,9 @@ public class EntitySkeleton extends EntityMonster {
                 entity2.shoot(xCoord2, n + n2, zCoord, 0.6f, 12.0f);
                 this.attackTime = 30;
             }
-            this.rotationYaw = (float) (toRadians(atan2(zCoord, xCoord2))) - 90.0f;
+            // atan2 returns radians, but rotationYaw is in degrees
+            // Convert radians to degrees and adjust for facing direction
+            this.rotationYaw = (float) (toDegrees(atan2(zCoord, xCoord2))) - 90.0f;
             this.hasAttacked = true;
         }
     }

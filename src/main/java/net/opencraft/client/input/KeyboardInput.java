@@ -26,9 +26,8 @@ public class KeyboardInput extends GLFWKeyCallback {
 			pressedKeys.add(key);
 		} else if (action == GLFW.GLFW_RELEASE) {
 			pressedKeys.remove(key);
-		} else if(action == GLFW.GLFW_REPEAT) {
-			pressedKeys.add(key);
 		}
+		// Note: GLFW_REPEAT is intentionally NOT handled here to prevent continuous key processing
 	}
 
 }

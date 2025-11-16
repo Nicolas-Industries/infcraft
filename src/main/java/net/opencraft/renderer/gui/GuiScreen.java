@@ -86,8 +86,11 @@ public abstract class GuiScreen extends GuiElement {
     }
 
     public void handleMouseEvent(MouseInput.ButtonEvent event) {
-        final int x = ((int) id.mouse.position.x) * this.width / this.id.width;
-        final int y = this.height - ((int) id.mouse.position.y) * this.height / this.id.height - 1;
+        // Scale mouse coordinates from window space to GUI space
+        // id.mouse.position.x is raw X coordinate, id.mouse.position.y is inverted Y coordinate (0 at bottom)
+        // For GUI coordinates (0 at top-left), the Y should be: ((windowHeight - invertedY) / windowHeight) * guiHeight
+        final int x = (int) (((int) id.mouse.position.x) * this.width / this.id.width);
+        final int y = (int) (((id.height - (int) id.mouse.position.y) * this.height) / id.height);
         if (event.isPress()) {
             this.onMouseButtonPressed(x, y, event.buttonNumber());
         } else {

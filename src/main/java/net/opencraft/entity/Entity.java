@@ -402,13 +402,14 @@ public abstract class Entity {
         float sqrt_f = sqrt(xCoord * xCoord + yCoord * yCoord);
         sqrt_f = clamp(0.01f, 1, sqrt_f);
         sqrt_f = zCoord / sqrt_f;
-        
+
         xCoord *= sqrt_f;
         yCoord *= sqrt_f;
-        
+
+        // Convert rotationYaw from degrees to radians for sin/cos functions
         final float sin = sin(toRadians(rotationYaw));
         final float cos = cos(toRadians(rotationYaw));
-        
+
         this.motionX += xCoord * cos - yCoord * sin;
         this.motionZ += yCoord * cos + xCoord * sin;
     }
