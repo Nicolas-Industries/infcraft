@@ -1,8 +1,8 @@
 
-package net.opencraft.world.chunk;
+package net.opencraft.client.world.chunk;
 
-import net.opencraft.entity.Entity;
-import net.opencraft.physics.AABB;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.core.physics.AABB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 import net.opencraft.EnumSkyBlock;
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.ContainerBlock;
-import net.opencraft.util.Mth;
-import net.opencraft.tileentity.TileEntity;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.ContainerBlock;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.tileentity.TileEntity;
+import net.opencraft.client.world.World;
 
 public class Chunk {
 

@@ -1,15 +1,15 @@
 
-package net.opencraft.pathfinder;
+package net.opencraft.client.pathfinder;
 
 import static org.joml.Math.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.entity.Entity;
-import net.opencraft.util.Mth;
-import net.opencraft.world.IBlockAccess;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.IBlockAccess;
 
 public class Pathfinder {
 

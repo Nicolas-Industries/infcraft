@@ -8,13 +8,9 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 
 import com.google.common.collect.BiMap;
-import com.google.common.collect.EnumBiMap;
 import com.google.common.collect.EnumHashBiMap;
-import net.opencraft.OpenCraft;
-import net.opencraft.client.input.MovementInput;
-import net.opencraft.world.IWorldAccess;
-
-import javax.swing.text.JTextComponent;
+import net.opencraft.client.OpenCraft;
+import net.opencraft.core.world.IWorldAccess;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -154,9 +150,9 @@ public class GameSettings {
         }
         if (key == 11) {
             this.minimumBrightness = value;
-            if (mc.world != null) {
-                for (int i = 0; i < mc.world.worldAccesses.size(); ++i) {
-                    ((IWorldAccess) mc.world.worldAccesses.get(i)).updateAllRenderers();
+            if (mc.clientWorld != null) {
+                for (int i = 0; i < mc.clientWorld.worldAccesses.size(); ++i) {
+                    ((IWorldAccess) mc.clientWorld.worldAccesses.get(i)).updateAllRenderers();
                 }
             }
         }

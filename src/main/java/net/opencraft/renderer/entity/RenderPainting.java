@@ -1,11 +1,11 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import java.util.Random;
 import net.opencraft.EnumArt;
-import net.opencraft.entity.EntityPainting;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.util.Mth;
+import net.opencraft.client.entity.EntityPainting;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.core.util.Mth;
 import org.lwjgl.opengl.GL11;
 
 public class RenderPainting extends Render<EntityPainting> {

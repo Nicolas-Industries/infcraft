@@ -1,5 +1,5 @@
 
-package net.opencraft.world.chunk.storage;
+package net.opencraft.client.world.chunk.storage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,16 +7,16 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import net.opencraft.CompressedStreamTools;
-import net.opencraft.entity.Entity;
-import net.opencraft.entity.EntityList;
-import net.opencraft.nbt.NBTBase;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.nbt.NBTTagList;
-import net.opencraft.tileentity.TileEntity;
-import net.opencraft.world.IChunkLoader;
-import net.opencraft.world.World;
-import net.opencraft.world.chunk.Chunk;
-import net.opencraft.world.chunk.NibbleArray;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.client.entity.EntityList;
+import net.opencraft.core.nbt.NBTBase;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.nbt.NBTTagList;
+import net.opencraft.client.tileentity.TileEntity;
+import net.opencraft.client.world.IChunkLoader;
+import net.opencraft.client.world.World;
+import net.opencraft.client.world.chunk.Chunk;
+import net.opencraft.client.world.chunk.NibbleArray;
 
 public class ChunkLoader implements IChunkLoader {
 

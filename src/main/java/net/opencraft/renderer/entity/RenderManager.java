@@ -1,29 +1,28 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.opencraft.client.config.GameSettings;
-import net.opencraft.client.entity.models.*;
-import net.opencraft.entity.Entity;
-import net.opencraft.entity.EntityArrow;
-import net.opencraft.entity.EntityCreeper;
-import net.opencraft.entity.EntityFallingSand;
-import net.opencraft.entity.EntityGiant;
-import net.opencraft.entity.EntityItem;
-import net.opencraft.entity.EntityLiving;
-import net.opencraft.entity.EntityMinecart;
-import net.opencraft.entity.EntityPainting;
-import net.opencraft.entity.EntityPig;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.entity.EntitySheep;
-import net.opencraft.entity.EntitySkeleton;
-import net.opencraft.entity.EntitySpider;
-import net.opencraft.entity.EntityTNTPrimed;
-import net.opencraft.entity.EntityZombie;
-import net.opencraft.renderer.font.FontRenderer;
-import net.opencraft.world.World;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.client.entity.EntityArrow;
+import net.opencraft.client.entity.EntityCreeper;
+import net.opencraft.client.entity.EntityFallingSand;
+import net.opencraft.client.entity.EntityGiant;
+import net.opencraft.client.entity.EntityItem;
+import net.opencraft.client.entity.EntityLiving;
+import net.opencraft.client.entity.EntityMinecart;
+import net.opencraft.client.entity.EntityPainting;
+import net.opencraft.client.entity.EntityPig;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.client.entity.EntitySheep;
+import net.opencraft.client.entity.EntitySkeleton;
+import net.opencraft.client.entity.EntitySpider;
+import net.opencraft.client.entity.EntityTNTPrimed;
+import net.opencraft.client.entity.EntityZombie;
+import net.opencraft.client.renderer.font.FontRenderer;
+import net.opencraft.client.world.World;
 import org.lwjgl.opengl.GL11;
 
 public class RenderManager {

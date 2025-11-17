@@ -1,11 +1,11 @@
 
-package net.opencraft.world.gen;
+package net.opencraft.client.world.gen;
 
 import java.util.Random;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.FlowerBlock;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.FlowerBlock;
+import net.opencraft.client.world.World;
 
 public class WorldGenFlowers extends WorldGenerator {
 

@@ -1,13 +1,13 @@
 
 package net.opencraft;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.entity.Entity;
-import net.opencraft.entity.EntityLiving;
-import net.opencraft.renderer.gui.IProgressUpdate;
-import net.opencraft.util.Mth;
-import net.opencraft.world.World;
-import net.opencraft.world.chunk.ChunkPosition;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.client.entity.EntityLiving;
+import net.opencraft.client.renderer.gui.IProgressUpdate;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.World;
+import net.opencraft.client.world.chunk.ChunkPosition;
 
 public class ck {
 

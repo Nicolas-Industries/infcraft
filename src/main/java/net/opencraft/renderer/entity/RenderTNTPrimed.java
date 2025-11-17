@@ -1,8 +1,8 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.entity.EntityTNTPrimed;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.entity.EntityTNTPrimed;
 
 import org.lwjgl.opengl.GL11;
 

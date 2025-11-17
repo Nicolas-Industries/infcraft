@@ -24,8 +24,8 @@ import net.opencraft.IsoImageBuffer;
 import net.opencraft.OpenCraft;
 import net.opencraft.TerrainTextureManager;
 import net.opencraft.ThreadRunIsoClient;
-import net.opencraft.world.World;
-import net.opencraft.world.chunk.storage.SaveHandler;
+import net.opencraft.client.world.World;
+import net.opencraft.client.world.chunk.storage.SaveHandler;
 
 public class CanvasIsomPreview extends Canvas implements KeyListener, MouseListener, MouseMotionListener, Runnable {
 

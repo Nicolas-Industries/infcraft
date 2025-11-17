@@ -1,14 +1,14 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
-import net.opencraft.inventory.IInventory;
-import net.opencraft.inventory.InventoryCraftResult;
-import net.opencraft.inventory.InventoryCrafting;
-import net.opencraft.inventory.InventoryPlayer;
-import net.opencraft.inventory.Slot;
-import net.opencraft.inventory.SlotCrafting;
-import net.opencraft.inventory.recipe.CraftingManager;
-import net.opencraft.item.ItemStack;
+import net.opencraft.client.inventory.IInventory;
+import net.opencraft.client.inventory.InventoryCraftResult;
+import net.opencraft.client.inventory.InventoryCrafting;
+import net.opencraft.client.inventory.InventoryPlayer;
+import net.opencraft.client.inventory.Slot;
+import net.opencraft.client.inventory.SlotCrafting;
+import net.opencraft.client.inventory.recipe.CraftingManager;
+import net.opencraft.client.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 public class GuiCrafting extends GuiContainer {

@@ -1,11 +1,11 @@
 
-package net.opencraft.world.chunk;
+package net.opencraft.client.world.chunk;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.material.Material;
-import net.opencraft.tileentity.TileEntity;
-import net.opencraft.world.IBlockAccess;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.tileentity.TileEntity;
+import net.opencraft.client.world.IBlockAccess;
+import net.opencraft.client.world.World;
 
 public class ChunkCache implements IBlockAccess {
 

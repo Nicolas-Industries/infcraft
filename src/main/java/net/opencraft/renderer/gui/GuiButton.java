@@ -1,8 +1,8 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
 import net.opencraft.OpenCraft;
-import net.opencraft.renderer.font.FontRenderer;
+import net.opencraft.client.renderer.font.FontRenderer;
 
 import org.lwjgl.opengl.GL11;
 

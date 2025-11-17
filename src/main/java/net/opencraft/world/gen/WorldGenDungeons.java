@@ -1,15 +1,15 @@
 
-package net.opencraft.world.gen;
+package net.opencraft.client.world.gen;
 
 import java.util.Random;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.material.Material;
-import net.opencraft.item.Item;
-import net.opencraft.item.ItemStack;
-import net.opencraft.tileentity.TileEntityChest;
-import net.opencraft.tileentity.TileEntityMobSpawner;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.item.Item;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.client.tileentity.TileEntityChest;
+import net.opencraft.client.tileentity.TileEntityMobSpawner;
+import net.opencraft.client.world.World;
 
 public class WorldGenDungeons extends WorldGenerator {
 

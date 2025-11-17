@@ -3,7 +3,7 @@ package net.opencraft.client.entity.models;
 
 import static org.joml.Math.*;
 
-import net.opencraft.util.Mth;
+import net.opencraft.core.util.Mth;
 
 public class ModelBiped extends ModelBase {
 

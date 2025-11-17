@@ -1,5 +1,5 @@
 
-package net.opencraft.world;
+package net.opencraft.client.world;
 
 import static org.joml.Math.*;
 
@@ -8,19 +8,19 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.ContainerBlock;
-import net.opencraft.entity.Entity;
-import net.opencraft.physics.AABB;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.renderer.culling.ICamera;
-import net.opencraft.renderer.entity.Render;
-import net.opencraft.renderer.entity.RenderBlocks;
-import net.opencraft.tileentity.TileEntity;
-import net.opencraft.tileentity.TileEntityRenderer;
-import net.opencraft.util.Mth;
-import net.opencraft.world.chunk.Chunk;
-import net.opencraft.world.chunk.ChunkCache;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.ContainerBlock;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.core.physics.AABB;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.client.renderer.culling.ICamera;
+import net.opencraft.client.renderer.entity.Render;
+import net.opencraft.client.renderer.entity.RenderBlocks;
+import net.opencraft.client.tileentity.TileEntity;
+import net.opencraft.client.tileentity.TileEntityRenderer;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.chunk.Chunk;
+import net.opencraft.client.world.chunk.ChunkCache;
 import org.lwjgl.opengl.GL11;
 
 public class WorldRenderer {

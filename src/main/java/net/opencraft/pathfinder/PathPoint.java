@@ -1,5 +1,5 @@
 
-package net.opencraft.pathfinder;
+package net.opencraft.client.pathfinder;
 
 import static org.joml.Math.*;
 

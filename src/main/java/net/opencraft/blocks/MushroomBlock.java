@@ -1,7 +1,7 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
-import net.opencraft.world.World;
+import net.opencraft.client.world.World;
 
 public class MushroomBlock extends FlowerBlock {
 

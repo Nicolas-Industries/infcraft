@@ -4,7 +4,7 @@ package net.opencraft;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.opencraft.blocks.Block;
+import net.opencraft.core.blocks.Block;
 
 public class Session {
 

@@ -1,10 +1,10 @@
 
-package net.opencraft.world.chunk.storage;
+package net.opencraft.client.world.chunk.storage;
 
-import net.opencraft.world.World;
-import net.opencraft.world.IChunkProvider;
+import net.opencraft.client.world.World;
+import net.opencraft.client.world.IChunkProvider;
 import net.opencraft.client.canvas.CanvasIsomPreview;
-import net.opencraft.world.chunk.ChunkProviderClient;
+import net.opencraft.client.world.chunk.ChunkProviderClient;
 import java.io.File;
 
 public class SaveHandler extends World {

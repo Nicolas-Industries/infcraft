@@ -1,6 +1,6 @@
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
-import net.opencraft.renderer.*;
+import net.opencraft.client.renderer.*;
 
 public class GuiMultiplayer extends GuiScreen {
 

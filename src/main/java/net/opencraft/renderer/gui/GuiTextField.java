@@ -1,9 +1,9 @@
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
 import org.lwjgl.glfw.GLFW;
 
 import net.opencraft.client.input.MouseInput;
-import net.opencraft.renderer.font.FontRenderer;
+import net.opencraft.client.renderer.font.FontRenderer;
 
 public class GuiTextField extends GuiElement {
     

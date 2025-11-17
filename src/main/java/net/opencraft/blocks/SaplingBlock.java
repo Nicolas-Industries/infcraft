@@ -1,9 +1,9 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
 import java.util.Random;
-import net.opencraft.world.World;
-import net.opencraft.world.gen.WorldGenTrees;
+import net.opencraft.client.world.World;
+import net.opencraft.client.world.gen.WorldGenTrees;
 
 public class SaplingBlock extends FlowerBlock {
 

@@ -1,11 +1,11 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
 import java.util.Random;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.world.IBlockAccess;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.world.IBlockAccess;
+import net.opencraft.client.world.World;
 
 public class SlabBlock extends Block {
 

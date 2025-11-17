@@ -1,8 +1,8 @@
 
-package net.opencraft.renderer;
+package net.opencraft.client.renderer;
 
 import net.opencraft.PositionTextureVertex;
-import net.opencraft.util.Vec3;
+import net.opencraft.core.util.Vec3;
 
 public class TexturedQuad {
 

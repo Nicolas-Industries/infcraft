@@ -1,9 +1,9 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.tileentity.TileEntity;
-import net.opencraft.tileentity.TileEntityMobSpawner;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.tileentity.TileEntity;
+import net.opencraft.client.tileentity.TileEntityMobSpawner;
 
 public class SpawnerBlock extends ContainerBlock {
 

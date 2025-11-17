@@ -1,8 +1,8 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
-import net.opencraft.inventory.IInventory;
-import net.opencraft.inventory.Slot;
+import net.opencraft.client.inventory.IInventory;
+import net.opencraft.client.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 
 public class GuiChest extends GuiContainer {

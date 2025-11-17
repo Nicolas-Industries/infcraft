@@ -1,8 +1,8 @@
 
-package net.opencraft.world;
+package net.opencraft.client.world;
 
 import net.opencraft.EnumSkyBlock;
-import net.opencraft.blocks.Block;
+import net.opencraft.core.blocks.Block;
 
 public class MetadataChunkBlock {
 

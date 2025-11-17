@@ -1,10 +1,10 @@
 
-package net.opencraft.item;
+package net.opencraft.client.item;
 
-import net.opencraft.entity.Entity;
-import net.opencraft.entity.EntityArrow;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.world.World;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.client.entity.EntityArrow;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.client.world.World;
 
 public class ItemBow extends Item {
 

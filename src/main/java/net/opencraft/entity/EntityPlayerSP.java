@@ -1,19 +1,19 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import net.opencraft.OpenCraft;
 import net.opencraft.Session;
 import net.opencraft.client.input.KeyboardInput;
 import net.opencraft.client.input.MovementInput;
-import net.opencraft.inventory.IInventory;
-import net.opencraft.item.ItemStack;
-import net.opencraft.nbt.NBTBase;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.nbt.NBTTagList;
-import net.opencraft.renderer.gui.*;
-import net.opencraft.tileentity.TileEntityFurnace;
-import net.opencraft.tileentity.TileEntitySign;
-import net.opencraft.world.World;
+import net.opencraft.client.inventory.IInventory;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.core.nbt.NBTBase;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.nbt.NBTTagList;
+import net.opencraft.client.renderer.gui.*;
+import net.opencraft.client.tileentity.TileEntityFurnace;
+import net.opencraft.client.tileentity.TileEntitySign;
+import net.opencraft.client.world.World;
 
 public class EntityPlayerSP extends EntityPlayer {
 

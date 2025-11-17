@@ -1,12 +1,12 @@
 
-package net.opencraft.item;
+package net.opencraft.client.item;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.entity.Entity;
-import net.opencraft.entity.EntityLiving;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.client.entity.EntityLiving;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.client.world.World;
 
 public final class ItemStack {
 

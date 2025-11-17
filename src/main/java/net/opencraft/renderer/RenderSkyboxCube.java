@@ -1,9 +1,9 @@
-package net.opencraft.renderer;
+package net.opencraft.client.renderer;
 
 import net.opencraft.OpenCraft;
 import org.lwjgl.opengl.GL11;
 
-import static net.opencraft.entity.EntityRenderer.gluPerspective;
+import static net.opencraft.client.entity.EntityRenderer.gluPerspective;
 
 public class RenderSkyboxCube {
     private final String[] locations = new String[6];

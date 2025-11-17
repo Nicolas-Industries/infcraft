@@ -1,21 +1,21 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import static org.joml.Math.*;
 
 import java.util.List;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.inventory.IInventory;
-import net.opencraft.item.Item;
-import net.opencraft.item.ItemStack;
-import net.opencraft.nbt.NBTBase;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.nbt.NBTTagList;
-import net.opencraft.physics.AABB;
-import net.opencraft.util.Mth;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.inventory.IInventory;
+import net.opencraft.client.item.Item;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.core.nbt.NBTBase;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.nbt.NBTTagList;
+import net.opencraft.core.physics.AABB;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.World;
 
 public class EntityMinecart extends Entity implements IInventory {
 

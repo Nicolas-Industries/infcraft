@@ -1,12 +1,12 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import static org.joml.Math.*;
 
-import net.opencraft.pathfinder.PathEntity;
-import net.opencraft.util.Mth;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.World;
+import net.opencraft.client.pathfinder.PathEntity;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.World;
 
 public class EntityCreature extends EntityLiving {
 

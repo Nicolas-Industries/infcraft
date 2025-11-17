@@ -1,10 +1,10 @@
 
-package net.opencraft.renderer;
+package net.opencraft.client.renderer;
 
 import net.opencraft.OpenCraft;
 import net.opencraft.OpenCraftError;
 import net.opencraft.ScaledResolution;
-import net.opencraft.renderer.gui.IProgressUpdate;
+import net.opencraft.client.renderer.gui.IProgressUpdate;
 
 import org.lwjgl.opengl.GL11;
 

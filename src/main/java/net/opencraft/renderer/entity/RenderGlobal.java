@@ -1,31 +1,31 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import static org.joml.Math.*;
 
 import java.nio.IntBuffer;
 import java.util.*;
 
-import net.opencraft.renderer.texture.ImageProvider;
+import net.opencraft.client.renderer.texture.ImageProvider;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBOcclusionQuery;
 import org.lwjgl.opengl.GL11;
 
 import net.opencraft.OpenCraft;
 import net.opencraft.fi;
-import net.opencraft.blocks.Block;
+import net.opencraft.core.blocks.Block;
 import net.opencraft.client.input.MovingObjectPosition;
-import net.opencraft.entity.*;
-import net.opencraft.item.ItemStack;
-import net.opencraft.physics.AABB;
-import net.opencraft.renderer.GLAllocation;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.renderer.culling.ICamera;
-import net.opencraft.tileentity.TileEntity;
-import net.opencraft.tileentity.TileEntityRenderer;
-import net.opencraft.util.Mth;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.*;
+import net.opencraft.client.entity.*;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.core.physics.AABB;
+import net.opencraft.client.renderer.GLAllocation;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.client.renderer.culling.ICamera;
+import net.opencraft.client.tileentity.TileEntity;
+import net.opencraft.client.tileentity.TileEntityRenderer;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.*;
 
 public class RenderGlobal implements IWorldAccess {
 

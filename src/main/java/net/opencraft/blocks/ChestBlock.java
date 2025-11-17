@@ -1,18 +1,18 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
 import java.util.Random;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.entity.EntityItem;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.inventory.IInventory;
-import net.opencraft.inventory.InventoryLargeChest;
-import net.opencraft.item.ItemStack;
-import net.opencraft.tileentity.TileEntity;
-import net.opencraft.tileentity.TileEntityChest;
-import net.opencraft.world.IBlockAccess;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.entity.EntityItem;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.client.inventory.IInventory;
+import net.opencraft.client.inventory.InventoryLargeChest;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.client.tileentity.TileEntity;
+import net.opencraft.client.tileentity.TileEntityChest;
+import net.opencraft.client.world.IBlockAccess;
+import net.opencraft.client.world.World;
 
 public class ChestBlock extends ContainerBlock {
 

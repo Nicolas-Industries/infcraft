@@ -1,11 +1,11 @@
 
-package net.opencraft.world.chunk;
+package net.opencraft.client.world.chunk;
 
-import net.opencraft.blocks.SandBlock;
-import net.opencraft.renderer.gui.IProgressUpdate;
-import net.opencraft.world.IChunkLoader;
-import net.opencraft.world.IChunkProvider;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.SandBlock;
+import net.opencraft.client.renderer.gui.IProgressUpdate;
+import net.opencraft.client.world.IChunkLoader;
+import net.opencraft.client.world.IChunkProvider;
+import net.opencraft.client.world.World;
 
 public class ChunkProviderLoadOrGenerate implements IChunkProvider {
 

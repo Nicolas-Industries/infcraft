@@ -1,12 +1,12 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
-import net.opencraft.blocks.Block;
+import net.opencraft.core.blocks.Block;
 import net.opencraft.client.entity.models.ModelBase;
 import net.opencraft.client.entity.models.ModelMinecart;
-import net.opencraft.entity.EntityMinecart;
-import net.opencraft.util.Mth;
-import net.opencraft.util.Vec3;
+import net.opencraft.client.entity.EntityMinecart;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.util.Vec3;
 
 import static org.joml.Math.*;
 

@@ -1,14 +1,14 @@
 
-package net.opencraft.tileentity;
+package net.opencraft.client.tileentity;
 
 import java.util.*;
 
 import org.lwjgl.opengl.GL11;
 
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.renderer.entity.Renderer;
-import net.opencraft.renderer.font.FontRenderer;
-import net.opencraft.world.World;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.client.renderer.entity.Renderer;
+import net.opencraft.client.renderer.font.FontRenderer;
+import net.opencraft.client.world.World;
 
 public class TileEntityRenderer {
 

@@ -1,21 +1,21 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import static org.joml.Math.*;
 
 import java.util.List;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.material.Material;
-import net.opencraft.inventory.IInventory;
-import net.opencraft.inventory.InventoryPlayer;
-import net.opencraft.item.Item;
-import net.opencraft.item.ItemStack;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.tileentity.TileEntityFurnace;
-import net.opencraft.tileentity.TileEntitySign;
-import net.opencraft.util.Mth;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.inventory.IInventory;
+import net.opencraft.client.inventory.InventoryPlayer;
+import net.opencraft.client.item.Item;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.client.tileentity.TileEntityFurnace;
+import net.opencraft.client.tileentity.TileEntitySign;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.World;
 
 public class EntityPlayer extends EntityLiving {
 

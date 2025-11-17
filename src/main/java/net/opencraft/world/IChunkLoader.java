@@ -1,7 +1,7 @@
 
-package net.opencraft.world;
+package net.opencraft.client.world;
 
-import net.opencraft.world.chunk.Chunk;
+import net.opencraft.client.world.chunk.Chunk;
 
 public interface IChunkLoader {
 

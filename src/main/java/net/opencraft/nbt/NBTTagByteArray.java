@@ -1,5 +1,5 @@
 
-package net.opencraft.nbt;
+package net.opencraft.core.nbt;
 
 import java.io.DataInput;
 import java.io.DataOutput;

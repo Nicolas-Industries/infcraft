@@ -1,7 +1,7 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
-import net.opencraft.blocks.material.Material;
+import net.opencraft.core.blocks.material.Material;
 
 public class OreStorageBlock extends Block {
 

@@ -1,9 +1,9 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
-import net.opencraft.item.Item;
-import net.opencraft.util.Mth;
-import net.opencraft.world.World;
+import net.opencraft.client.item.Item;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.World;
 
 public class EntityZombie extends EntityMonster {
 

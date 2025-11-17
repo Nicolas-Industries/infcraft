@@ -8,13 +8,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.entity.Entity;
-import net.opencraft.physics.AABB;
-import net.opencraft.util.Mth;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.World;
-import net.opencraft.world.chunk.ChunkPosition;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.core.physics.AABB;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.World;
+import net.opencraft.client.world.chunk.ChunkPosition;
 
 public class Explosion {
 

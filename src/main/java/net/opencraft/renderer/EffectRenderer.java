@@ -1,5 +1,5 @@
 
-package net.opencraft.renderer;
+package net.opencraft.client.renderer;
 
 import static org.joml.Math.*;
 
@@ -7,10 +7,10 @@ import java.util.*;
 
 import org.lwjgl.opengl.GL11;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.entity.*;
-import net.opencraft.renderer.entity.Renderer;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.entity.*;
+import net.opencraft.client.renderer.entity.Renderer;
+import net.opencraft.client.world.World;
 
 public class EffectRenderer {
 

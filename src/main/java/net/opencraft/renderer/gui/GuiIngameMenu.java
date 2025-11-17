@@ -1,5 +1,5 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
 import static org.joml.Math.*;
 

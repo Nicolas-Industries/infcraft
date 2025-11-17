@@ -1,5 +1,5 @@
 
-package net.opencraft.world.chunk;
+package net.opencraft.client.world.chunk;
 
 public class ChunkPosition {
 

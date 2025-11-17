@@ -1,7 +1,7 @@
 
-package net.opencraft.inventory.recipe;
+package net.opencraft.client.inventory.recipe;
 
-import net.opencraft.item.ItemStack;
+import net.opencraft.client.item.ItemStack;
 
 public class IRecipe {
 

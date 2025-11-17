@@ -1,13 +1,13 @@
 
-package net.opencraft.renderer.texture;
+package net.opencraft.client.renderer.texture;
 
 import static org.joml.Math.*;
 
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.util.Mth;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.util.Mth;
 
 public class TextureGearsFX extends TextureFX {
 

@@ -1,10 +1,10 @@
 
-package net.opencraft.tileentity;
+package net.opencraft.client.tileentity;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.world.World;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.client.world.World;
 
 public class TileEntity {
 

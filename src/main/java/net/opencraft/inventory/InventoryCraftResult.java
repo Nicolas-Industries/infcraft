@@ -1,7 +1,7 @@
 
-package net.opencraft.inventory;
+package net.opencraft.client.inventory;
 
-import net.opencraft.item.ItemStack;
+import net.opencraft.client.item.ItemStack;
 
 public class InventoryCraftResult implements IInventory {
 

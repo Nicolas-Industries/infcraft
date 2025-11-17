@@ -1,14 +1,14 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
-import net.opencraft.util.Mth;
-import net.opencraft.blocks.Block;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.blocks.Block;
 import net.opencraft.client.entity.models.ModelBase;
 import net.opencraft.client.entity.models.ModelBiped;
-import net.opencraft.world.World;
-import net.opencraft.entity.Entity;
-import net.opencraft.physics.AABB;
-import net.opencraft.renderer.Tessellator;
+import net.opencraft.client.world.World;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.core.physics.AABB;
+import net.opencraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 

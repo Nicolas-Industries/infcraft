@@ -1,13 +1,13 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.opencraft.OpenCraft;
 import net.opencraft.client.input.MouseInput;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.renderer.font.FontRenderer;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.client.renderer.font.FontRenderer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL11;

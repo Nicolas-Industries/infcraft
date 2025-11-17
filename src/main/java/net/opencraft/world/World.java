@@ -1,5 +1,5 @@
 
-package net.opencraft.world;
+package net.opencraft.client.world;
 
 import static org.joml.Math.*;
 
@@ -7,21 +7,21 @@ import java.io.*;
 import java.util.*;
 
 import net.opencraft.*;
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.LiquidBlock;
-import net.opencraft.blocks.material.Material;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.LiquidBlock;
+import net.opencraft.core.blocks.material.Material;
 import net.opencraft.client.input.MovingObjectPosition;
-import net.opencraft.entity.Entity;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.pathfinder.PathEntity;
-import net.opencraft.pathfinder.Pathfinder;
-import net.opencraft.physics.AABB;
-import net.opencraft.renderer.gui.IProgressUpdate;
-import net.opencraft.tileentity.TileEntity;
-import net.opencraft.util.Mth;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.chunk.*;
-import net.opencraft.world.chunk.storage.ChunkLoader;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.client.pathfinder.PathEntity;
+import net.opencraft.client.pathfinder.Pathfinder;
+import net.opencraft.core.physics.AABB;
+import net.opencraft.client.renderer.gui.IProgressUpdate;
+import net.opencraft.client.tileentity.TileEntity;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.chunk.*;
+import net.opencraft.client.world.chunk.storage.ChunkLoader;
 
 public class World implements IBlockAccess {
 

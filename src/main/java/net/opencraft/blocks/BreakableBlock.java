@@ -1,8 +1,8 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.world.IBlockAccess;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.world.IBlockAccess;
 
 public class BreakableBlock extends Block {
 

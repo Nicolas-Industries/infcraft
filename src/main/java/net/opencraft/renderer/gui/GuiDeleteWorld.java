@@ -1,9 +1,9 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
 import java.io.File;
 import net.opencraft.OpenCraft;
-import net.opencraft.world.World;
+import net.opencraft.client.world.World;
 
 public class GuiDeleteWorld extends GuiCreateWorld {
 

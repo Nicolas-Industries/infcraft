@@ -1,8 +1,8 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
 import java.util.Random;
-import net.opencraft.item.Item;
+import net.opencraft.client.item.Item;
 
 public class GravelBlock extends SandBlock {
 

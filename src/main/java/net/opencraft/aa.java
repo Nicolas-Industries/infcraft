@@ -2,8 +2,8 @@
 package net.opencraft;
 
 import net.opencraft.client.entity.PlayerControllerSP;
-import net.opencraft.world.World;
-import net.opencraft.world.chunk.ChunkPosition;
+import net.opencraft.client.world.World;
+import net.opencraft.client.world.chunk.ChunkPosition;
 
 public class aa extends ck {
 

@@ -1,12 +1,12 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
 import java.util.Random;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.entity.Entity;
-import net.opencraft.physics.AABB;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.core.physics.AABB;
+import net.opencraft.client.world.World;
 
 public class FarmlandBlock extends Block {
 

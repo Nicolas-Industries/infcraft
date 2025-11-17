@@ -1,9 +1,9 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.client.world.World;
 
 public class CraftingTableBlock extends Block {
 

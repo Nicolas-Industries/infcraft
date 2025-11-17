@@ -1,4 +1,4 @@
-package net.opencraft.tests;
+package net.opencraft.client.tests;
 
 import net.opencraft.server.Server;
 

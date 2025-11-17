@@ -4,18 +4,18 @@ package net.opencraft.client.entity;
 import net.opencraft.OpenCraft;
 import net.opencraft.aa;
 import net.opencraft.ck;
-import net.opencraft.blocks.Block;
-import net.opencraft.entity.EntityAnimal;
-import net.opencraft.entity.EntityCreeper;
-import net.opencraft.entity.EntityMonster;
-import net.opencraft.entity.EntityPig;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.entity.EntitySheep;
-import net.opencraft.entity.EntitySkeleton;
-import net.opencraft.entity.EntitySpider;
-import net.opencraft.entity.EntityZombie;
-import net.opencraft.item.ItemStack;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.entity.EntityAnimal;
+import net.opencraft.client.entity.EntityCreeper;
+import net.opencraft.client.entity.EntityMonster;
+import net.opencraft.client.entity.EntityPig;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.client.entity.EntitySheep;
+import net.opencraft.client.entity.EntitySkeleton;
+import net.opencraft.client.entity.EntitySpider;
+import net.opencraft.client.entity.EntityZombie;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.client.world.World;
 
 public class PlayerControllerSP extends PlayerController {
 

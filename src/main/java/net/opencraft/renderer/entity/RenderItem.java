@@ -1,11 +1,11 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.entity.EntityItem;
-import net.opencraft.item.ItemStack;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.renderer.font.FontRenderer;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.entity.EntityItem;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.client.renderer.font.FontRenderer;
 
 import static org.joml.Math.*;
 

@@ -3,7 +3,7 @@ package net.opencraft;
 
 import java.awt.Panel;
 
-import net.opencraft.util.UnexpectedThrowable;
+import net.opencraft.core.util.UnexpectedThrowable;
 
 public class PanelCrashReport extends Panel {
 	

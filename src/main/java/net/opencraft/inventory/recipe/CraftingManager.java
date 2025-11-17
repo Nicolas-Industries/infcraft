@@ -1,5 +1,5 @@
 
-package net.opencraft.inventory.recipe;
+package net.opencraft.client.inventory.recipe;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.item.Item;
-import net.opencraft.item.ItemStack;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.item.Item;
+import net.opencraft.client.item.ItemStack;
 
 public class CraftingManager {
 

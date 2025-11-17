@@ -1,9 +1,9 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.tileentity.TileEntity;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.tileentity.TileEntity;
+import net.opencraft.client.world.World;
 
 public abstract class ContainerBlock extends Block {
 

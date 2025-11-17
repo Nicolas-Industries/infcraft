@@ -1,7 +1,7 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
-import net.opencraft.world.World;
+import net.opencraft.client.world.World;
 
 public class EntitySplashFX extends EntityRainFX {
 

@@ -1,12 +1,12 @@
 
-package net.opencraft.tileentity;
+package net.opencraft.client.tileentity;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.opencraft.entity.Entity;
-import net.opencraft.entity.EntityList;
-import net.opencraft.renderer.entity.RenderManager;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.client.entity.EntityList;
+import net.opencraft.client.renderer.entity.RenderManager;
 
 import org.lwjgl.opengl.GL11;
 

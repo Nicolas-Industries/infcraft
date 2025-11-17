@@ -1,14 +1,14 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
 import java.util.*;
 
-import net.opencraft.entity.Entity;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.physics.AABB;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.IBlockAccess;
-import net.opencraft.world.World;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.core.physics.AABB;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.IBlockAccess;
+import net.opencraft.client.world.World;
 
 public class StairBlock extends Block {
 

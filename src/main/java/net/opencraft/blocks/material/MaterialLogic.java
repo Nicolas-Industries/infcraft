@@ -1,5 +1,5 @@
 
-package net.opencraft.blocks.material;
+package net.opencraft.core.blocks.material;
 
 public class MaterialLogic extends Material {
 

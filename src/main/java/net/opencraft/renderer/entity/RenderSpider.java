@@ -1,8 +1,8 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import net.opencraft.client.entity.models.ModelSpider;
-import net.opencraft.entity.EntitySpider;
+import net.opencraft.client.entity.EntitySpider;
 import org.lwjgl.opengl.GL11;
 
 public class RenderSpider extends RenderLiving {

@@ -1,5 +1,5 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
 import static org.joml.Math.*;
 
@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Random;
 import net.opencraft.OpenCraft;
 import net.opencraft.ScaledResolution;
-import net.opencraft.blocks.material.Material;
+import net.opencraft.core.blocks.material.Material;
 import net.opencraft.client.Main;
-import net.opencraft.inventory.InventoryPlayer;
-import net.opencraft.item.ItemStack;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.renderer.entity.RenderHelper;
-import net.opencraft.renderer.entity.RenderItem;
-import net.opencraft.renderer.font.FontRenderer;
+import net.opencraft.client.inventory.InventoryPlayer;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.client.renderer.entity.RenderHelper;
+import net.opencraft.client.renderer.entity.RenderItem;
+import net.opencraft.client.renderer.font.FontRenderer;
 
 import org.lwjgl.opengl.GL11;
 

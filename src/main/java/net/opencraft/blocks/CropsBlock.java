@@ -1,11 +1,11 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
 import java.util.Random;
-import net.opencraft.entity.EntityItem;
-import net.opencraft.item.Item;
-import net.opencraft.item.ItemStack;
-import net.opencraft.world.World;
+import net.opencraft.client.entity.EntityItem;
+import net.opencraft.client.item.Item;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.client.world.World;
 
 public class CropsBlock extends FlowerBlock {
 

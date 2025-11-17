@@ -12,7 +12,7 @@ import com.google.common.collect.EnumBiMap;
 import com.google.common.collect.EnumHashBiMap;
 import net.opencraft.OpenCraft;
 import net.opencraft.client.input.MovementInput;
-import net.opencraft.world.IWorldAccess;
+import net.opencraft.client.world.IWorldAccess;
 
 import javax.swing.text.JTextComponent;
 

@@ -2,9 +2,9 @@
 package net.opencraft.client.entity;
 
 import net.opencraft.OpenCraft;
-import net.opencraft.blocks.Block;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.client.world.World;
 
 public class PlayerController {
 

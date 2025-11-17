@@ -10,9 +10,8 @@
 	<name>OpenCraft - Parent</name>
 
 	<modules>
-		<module>opencraft-core</module>
 		<module>opencraft-server</module>
-		<module>opencraft-client</module>
+        <module>opencraft-client</module>
 	</modules>
 
 	<properties>

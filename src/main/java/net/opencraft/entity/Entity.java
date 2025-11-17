@@ -1,25 +1,25 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import static org.joml.Math.*;
 
 import java.util.List;
 import java.util.Random;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.LiquidBlock;
-import net.opencraft.blocks.material.Material;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.LiquidBlock;
+import net.opencraft.core.blocks.material.Material;
 import net.opencraft.client.sound.StepSound;
-import net.opencraft.item.ItemStack;
-import net.opencraft.nbt.NBTBase;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.nbt.NBTTagDouble;
-import net.opencraft.nbt.NBTTagFloat;
-import net.opencraft.nbt.NBTTagList;
-import net.opencraft.physics.AABB;
-import net.opencraft.util.Mth;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.World;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.core.nbt.NBTBase;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.nbt.NBTTagDouble;
+import net.opencraft.core.nbt.NBTTagFloat;
+import net.opencraft.core.nbt.NBTTagList;
+import net.opencraft.core.physics.AABB;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.World;
 
 public abstract class Entity {
 

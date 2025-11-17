@@ -4,12 +4,6 @@ package net.opencraft.client.input;
 import org.joml.Vector2f;
 
 import net.opencraft.client.config.GameSettings;
-import net.opencraft.entity.EntityPlayer;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class MovementInput {
 

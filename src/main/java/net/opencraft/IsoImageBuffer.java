@@ -2,7 +2,7 @@
 package net.opencraft;
 
 import java.awt.image.BufferedImage;
-import net.opencraft.world.World;
+import net.opencraft.client.world.World;
 
 public class IsoImageBuffer {
 

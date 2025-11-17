@@ -1,4 +1,4 @@
-package net.opencraft.tests;
+package net.opencraft.client.tests;
 
 import static net.opencraft.OpenCraft.*;
 
@@ -11,7 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import net.opencraft.client.sound.SoundManager;
-import net.opencraft.util.ThreadHelper;
+import net.opencraft.core.util.ThreadHelper;
 
 public class DownloadResourcesJob implements Job {
 

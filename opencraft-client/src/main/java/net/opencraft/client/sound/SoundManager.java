@@ -1,10 +1,9 @@
 package net.opencraft.client.sound;
 
-import static net.opencraft.tests.DownloadResourcesJob.SOUNDS_PATH;
 import static org.joml.Math.*;
 
 import net.opencraft.client.config.GameSettings;
-import net.opencraft.entity.EntityLiving;
+import net.opencraft.core.entity.EntityLiving;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 import paulscode.sound.codecs.CodecJOrbis;
@@ -26,6 +25,8 @@ public class SoundManager {
     private Random rand = new Random();
     public int ticksBeforeMusic = this.rand.nextInt(12000);
     public String currentMusicTheme = "menu";
+
+    public static final String SOUNDS_PATH = "assets/opencraft/resources/";
 
     public enum SoundType {
         MENUMUSIC,

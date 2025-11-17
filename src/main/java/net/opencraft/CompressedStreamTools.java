@@ -9,8 +9,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import net.opencraft.nbt.NBTBase;
-import net.opencraft.nbt.NBTTagCompound;
+import net.opencraft.core.nbt.NBTBase;
+import net.opencraft.core.nbt.NBTTagCompound;
 
 public class CompressedStreamTools {
 

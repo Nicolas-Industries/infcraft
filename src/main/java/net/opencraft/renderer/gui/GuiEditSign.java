@@ -1,8 +1,8 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
-import net.opencraft.tileentity.TileEntityRenderer;
-import net.opencraft.tileentity.TileEntitySign;
+import net.opencraft.client.tileentity.TileEntityRenderer;
+import net.opencraft.client.tileentity.TileEntitySign;
 import org.lwjgl.opengl.GL11;
 
 public class GuiEditSign extends GuiScreen {

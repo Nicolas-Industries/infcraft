@@ -1,5 +1,5 @@
 
-package net.opencraft.renderer.culling;
+package net.opencraft.client.renderer.culling;
 
 import static org.joml.Math.*;
 
@@ -8,8 +8,8 @@ import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import net.opencraft.renderer.GLAllocation;
-import net.opencraft.util.Mth;
+import net.opencraft.client.renderer.GLAllocation;
+import net.opencraft.core.util.Mth;
 
 public class Frustum extends ClippingHelper {
 

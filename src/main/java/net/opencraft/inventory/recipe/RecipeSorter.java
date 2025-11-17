@@ -1,5 +1,5 @@
 
-package net.opencraft.inventory.recipe;
+package net.opencraft.client.inventory.recipe;
 
 import java.util.Comparator;
 

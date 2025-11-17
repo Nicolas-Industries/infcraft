@@ -1,12 +1,12 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import static org.joml.Math.*;
 
 import org.lwjgl.opengl.GL11;
 
-import net.opencraft.entity.EntityArrow;
-import net.opencraft.renderer.Tessellator;
+import net.opencraft.client.entity.EntityArrow;
+import net.opencraft.client.renderer.Tessellator;
 
 public class RenderArrow extends Render<EntityArrow> {
 

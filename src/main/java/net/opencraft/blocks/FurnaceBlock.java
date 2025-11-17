@@ -1,14 +1,14 @@
 
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
 import java.util.Random;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.tileentity.TileEntity;
-import net.opencraft.tileentity.TileEntityFurnace;
-import net.opencraft.world.IBlockAccess;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.client.tileentity.TileEntity;
+import net.opencraft.client.tileentity.TileEntityFurnace;
+import net.opencraft.client.world.IBlockAccess;
+import net.opencraft.client.world.World;
 
 public class FurnaceBlock extends ContainerBlock {
 

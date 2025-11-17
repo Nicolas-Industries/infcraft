@@ -1,5 +1,5 @@
 
-package net.opencraft.item;
+package net.opencraft.client.item;
 
 public class ItemArmor extends Item {
 

@@ -1,16 +1,16 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.opencraft.EnumArt;
-import net.opencraft.blocks.material.Material;
-import net.opencraft.item.Item;
-import net.opencraft.item.ItemStack;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.util.Mth;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.item.Item;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.World;
 
 public class EntityPainting extends Entity {
 

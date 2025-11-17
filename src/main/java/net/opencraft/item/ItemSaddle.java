@@ -1,8 +1,8 @@
 
-package net.opencraft.item;
+package net.opencraft.client.item;
 
-import net.opencraft.entity.EntityLiving;
-import net.opencraft.entity.EntityPig;
+import net.opencraft.client.entity.EntityLiving;
+import net.opencraft.client.entity.EntityPig;
 
 public class ItemSaddle extends Item {
 

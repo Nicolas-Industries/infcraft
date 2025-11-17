@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import net.opencraft.OpenCraft;
-import net.opencraft.entity.EntityPlayerSP;
+import net.opencraft.client.entity.EntityPlayerSP;
 import net.opencraft.shared.network.INetworkManager;
 import net.opencraft.shared.network.PacketManager;
 import net.opencraft.shared.network.packets.IPacket;

@@ -1,10 +1,10 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.util.Mth;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.World;
 
 public abstract class EntityAnimal extends EntityCreature {
 
@@ -23,7 +23,7 @@ public abstract class EntityAnimal extends EntityCreature {
         );
 
         // If on grass, reduce wandering tendency; if not on grass, increase it
-        if (currentBlockBelow == net.opencraft.blocks.Block.grass.blockID) {
+        if (currentBlockBelow == net.opencraft.core.blocks.Block.grass.blockID) {
             // On grass, 30% chance to wander (prefer staying in good spot)
             return this.rand.nextInt(10) < 3;
         } else {

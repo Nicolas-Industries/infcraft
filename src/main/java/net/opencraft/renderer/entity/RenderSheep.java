@@ -1,5 +1,5 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import net.opencraft.client.entity.models.ModelBase;
 

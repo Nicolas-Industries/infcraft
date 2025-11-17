@@ -1,16 +1,16 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import static org.joml.Math.*;
 
 import java.util.List;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.material.Material;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.material.Material;
 import net.opencraft.client.sound.StepSound;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.util.Mth;
-import net.opencraft.world.World;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.World;
 
 public class EntityLiving extends Entity {
 

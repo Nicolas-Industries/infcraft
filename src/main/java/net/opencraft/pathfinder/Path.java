@@ -1,5 +1,5 @@
 
-package net.opencraft.pathfinder;
+package net.opencraft.client.pathfinder;
 
 public class Path {
 

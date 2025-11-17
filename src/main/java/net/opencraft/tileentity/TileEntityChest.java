@@ -1,11 +1,11 @@
 
-package net.opencraft.tileentity;
+package net.opencraft.client.tileentity;
 
-import net.opencraft.inventory.IInventory;
-import net.opencraft.item.ItemStack;
-import net.opencraft.nbt.NBTBase;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.nbt.NBTTagList;
+import net.opencraft.client.inventory.IInventory;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.core.nbt.NBTBase;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.nbt.NBTTagList;
 
 public class TileEntityChest extends TileEntity implements IInventory {
 

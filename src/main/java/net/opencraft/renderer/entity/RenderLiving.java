@@ -1,10 +1,10 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import net.opencraft.client.entity.models.ModelBase;
-import net.opencraft.entity.EntityLiving;
-import net.opencraft.entity.EntitySheep;
-import net.opencraft.util.Mth;
+import net.opencraft.client.entity.EntityLiving;
+import net.opencraft.client.entity.EntitySheep;
+import net.opencraft.core.util.Mth;
 
 import static org.joml.Math.*;
 

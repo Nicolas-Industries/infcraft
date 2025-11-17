@@ -1,9 +1,9 @@
 
-package net.opencraft.inventory.recipe;
+package net.opencraft.client.inventory.recipe;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.item.Item;
-import net.opencraft.item.ItemStack;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.item.Item;
+import net.opencraft.client.item.ItemStack;
 
 public class RecipesTools {
 

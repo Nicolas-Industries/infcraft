@@ -1,4 +1,4 @@
-package net.opencraft.renderer;
+package net.opencraft.client.renderer;
 
 import java.nio.FloatBuffer;
 

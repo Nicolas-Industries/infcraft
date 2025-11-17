@@ -1,11 +1,11 @@
 
-package net.opencraft.physics;
+package net.opencraft.core.physics;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.opencraft.client.input.MovingObjectPosition;
-import net.opencraft.util.Vec3;
+import net.opencraft.core.util.Vec3;
 
 public class AABB {
 

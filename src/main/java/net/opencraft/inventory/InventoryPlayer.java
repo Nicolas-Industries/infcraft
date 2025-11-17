@@ -1,14 +1,14 @@
 
-package net.opencraft.inventory;
+package net.opencraft.client.inventory;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.material.Material;
-import net.opencraft.entity.Entity;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.item.ItemArmor;
-import net.opencraft.item.ItemStack;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.nbt.NBTTagList;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.client.item.ItemArmor;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.nbt.NBTTagList;
 
 public class InventoryPlayer implements IInventory {
 

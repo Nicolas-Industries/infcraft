@@ -1,7 +1,7 @@
 
-package net.opencraft.item;
+package net.opencraft.client.item;
 
-import net.opencraft.blocks.Block;
+import net.opencraft.core.blocks.Block;
 
 public class ItemSpade extends ItemTool {
 

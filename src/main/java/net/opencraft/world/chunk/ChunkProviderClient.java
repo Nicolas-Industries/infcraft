@@ -1,10 +1,10 @@
 
-package net.opencraft.world.chunk;
+package net.opencraft.client.world.chunk;
 
-import net.opencraft.renderer.gui.IProgressUpdate;
-import net.opencraft.world.IChunkLoader;
-import net.opencraft.world.IChunkProvider;
-import net.opencraft.world.World;
+import net.opencraft.client.renderer.gui.IProgressUpdate;
+import net.opencraft.client.world.IChunkLoader;
+import net.opencraft.client.world.IChunkProvider;
+import net.opencraft.client.world.World;
 
 public class ChunkProviderClient implements IChunkProvider {
 

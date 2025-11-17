@@ -1,8 +1,8 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import net.opencraft.client.entity.models.ModelBase;
-import net.opencraft.entity.EntityPig;
+import net.opencraft.client.entity.EntityPig;
 
 public class RenderPig extends RenderLiving {
 

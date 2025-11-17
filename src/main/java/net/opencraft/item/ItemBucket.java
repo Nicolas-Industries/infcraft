@@ -1,14 +1,14 @@
 
-package net.opencraft.item;
+package net.opencraft.client.item;
 
 import static org.joml.Math.*;
 
-import net.opencraft.blocks.material.Material;
+import net.opencraft.core.blocks.material.Material;
 import net.opencraft.client.input.MovingObjectPosition;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.util.Mth;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.World;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.World;
 
 public class ItemBucket extends Item {
 

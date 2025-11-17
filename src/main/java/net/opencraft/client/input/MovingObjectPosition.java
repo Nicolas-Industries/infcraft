@@ -1,8 +1,8 @@
 
 package net.opencraft.client.input;
 
-import net.opencraft.entity.Entity;
-import net.opencraft.util.Vec3;
+import net.opencraft.client.entity.Entity;
+import net.opencraft.core.util.Vec3;
 
 public class MovingObjectPosition {
 

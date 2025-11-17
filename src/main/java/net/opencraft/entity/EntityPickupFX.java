@@ -1,10 +1,10 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.renderer.entity.RenderManager;
-import net.opencraft.util.Mth;
-import net.opencraft.world.World;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.client.renderer.entity.RenderManager;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.World;
 import org.lwjgl.opengl.GL11;
 
 public class EntityPickupFX extends EntityFX {

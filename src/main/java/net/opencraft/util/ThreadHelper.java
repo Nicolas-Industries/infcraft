@@ -1,4 +1,4 @@
-package net.opencraft.util;
+package net.opencraft.core.util;
 
 public final class ThreadHelper {
 

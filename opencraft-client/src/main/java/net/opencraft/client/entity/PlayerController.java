@@ -1,10 +1,10 @@
 
 package net.opencraft.client.entity;
 
-import net.opencraft.OpenCraft;
-import net.opencraft.blocks.Block;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.world.World;
+import net.opencraft.client.OpenCraft;
+import net.opencraft.client.world.ClientWorld;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.entity.EntityPlayer;
 
 public class PlayerController {
 
@@ -19,7 +19,7 @@ public class PlayerController {
     public void a() {
     }
 
-    public void func_717_a(final World fe) {
+    public void func_717_a(final ClientWorld fe) {
     }
 
     public void clickBlock(final int xCoord, final int yCoord, final int zCoord) {
@@ -28,13 +28,14 @@ public class PlayerController {
 
     public boolean sendBlockRemoved(final int xCoord, final int yCoord, final int zCoord) {
         this.mc.effectRenderer.addBlockDestroyEffects(xCoord, yCoord, zCoord);
-        final World theWorld = this.mc.world;
+        final ClientWorld theWorld = this.mc.clientWorld;
         final Block block = Block.blocksList[theWorld.getBlockId(xCoord, yCoord, zCoord)];
         final int blockMetadata = theWorld.getBlockMetadata(xCoord, yCoord, zCoord);
         final boolean setBlockWithNotify = theWorld.setBlockWithNotify(xCoord, yCoord, zCoord, 0);
         if (block != null && setBlockWithNotify) {
             this.mc.sndManager.playSound(block.digSound.digSoundDir(), xCoord + 0.5f, yCoord + 0.5f, zCoord + 0.5f, (block.stepSound.soundVolume() + 1.0f) / 2.0f, block.stepSound.soundPitch() * 0.8f);
-            block.onBlockDestroyedByPlayer(theWorld, xCoord, yCoord, zCoord, blockMetadata);
+            //FIXME: cant call this because it requires server context
+            //block.onBlockDestroyedByPlayer(theWorld, xCoord, yCoord, zCoord, blockMetadata);
         }
         return setBlockWithNotify;
     }

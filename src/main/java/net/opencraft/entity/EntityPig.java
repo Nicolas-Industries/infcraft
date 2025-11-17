@@ -1,9 +1,9 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
-import net.opencraft.item.Item;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.world.World;
+import net.opencraft.client.item.Item;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.client.world.World;
 
 public class EntityPig extends EntityAnimal {
 

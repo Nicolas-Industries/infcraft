@@ -1,8 +1,8 @@
 
-package net.opencraft.world;
+package net.opencraft.client.world;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.tileentity.TileEntity;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.tileentity.TileEntity;
 
 public interface IBlockAccess {
 

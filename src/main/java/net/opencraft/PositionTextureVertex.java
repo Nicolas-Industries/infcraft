@@ -1,7 +1,7 @@
 
 package net.opencraft;
 
-import net.opencraft.util.Vec3;
+import net.opencraft.core.util.Vec3;
 
 public class PositionTextureVertex {
 

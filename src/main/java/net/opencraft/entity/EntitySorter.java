@@ -1,8 +1,8 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import java.util.Comparator;
-import net.opencraft.world.WorldRenderer;
+import net.opencraft.client.world.WorldRenderer;
 
 public class EntitySorter implements Comparator<WorldRenderer> {
 

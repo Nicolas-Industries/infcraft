@@ -1,10 +1,10 @@
 package net.opencraft.client.sound;
 
-import static net.opencraft.tests.DownloadResourcesJob.SOUNDS_PATH;
+import static net.opencraft.client.tests.DownloadResourcesJob.SOUNDS_PATH;
 import static org.joml.Math.*;
 
 import net.opencraft.client.config.GameSettings;
-import net.opencraft.entity.EntityLiving;
+import net.opencraft.client.entity.EntityLiving;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 import paulscode.sound.codecs.CodecJOrbis;

@@ -1,16 +1,16 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import static org.joml.Math.*;
 
 import java.util.List;
 import net.opencraft.client.input.MovingObjectPosition;
-import net.opencraft.item.Item;
-import net.opencraft.item.ItemStack;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.util.Mth;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.World;
+import net.opencraft.client.item.Item;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.World;
 
 public class EntityArrow extends Entity {
 

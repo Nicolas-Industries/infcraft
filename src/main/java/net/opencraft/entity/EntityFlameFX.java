@@ -1,9 +1,9 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import static org.joml.Math.*;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.world.World;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.client.world.World;
 
 public class EntityFlameFX extends EntityFX {
 

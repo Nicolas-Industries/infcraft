@@ -1,13 +1,13 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import net.opencraft.OpenCraft;
-import net.opencraft.blocks.*;
-import net.opencraft.blocks.material.Material;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.util.Mth;
-import net.opencraft.world.IBlockAccess;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.*;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.IBlockAccess;
+import net.opencraft.client.world.World;
 
 import static org.joml.Math.*;
 

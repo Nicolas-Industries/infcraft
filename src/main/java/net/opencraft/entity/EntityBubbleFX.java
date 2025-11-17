@@ -1,11 +1,11 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import static org.joml.Math.*;
 
-import net.opencraft.blocks.material.Material;
-import net.opencraft.util.Mth;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.World;
 
 public class EntityBubbleFX extends EntityFX {
 

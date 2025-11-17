@@ -1,7 +1,7 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
-import net.opencraft.entity.Entity;
+import net.opencraft.client.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
 public class RenderEntity extends Render {

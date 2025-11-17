@@ -1,10 +1,10 @@
 
-package net.opencraft.tileentity;
+package net.opencraft.client.tileentity;
 
-import net.opencraft.entity.EntityList;
-import net.opencraft.entity.EntityLiving;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.physics.AABB;
+import net.opencraft.client.entity.EntityList;
+import net.opencraft.client.entity.EntityLiving;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.core.physics.AABB;
 
 public class TileEntityMobSpawner extends TileEntity {
 

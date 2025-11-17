@@ -1,12 +1,12 @@
 
-package net.opencraft.world.gen;
+package net.opencraft.client.world.gen;
 
 import static org.joml.Math.*;
 
 import java.util.Random;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.world.World;
 
 public class WorldGenTrees extends WorldGenerator {
 

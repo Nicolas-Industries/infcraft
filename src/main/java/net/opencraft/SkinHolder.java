@@ -1,7 +1,7 @@
 
 package net.opencraft;
 
-import net.opencraft.renderer.texture.ImageProvider;
+import net.opencraft.client.renderer.texture.ImageProvider;
 
 import java.awt.image.BufferedImage;
 

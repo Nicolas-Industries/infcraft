@@ -1,16 +1,16 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.opencraft.client.config.GameSettings;
-import net.opencraft.entity.EntityPlayerSP;
-import net.opencraft.inventory.IInventory;
-import net.opencraft.inventory.Slot;
-import net.opencraft.item.ItemStack;
-import net.opencraft.renderer.entity.RenderHelper;
-import net.opencraft.renderer.entity.RenderItem;
+import net.opencraft.client.entity.EntityPlayerSP;
+import net.opencraft.client.inventory.IInventory;
+import net.opencraft.client.inventory.Slot;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.client.renderer.entity.RenderHelper;
+import net.opencraft.client.renderer.entity.RenderItem;
 
 import org.lwjgl.opengl.GL11;
 

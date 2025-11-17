@@ -1,7 +1,7 @@
 
-package net.opencraft.tileentity;
+package net.opencraft.client.tileentity;
 
-import net.opencraft.nbt.NBTTagCompound;
+import net.opencraft.core.nbt.NBTTagCompound;
 
 public class TileEntitySign extends TileEntity {
 

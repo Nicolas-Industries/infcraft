@@ -1,15 +1,15 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import static org.joml.Math.*;
 
 import org.lwjgl.opengl.GL11;
 
 import net.opencraft.client.entity.models.ModelBiped;
-import net.opencraft.entity.EntityPlayer;
-import net.opencraft.item.ItemStack;
-import net.opencraft.item.Item;
-import net.opencraft.item.ItemArmor;
+import net.opencraft.client.entity.EntityPlayer;
+import net.opencraft.client.item.ItemStack;
+import net.opencraft.client.item.Item;
+import net.opencraft.client.item.ItemArmor;
 
 public class RenderPlayer extends RenderLiving {
 

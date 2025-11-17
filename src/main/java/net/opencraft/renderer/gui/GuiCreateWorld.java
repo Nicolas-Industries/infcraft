@@ -1,10 +1,10 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
 import net.opencraft.OpenCraft;
-import net.opencraft.nbt.NBTTagCompound;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.world.World;
+import net.opencraft.core.nbt.NBTTagCompound;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.client.world.World;
 
 import java.io.File;
 

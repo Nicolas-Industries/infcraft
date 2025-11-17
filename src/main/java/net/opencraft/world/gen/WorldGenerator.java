@@ -1,8 +1,8 @@
 
-package net.opencraft.world.gen;
+package net.opencraft.client.world.gen;
 
 import java.util.Random;
-import net.opencraft.world.World;
+import net.opencraft.client.world.World;
 
 public abstract class WorldGenerator {
 

@@ -1,21 +1,21 @@
 
-package net.opencraft.world.chunk;
+package net.opencraft.client.world.chunk;
 
 import static org.joml.Math.*;
 
 import java.util.Random;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.renderer.gui.IProgressUpdate;
-import net.opencraft.util.Mth;
-import net.opencraft.world.IChunkProvider;
-import net.opencraft.world.World;
-import net.opencraft.world.gen.NoiseGeneratorOctaves;
-import net.opencraft.world.gen.WorldGenDungeons;
-import net.opencraft.world.gen.WorldGenFlowers;
-import net.opencraft.world.gen.WorldGenLiquids;
-import net.opencraft.world.gen.WorldGenMinable;
-import net.opencraft.world.gen.WorldGenTrees;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.renderer.gui.IProgressUpdate;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.IChunkProvider;
+import net.opencraft.client.world.World;
+import net.opencraft.client.world.gen.NoiseGeneratorOctaves;
+import net.opencraft.client.world.gen.WorldGenDungeons;
+import net.opencraft.client.world.gen.WorldGenFlowers;
+import net.opencraft.client.world.gen.WorldGenLiquids;
+import net.opencraft.client.world.gen.WorldGenMinable;
+import net.opencraft.client.world.gen.WorldGenTrees;
 
 public class ChunkProviderGenerate implements IChunkProvider {
 

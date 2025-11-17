@@ -1,4 +1,4 @@
-package net.opencraft.renderer;
+package net.opencraft.client.renderer;
 
 import static net.opencraft.OpenCraft.*;
 import static org.joml.Math.*;

@@ -1,5 +1,5 @@
 
-package net.opencraft.util;
+package net.opencraft.core.util;
 
 import static org.joml.Math.*;
 

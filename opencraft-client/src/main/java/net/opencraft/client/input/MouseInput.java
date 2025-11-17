@@ -1,6 +1,6 @@
 package net.opencraft.client.input;
 
-import net.opencraft.OpenCraft;
+import net.opencraft.client.OpenCraft;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;

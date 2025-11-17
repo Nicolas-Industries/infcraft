@@ -1,18 +1,18 @@
-package net.opencraft.blocks;
+package net.opencraft.core.blocks;
 
 import java.util.List;
 import java.util.Random;
 
-import net.opencraft.blocks.material.Material;
+import net.opencraft.core.blocks.material.Material;
 import net.opencraft.client.input.MovingObjectPosition;
 import net.opencraft.client.sound.*;
-import net.opencraft.entity.*;
-import net.opencraft.item.*;
-import net.opencraft.physics.AABB;
-import net.opencraft.tileentity.TileEntitySign;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.IBlockAccess;
-import net.opencraft.world.World;
+import net.opencraft.client.entity.*;
+import net.opencraft.client.item.*;
+import net.opencraft.core.physics.AABB;
+import net.opencraft.client.tileentity.TileEntitySign;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.IBlockAccess;
+import net.opencraft.client.world.World;
 
 public class Block {
 

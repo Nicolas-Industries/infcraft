@@ -1,5 +1,5 @@
 
-package net.opencraft.renderer.texture;
+package net.opencraft.client.renderer.texture;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;

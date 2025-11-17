@@ -1,16 +1,16 @@
 
-package net.opencraft.item;
+package net.opencraft.client.item;
 
 import net.opencraft.OpenCraft;
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.material.Material;
-import net.opencraft.entity.EntityPlayerSP;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.renderer.entity.*;
-import net.opencraft.util.Mth;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.material.Material;
+import net.opencraft.client.entity.EntityPlayerSP;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.client.renderer.entity.*;
+import net.opencraft.core.util.Mth;
 
 import static net.opencraft.OpenCraft.*;
-import static net.opencraft.entity.EntityRenderer.gluPerspective;
+import static net.opencraft.client.entity.EntityRenderer.gluPerspective;
 import static org.joml.Math.*;
 
 import org.lwjgl.opengl.GL11;

@@ -1,7 +1,7 @@
 
-package net.opencraft.world;
+package net.opencraft.client.world;
 
-import net.opencraft.entity.Entity;
+import net.opencraft.client.entity.Entity;
 
 public interface IWorldAccess {
 

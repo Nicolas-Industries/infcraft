@@ -1,5 +1,5 @@
 
-package net.opencraft.isom;
+package net.opencraft.client.isom;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;

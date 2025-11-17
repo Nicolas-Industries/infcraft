@@ -1,9 +1,9 @@
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
 
 import net.opencraft.OpenCraft;
-import net.opencraft.renderer.font.FontRenderer;
-import net.opencraft.util.Mth;
+import net.opencraft.client.renderer.font.FontRenderer;
+import net.opencraft.core.util.Mth;
 
 import static org.joml.Math.*;
 

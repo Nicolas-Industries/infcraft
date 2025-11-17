@@ -1,5 +1,5 @@
 
-package net.opencraft.entity;
+package net.opencraft.client.entity;
 
 import static org.joml.Math.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -15,19 +15,19 @@ import org.lwjgl.opengl.GL11;
 
 import net.opencraft.OpenCraft;
 import net.opencraft.ScaledResolution;
-import net.opencraft.blocks.Block;
-import net.opencraft.blocks.material.Material;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.core.blocks.material.Material;
 import net.opencraft.client.entity.PlayerControllerTest;
 import net.opencraft.client.input.MovingObjectPosition;
-import net.opencraft.item.ItemRenderer;
-import net.opencraft.renderer.EffectRenderer;
-import net.opencraft.renderer.Tessellator;
-import net.opencraft.renderer.culling.Frustrum;
-import net.opencraft.renderer.entity.RenderGlobal;
-import net.opencraft.renderer.entity.RenderHelper;
-import net.opencraft.util.Mth;
-import net.opencraft.util.Vec3;
-import net.opencraft.world.World;
+import net.opencraft.client.item.ItemRenderer;
+import net.opencraft.client.renderer.EffectRenderer;
+import net.opencraft.client.renderer.Tessellator;
+import net.opencraft.client.renderer.culling.Frustrum;
+import net.opencraft.client.renderer.entity.RenderGlobal;
+import net.opencraft.client.renderer.entity.RenderHelper;
+import net.opencraft.core.util.Mth;
+import net.opencraft.core.util.Vec3;
+import net.opencraft.client.world.World;
 
 public class EntityRenderer {
 

@@ -1,5 +1,5 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
@@ -15,12 +15,12 @@ import java.util.*;
 import javax.imageio.ImageIO;
 
 import net.opencraft.SkinHolder;
-import net.opencraft.renderer.texture.ImageProvider;
+import net.opencraft.client.renderer.texture.ImageProvider;
 import org.lwjgl.BufferUtils;
 
 import net.opencraft.client.config.GameSettings;
-import net.opencraft.renderer.GLAllocation;
-import net.opencraft.renderer.texture.TextureFX;
+import net.opencraft.client.renderer.GLAllocation;
+import net.opencraft.client.renderer.texture.TextureFX;
 
 public class Renderer {
 

@@ -1,10 +1,10 @@
 
-package net.opencraft.renderer.entity;
+package net.opencraft.client.renderer.entity;
 
-import net.opencraft.blocks.Block;
-import net.opencraft.entity.EntityFallingSand;
-import net.opencraft.util.Mth;
-import net.opencraft.world.World;
+import net.opencraft.core.blocks.Block;
+import net.opencraft.client.entity.EntityFallingSand;
+import net.opencraft.core.util.Mth;
+import net.opencraft.client.world.World;
 import org.lwjgl.opengl.GL11;
 
 public class RenderFallingSand extends Render<EntityFallingSand> {

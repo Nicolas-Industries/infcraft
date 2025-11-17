@@ -1,9 +1,9 @@
 
-package net.opencraft.renderer.gui;
+package net.opencraft.client.renderer.gui;
 
-import net.opencraft.inventory.InventoryPlayer;
-import net.opencraft.inventory.Slot;
-import net.opencraft.tileentity.TileEntityFurnace;
+import net.opencraft.client.inventory.InventoryPlayer;
+import net.opencraft.client.inventory.Slot;
+import net.opencraft.client.tileentity.TileEntityFurnace;
 import org.lwjgl.opengl.GL11;
 
 public class GuiFurnace extends GuiContainer {
