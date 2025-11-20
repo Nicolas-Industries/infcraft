@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumHashBiMap;
 import net.opencraft.client.OpenCraft;
-import net.opencraft.core.world.IWorldAccess;
+import net.opencraft.client.world.IWorldAccess;
 
 import static org.lwjgl.glfw.GLFW.*;
 

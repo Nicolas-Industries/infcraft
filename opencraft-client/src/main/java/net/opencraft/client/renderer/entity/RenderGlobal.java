@@ -187,7 +187,7 @@ public class RenderGlobal implements IWorldAccess {
 	public void changeWorld(final ClientWorld fe) {
 		if (this.clientWorldObj != null) {
 			this.clientWorldObj.removeWorldAccess(this);
-        }
+		}
 		this.f = -9999.0;
 		this.g = -9999.0;
 		this.h = -9999.0;
@@ -235,7 +235,8 @@ public class RenderGlobal implements IWorldAccess {
 					if (this.o[(l * this.q + k) * this.p + j] != null) {
 						this.a.removeAll((Collection) this.o[(l * this.q + k) * this.p + j].B);
 					}
-					this.o[(l * this.q + k) * this.p + j] = new WorldRenderer(this.clientWorldObj, this.a, j * 16, k * 16, l * 16,
+					this.o[(l * this.q + k) * this.p + j] = new WorldRenderer(this.clientWorldObj, this.a, j * 16,
+							k * 16, l * 16,
 							16, this.s + n);
 					if (this.w) {
 						this.o[(l * this.q + k) * this.p + j].z = this.v.get(n2);
@@ -253,6 +254,8 @@ public class RenderGlobal implements IWorldAccess {
 		}
 		if (this.clientWorldObj != null) {
 			final Entity player = this.clientWorldObj.player;
+            if (player == null)
+                return;
 			this.b(Mth.floor_double(player.posX), Mth.floor_double(player.posY), Mth.floor_double(player.posZ));
 			Arrays.sort((Object[]) this.n, (Comparator) new EntitySorter(player));
 		}
@@ -357,7 +360,7 @@ public class RenderGlobal implements IWorldAccess {
 		}
 	}
 
-	public int sortAndRender(final EntityPlayer gi, final int integer, final double double3) {
+	public int sortAndRender(final EntityPlayerSP gi, final int integer, final double double3) {
 		if (this.t.options.renderDistance != this.H) {
 			this.fancyGraphics();
 		}
@@ -619,9 +622,11 @@ public class RenderGlobal implements IWorldAccess {
 			float4 = n6;
 		}
 		final float n4 = 4.8828125E-4f;
-		double n7 = this.clientWorldObj.player.prevPosX + (this.clientWorldObj.player.posX - this.clientWorldObj.player.prevPosX) * float1
+		double n7 = this.clientWorldObj.player.prevPosX
+				+ (this.clientWorldObj.player.posX - this.clientWorldObj.player.prevPosX) * float1
 				+ (this.x + float1) * 0.03f;
-		double n8 = this.clientWorldObj.player.prevPosZ + (this.clientWorldObj.player.posZ - this.clientWorldObj.player.prevPosZ) * float1;
+		double n8 = this.clientWorldObj.player.prevPosZ
+				+ (this.clientWorldObj.player.posZ - this.clientWorldObj.player.prevPosZ) * float1;
 		final int floor_double = Mth.floor_double(n7 / 2048.0);
 		final int floor_double2 = Mth.floor_double(n8 / 2048.0);
 		n7 -= floor_double * 2048;
@@ -652,9 +657,11 @@ public class RenderGlobal implements IWorldAccess {
 		final Tessellator instance = Tessellator.instance;
 		final float n2 = 12.0f;
 		final float n3 = 4.0f;
-		double n4 = (this.clientWorldObj.player.prevPosX + (this.clientWorldObj.player.posX - this.clientWorldObj.player.prevPosX) * float1
+		double n4 = (this.clientWorldObj.player.prevPosX
+				+ (this.clientWorldObj.player.posX - this.clientWorldObj.player.prevPosX) * float1
 				+ (this.x + float1) * 0.03f) / n2;
-		double n5 = (this.clientWorldObj.player.prevPosZ + (this.clientWorldObj.player.posZ - this.clientWorldObj.player.prevPosZ) * float1) / n2
+		double n5 = (this.clientWorldObj.player.prevPosZ
+				+ (this.clientWorldObj.player.posZ - this.clientWorldObj.player.prevPosZ) * float1) / n2
 				+ 0.33000001311302185;
 		final float n6 = 108.0f - n + 0.33f;
 		final int floor_double = Mth.floor_double(n4 / 2048.0);
@@ -787,7 +794,7 @@ public class RenderGlobal implements IWorldAccess {
 		GL11.glEnable(2884);
 	}
 
-	public boolean updateRenderers(final EntityPlayer gi, final boolean boolean2) {
+	public boolean updateRenderers(final EntityPlayerSP gi, final boolean boolean2) {
 		Collections.sort(this.m, (Comparator) new RenderSorter(gi));
 		final int n = this.m.size() - 1;
 		for (int size = this.m.size(), i = 0; i < size; ++i) {
@@ -812,8 +819,8 @@ public class RenderGlobal implements IWorldAccess {
 		return this.m.size() == 0;
 	}
 
-	public void drawBlockBreaking(final EntityPlayer gi, final MovingObjectPosition hb, final int integer,
-                                  final ItemStack hw, final float float5) {
+	public void drawBlockBreaking(final EntityPlayerSP gi, final MovingObjectPosition hb, final int integer,
+			final ItemStack hw, final float float5) {
 		final Tessellator instance = Tessellator.instance;
 		GL11.glEnable(3042);
 		GL11.glEnable(3008);
@@ -853,33 +860,35 @@ public class RenderGlobal implements IWorldAccess {
 			GL11.glColor4f(n2, n2, n2, sin(System.currentTimeMillis() / 200.0f) * 0.2f + 0.5f);
 			final int n = this.l.loadTexture("/assets/terrain.png");
 			GL11.glBindTexture(3553, n);
-			/*int blockX = hb.blockX;
-			int blockY = hb.blockY;
-			int blockZ = hb.blockZ;
-			if (hb.sideHit == 0) {
-				--blockY;
-			}
-			if (hb.sideHit == 1) {
-				++blockY;
-			}
-			if (hb.sideHit == 2) {
-				--blockZ;
-			}
-			if (hb.sideHit == 3) {
-				++blockZ;
-			}
-			if (hb.sideHit == 4) {
-				--blockX;
-			}
-			if (hb.sideHit == 5) {
-				++blockX;
-			}*/
+			/*
+			 * int blockX = hb.blockX;
+			 * int blockY = hb.blockY;
+			 * int blockZ = hb.blockZ;
+			 * if (hb.sideHit == 0) {
+			 * --blockY;
+			 * }
+			 * if (hb.sideHit == 1) {
+			 * ++blockY;
+			 * }
+			 * if (hb.sideHit == 2) {
+			 * --blockZ;
+			 * }
+			 * if (hb.sideHit == 3) {
+			 * ++blockZ;
+			 * }
+			 * if (hb.sideHit == 4) {
+			 * --blockX;
+			 * }
+			 * if (hb.sideHit == 5) {
+			 * ++blockX;
+			 * }
+			 */
 		}
 		GL11.glDisable(3042);
 		GL11.glDisable(3008);
 	}
 
-	public void drawSelectionBox(final EntityPlayer gi, final MovingObjectPosition hb, final int integer,
+	public void drawSelectionBox(final EntityPlayerSP gi, final MovingObjectPosition hb, final int integer,
 			final ItemStack hw, final float float5) {
 		if (integer == 0 && hb.typeOfHit == 0) {
 			GL11.glEnable(3042);

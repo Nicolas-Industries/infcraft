@@ -3,6 +3,7 @@ package net.opencraft.client.renderer.tileentity;
 
 import java.util.*;
 
+import net.opencraft.client.entity.EntityPlayerSP;
 import net.opencraft.client.world.ClientWorld;
 import net.opencraft.core.entity.EntityPlayer;
 import net.opencraft.core.tileentity.TileEntity;
@@ -24,7 +25,7 @@ public class TileEntityRenderer {
     public static double d;
     public Renderer renderEngine;
     public ClientWorld f;
-    public EntityPlayer g;
+    public EntityPlayerSP g;
     public float h;
     public float i;
     public double j;
@@ -49,6 +50,8 @@ public class TileEntityRenderer {
     }
 
     public boolean a(final TileEntity bk) {
+        if (bk == null)
+            return false;
         return this.b(bk) != null;
     }
 
@@ -56,7 +59,8 @@ public class TileEntityRenderer {
         return this.a(bk.getClass());
     }
 
-    public void a(final ClientWorld fe, final Renderer id, final FontRenderer ej, final EntityPlayer gi, final float float5) {
+    public void a(final ClientWorld fe, final Renderer id, final FontRenderer ej, final EntityPlayerSP gi,
+            final float float5) {
         this.f = fe;
         this.renderEngine = id;
         this.g = gi;
@@ -72,11 +76,13 @@ public class TileEntityRenderer {
         if (bk.getDistanceFrom(this.j, this.k, this.l) < 4096.0) {
             final float lightBrightness = this.f.getLightBrightness(bk.xCoord, bk.yCoord, bk.zCoord);
             GL11.glColor3f(lightBrightness, lightBrightness, lightBrightness);
-            this.renderTileEntityAt(bk, bk.xCoord - TileEntityRenderer.b, bk.yCoord - TileEntityRenderer.c, bk.zCoord - TileEntityRenderer.d, float2);
+            this.renderTileEntityAt(bk, bk.xCoord - TileEntityRenderer.b, bk.yCoord - TileEntityRenderer.c,
+                    bk.zCoord - TileEntityRenderer.d, float2);
         }
     }
 
-    public void renderTileEntityAt(final TileEntity bk, final double double2, final double double3, final double double4, final float float5) {
+    public void renderTileEntityAt(final TileEntity bk, final double double2, final double double3,
+            final double double4, final float float5) {
         final TileEntitySpecialRenderer b = this.b(bk);
         if (b != null) {
             b.renderTileEntityMobSpawner(bk, double2, double3, double4, float5);

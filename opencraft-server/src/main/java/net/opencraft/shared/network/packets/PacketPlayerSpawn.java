@@ -6,15 +6,16 @@ import net.opencraft.shared.network.PacketBuffer;
  * Packet to notify clients about player spawn/creation
  */
 public class PacketPlayerSpawn implements IPacket {
-    
+
     private int entityId;
     private double x, y, z;
     private float yaw, pitch;
     private String username;
-    
+
     // Default constructor for deserialization
-    public PacketPlayerSpawn() {}
-    
+    public PacketPlayerSpawn() {
+    }
+
     public PacketPlayerSpawn(int entityId, double x, double y, double z, float yaw, float pitch, String username) {
         this.entityId = entityId;
         this.x = x;
@@ -49,17 +50,37 @@ public class PacketPlayerSpawn implements IPacket {
 
     @Override
     public int getPacketId() {
-        return 0x0B; // Player spawn packet ID
+        return 0x14; // Player spawn packet ID (20)
     }
-    
+
     // Getters
-    public int getEntityId() { return entityId; }
-    public double getX() { return x; }
-    public double getY() { return y; }
-    public double getZ() { return z; }
-    public float getYaw() { return yaw; }
-    public float getPitch() { return pitch; }
-    public String getUsername() { return username; }
+    public int getEntityId() {
+        return entityId;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    public float getYaw() {
+        return yaw;
+    }
+
+    public float getPitch() {
+        return pitch;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 
     @Override
     public boolean isServerToClient() {

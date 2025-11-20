@@ -30,12 +30,12 @@ public class PacketPlayerPosition implements IPacket {
 
     @Override
     public boolean isServerToClient() {
-        return false; // Client sends position to server
+        return true; // Server can send position corrections to client
     }
 
     @Override
     public boolean isClientToServer() {
-        return true;
+        return true; // Client can send position updates to server
     }
 
     @Override
@@ -59,18 +59,52 @@ public class PacketPlayerPosition implements IPacket {
     }
 
     // Getters
-    public double getX() { return x; }
-    public double getY() { return y; }
-    public double getZ() { return z; }
-    public float getYaw() { return yaw; }
-    public float getPitch() { return pitch; }
-    public boolean isOnGround() { return onGround; }
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    public float getYaw() {
+        return yaw;
+    }
+
+    public float getPitch() {
+        return pitch;
+    }
+
+    public boolean isOnGround() {
+        return onGround;
+    }
 
     // Setters for deserialization
-    public void setX(double x) { this.x = x; }
-    public void setY(double y) { this.y = y; }
-    public void setZ(double z) { this.z = z; }
-    public void setYaw(float yaw) { this.yaw = yaw; }
-    public void setPitch(float pitch) { this.pitch = pitch; }
-    public void setOnGround(boolean onGround) { this.onGround = onGround; }
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public void setZ(double z) {
+        this.z = z;
+    }
+
+    public void setYaw(float yaw) {
+        this.yaw = yaw;
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
+
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
+    }
 }

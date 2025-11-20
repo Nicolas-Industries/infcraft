@@ -71,6 +71,26 @@ public class Chunk {
         return this.heightMap[nya2 << 4 | nya1] & 0xFF;
     }
 
+    public void generateSkylightMap() {
+        int lowestBlockHeight = 127;
+        for (int i = 0; i < 16; ++i) {
+            for (int j = 0; j < 16; ++j) {
+                this.heightMap[j << 4 | i] = -128;
+                this.relightBlock(i, 127, j);
+                if ((this.heightMap[j << 4 | i] & 0xFF) < lowestBlockHeight) {
+                    lowestBlockHeight = (this.heightMap[j << 4 | i] & 0xFF);
+                }
+            }
+        }
+        this.lowestBlockHeight = lowestBlockHeight;
+        for (int i = 0; i < 16; ++i) {
+            for (int j = 0; j < 16; ++j) {
+                this.propagateSkylightOcclusion(i, j);
+            }
+        }
+        this.isModified = true;
+    }
+
     private void propagateSkylightOcclusion(final int integer1, final int integer2) {
         final int heightValue = this.getHeightValue(integer1, integer2);
         final int n = this.xPosition * 16 + integer1;
@@ -84,9 +104,11 @@ public class Chunk {
     private void checkSkylightNeighborHeight(final int integer1, final int integer2, final int integer3) {
         final int heightValue = this.clientWorldObj.getHeightValue(integer1, integer2);
         if (heightValue > integer3) {
-            this.clientWorldObj.scheduleLightingUpdate(EnumSkyBlock.Sky, integer1, integer3, integer2, integer1, heightValue, integer2);
+            this.clientWorldObj.scheduleLightingUpdate(EnumSkyBlock.Sky, integer1, integer3, integer2, integer1,
+                    heightValue, integer2);
         } else if (heightValue < integer3) {
-            this.clientWorldObj.scheduleLightingUpdate(EnumSkyBlock.Sky, integer1, heightValue, integer2, integer1, integer3, integer2);
+            this.clientWorldObj.scheduleLightingUpdate(EnumSkyBlock.Sky, integer1, heightValue, integer2, integer1,
+                    integer3, integer2);
         }
         this.isModified = true;
     }
@@ -154,7 +176,23 @@ public class Chunk {
     }
 
     public int getBlockID(final int integer1, final int integer2, final int integer3) {
-        return this.blocks[integer1 << 11 | integer3 << 7 | integer2];
+        if (this.blocks == null) {
+            System.err
+                    .println("ERROR: Chunk at (" + this.xPosition + ", " + this.zPosition + ") has NULL blocks array!");
+            return 0;
+        }
+        if (this.blocks.length == 0) {
+            System.err.println("ERROR: Chunk at (" + this.xPosition + ", " + this.zPosition
+                    + ") has EMPTY blocks array (length 0)!");
+            return 0;
+        }
+        int index = integer1 << 11 | integer3 << 7 | integer2;
+        if (index < 0 || index >= this.blocks.length) {
+            System.err.println("ERROR: Chunk at (" + this.xPosition + ", " + this.zPosition + ") - index " + index
+                    + " out of bounds for array length " + this.blocks.length);
+            return 0;
+        }
+        return this.blocks[index];
     }
 
     public int getBlockMetadata(final int integer1, final int integer2, final int integer3) {
@@ -166,7 +204,8 @@ public class Chunk {
         this.data.setNibble(integer1, integer2, integer3, integer4);
     }
 
-    public int getSavedLightValue(final EnumSkyBlock enumSkyBlock, final int integer2, final int integer3, final int integer4) {
+    public int getSavedLightValue(final EnumSkyBlock enumSkyBlock, final int integer2, final int integer3,
+            final int integer4) {
         if (enumSkyBlock == EnumSkyBlock.Sky) {
             return this.skylightMap.getNibble(integer2, integer3, integer4);
         }
@@ -176,7 +215,8 @@ public class Chunk {
         return 0;
     }
 
-    public void setLightValue(final EnumSkyBlock enumSkyBlock, final int integer2, final int integer3, final int integer4, final int integer5) {
+    public void setLightValue(final EnumSkyBlock enumSkyBlock, final int integer2, final int integer3,
+            final int integer4, final int integer5) {
         this.isModified = true;
         if (enumSkyBlock == EnumSkyBlock.Sky) {
             this.skylightMap.setNibble(integer2, integer3, integer4, integer5);
@@ -230,7 +270,8 @@ public class Chunk {
             integer = this.entities.length - 1;
         }
         if (!this.entities[integer].contains(entity)) {
-            System.out.println(new StringBuilder().append("There's no such entity to remove: ").append(entity).toString());
+            System.out.println(
+                    new StringBuilder().append("There's no such entity to remove: ").append(entity).toString());
         }
         this.entities[integer].remove(entity);
     }
@@ -244,7 +285,9 @@ public class Chunk {
         TileEntity tileEntity = (TileEntity) this.chunkTileEntityMap.get(n);
         if (tileEntity == null) {
             // FIXME: attempts to interface with server-side only code
-            //((ContainerBlock) Block.blocksList[this.getBlockID(xCoord, yCoord, zCoord)]).onBlockAdded(this.clientWorldObj, this.xPosition * 16 + xCoord, yCoord, this.zPosition * 16 + zCoord);
+            // ((ContainerBlock) Block.blocksList[this.getBlockID(xCoord, yCoord,
+            // zCoord)]).onBlockAdded(this.clientWorldObj, this.xPosition * 16 + xCoord,
+            // yCoord, this.zPosition * 16 + zCoord);
             tileEntity = (TileEntity) this.chunkTileEntityMap.get(n);
         }
         return tileEntity;
@@ -291,6 +334,7 @@ public class Chunk {
     }
 
     public boolean needsSaving(final boolean boolean1) {
-        return !this.neverSave && ((this.hasEntities && this.clientWorldObj.getWorldTime != this.lastSaveTime) || this.isModified);
+        return !this.neverSave
+                && ((this.hasEntities && this.clientWorldObj.getWorldTime != this.lastSaveTime) || this.isModified);
     }
 }

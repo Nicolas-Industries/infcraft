@@ -15,7 +15,13 @@ public class LadderBlock extends Block {
     }
 
     @Override
-    public AABB getCollisionBoundingBoxFromPool(final ServerWorld serverWorld, final int xCoord, final int yCoord, final int zCoord) {
+    public AABB getCollisionBoundingBoxFromPool(final World world, final int xCoord, final int yCoord, final int zCoord) {
+        if (!(world instanceof ServerWorld serverWorld)) {
+            System.out.println("WARNING:LadderBlock: Attempt to use getCollisionBoundingBoxFromPool from Client!");
+            return null;
+        }
+
+        // conversion!
         final int blockMetadata = serverWorld.getBlockMetadata(xCoord, yCoord, zCoord);
         final float n = 0.125f;
         if (blockMetadata == 2) {

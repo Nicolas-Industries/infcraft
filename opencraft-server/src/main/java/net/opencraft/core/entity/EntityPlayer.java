@@ -35,8 +35,6 @@ public class EntityPlayer extends EntityLiving {
         this.unusedByte = 0;
         this.score = 0;
         this.swingProgressInt = 0;
-        // TODO: multiple players spawn positions
-        //this.setPositionAndRotation(serverWorld.x + 0.5, serverWorld.y, serverWorld.z + 0.5, 0.0f, 0.0f);
         this.yOffset = 1.62f;
         this.health = 20;
         this.entityType = "humanoid";
@@ -72,16 +70,16 @@ public class EntityPlayer extends EntityLiving {
         this.yOffset = 1.62f;
         this.setSize(0.6f, 1.8f);
         super.preparePlayerToSpawn();
-//        if (this.world != null) {
-//            this.world.player = this;
-//        }
+        // if (this.world != null) {
+        // this.world.player = this;
+        // }
         this.health = 20;
         this.deathTime = 0;
     }
 
     @Override
     public void onLivingUpdate() {
-        if (((ServerWorld) this.world).difficultySetting == 0 && this.health < 20 && this.ticksExisted % 20 * 4 == 0) {
+        if (this.world.getDifficultySetting() == 0 && this.health < 20 && this.ticksExisted % 20 * 4 == 0) {
             this.heal(1);
         }
         this.inventory.decrementAnimations();
@@ -101,7 +99,8 @@ public class EntityPlayer extends EntityLiving {
         this.cameraYaw += (sqrt_double - this.cameraYaw) * 0.4f;
         this.cameraPitch += (n - this.cameraPitch) * 0.8f;
         if (this.health > 0) {
-            final List entitiesWithinAABBExcludingEntity = this.world.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(1.0, 0.0, 1.0));
+            final List entitiesWithinAABBExcludingEntity = this.world.getEntitiesWithinAABBExcludingEntity(this,
+                    this.boundingBox.expand(1.0, 0.0, 1.0));
             if (entitiesWithinAABBExcludingEntity != null) {
                 for (int i = 0; i < entitiesWithinAABBExcludingEntity.size(); ++i) {
                     this.collideWithPlayer((Entity) entitiesWithinAABBExcludingEntity.get(i));
@@ -163,7 +162,7 @@ public class EntityPlayer extends EntityLiving {
         } else {
             n = 0.3f;
             entity.motionX = -sin(toRadians(rotationYaw)) * cos(toRadians(rotationPitch)) * n;
-            entity.motionZ =  cos(toRadians(rotationYaw)) * cos(toRadians(rotationPitch)) * n;
+            entity.motionZ = cos(toRadians(rotationYaw)) * cos(toRadians(rotationPitch)) * n;
             entity.motionY = -sin(toRadians(rotationYaw)) * n + 0.1f;
             n = 0.02f;
             final float n2 = this.rand.nextFloat() * PI_TIMES_2_f;
@@ -195,6 +194,7 @@ public class EntityPlayer extends EntityLiving {
 
     @Override
     public void readEntityFromNBT(final NBTTagCompound nbtTagCompound) {
+        this.yOffset = 1.62f; // Ensure yOffset is correct before position calculations
         super.readEntityFromNBT(nbtTagCompound);
     }
 
@@ -233,13 +233,14 @@ public class EntityPlayer extends EntityLiving {
             return false;
         }
         if (entity instanceof EntityMonster || entity instanceof EntityArrow) {
-            if (((ServerWorld)this.world).difficultySetting == 0) {
+            int difficulty = this.world.getDifficultySetting();
+            if (difficulty == 0) {
                 nya1 = 0;
             }
-            if (((ServerWorld)this.world).difficultySetting == 1) {
+            if (difficulty == 1) {
                 nya1 = nya1 / 3 + 1;
             }
-            if (((ServerWorld)this.world).difficultySetting == 3) {
+            if (difficulty == 3) {
                 nya1 = nya1 * 3 / 2;
             }
         }

@@ -63,7 +63,8 @@ public class EntityRenderer {
 
     public void updateRenderer() {
         this.fogColor2 = this.fogColor1;
-        final float lightBrightness = this.mc.clientWorld.getLightBrightness(Mth.floor_double(this.mc.player.posX), Mth.floor_double(this.mc.player.posY), Mth.floor_double(this.mc.player.posZ));
+        final float lightBrightness = this.mc.clientWorld.getLightBrightness(Mth.floor_double(this.mc.player.posX),
+                Mth.floor_double(this.mc.player.posY), Mth.floor_double(this.mc.player.posZ));
         final float n = (3 - this.mc.options.renderDistance) / 3.0f;
         this.fogColor1 += (lightBrightness * (1.0f - n) + n - this.fogColor1) * 0.1f;
         ++this.rendererUpdateCount;
@@ -75,7 +76,9 @@ public class EntityRenderer {
 
     private Vec3 orientCamera(final float float1) {
         final EntityPlayerSP thePlayer = this.mc.player;
-        return Vec3.newTemp(thePlayer.prevPosX + (thePlayer.posX - thePlayer.prevPosX) * float1, thePlayer.prevPosY + (thePlayer.posY - thePlayer.prevPosY) * float1, thePlayer.prevPosZ + (thePlayer.posZ - thePlayer.prevPosZ) * float1);
+        return Vec3.newTemp(thePlayer.prevPosX + (thePlayer.posX - thePlayer.prevPosX) * float1,
+                thePlayer.prevPosY + (thePlayer.posY - thePlayer.prevPosY) * float1,
+                thePlayer.prevPosZ + (thePlayer.posZ - thePlayer.prevPosZ) * float1);
     }
 
     private void getMouseOver(final float float1) {
@@ -91,7 +94,8 @@ public class EntityRenderer {
         final float n5 = sin2;
         final float n6 = cos * n3;
         double n7 = this.mc.playerController.getBlockReachDistance();
-        this.mc.objectMouseOver = this.mc.clientWorld.rayTraceBlocks(orientCamera, orientCamera.add(n4 * n7, n5 * n7, n6 * n7));
+        this.mc.objectMouseOver = this.mc.clientWorld.rayTraceBlocks(orientCamera,
+                orientCamera.add(n4 * n7, n5 * n7, n6 * n7));
         double distanceTo = n7;
         final Vec3 orientCamera2 = this.orientCamera(float1);
         if (this.mc.objectMouseOver != null) {
@@ -103,13 +107,15 @@ public class EntityRenderer {
         n7 = distanceTo;
         final Vec3 addVector = orientCamera2.add(n4 * n7, n5 * n7, n6 * n7);
         this.pointedEntity = null;
-        final List entitiesWithinAABBExcludingEntity = this.mc.clientWorld.getEntitiesWithinAABBExcludingEntity(thePlayer, thePlayer.boundingBox.addCoord(n4 * n7, n5 * n7, n6 * n7));
+        final List entitiesWithinAABBExcludingEntity = this.mc.clientWorld.getEntitiesWithinAABBExcludingEntity(
+                thePlayer, thePlayer.boundingBox.addCoord(n4 * n7, n5 * n7, n6 * n7));
         double n8 = 0.0;
         for (int i = 0; i < entitiesWithinAABBExcludingEntity.size(); ++i) {
             final Entity pointedEntity = (Entity) entitiesWithinAABBExcludingEntity.get(i);
             if (pointedEntity.canBeCollidedWith()) {
                 final float n9 = 0.1f;
-                final MovingObjectPosition calculateIntercept = pointedEntity.boundingBox.expand(n9, n9, n9).calculateIntercept(orientCamera2, addVector);
+                final MovingObjectPosition calculateIntercept = pointedEntity.boundingBox.expand(n9, n9, n9)
+                        .calculateIntercept(orientCamera2, addVector);
                 if (calculateIntercept != null) {
                     final double distanceTo2 = orientCamera2.distance(calculateIntercept.hitVec);
                     if (distanceTo2 < n8 || n8 == 0.0) {
@@ -159,7 +165,8 @@ public class EntityRenderer {
             return;
         }
         final EntityPlayerSP thePlayer = this.mc.player;
-        final float n = thePlayer.distanceWalkedModified + (thePlayer.distanceWalkedModified - thePlayer.prevDistanceWalkedModified) * float1;
+        final float n = thePlayer.distanceWalkedModified
+                + (thePlayer.distanceWalkedModified - thePlayer.prevDistanceWalkedModified) * float1;
         final float n2 = thePlayer.prevCameraYaw + (thePlayer.cameraYaw - thePlayer.prevCameraYaw) * float1;
         final float n3 = thePlayer.prevCameraPitch + (thePlayer.cameraPitch - thePlayer.prevCameraPitch) * float1;
         GL11.glTranslatef(sin(n * PI_f) * n2 * 0.5f, -abs(cos(n * PI_f) * n2), 0.0f);
@@ -171,16 +178,16 @@ public class EntityRenderer {
     private void h(final float multiplier) {
         final EntityPlayerSP player = this.mc.player;
         double double1, double2, double3;
-        
+
         double1 = fma(player.posX - player.prevPosX, multiplier, player.prevPosX);
         double2 = fma(player.posY - player.prevPosY, multiplier, player.prevPosY);
         double3 = fma(player.posZ - player.prevPosZ, multiplier, player.prevPosZ);
-        
+
         if (this.mc.options.thirdPersonView) {
             double n = 4.0;
-            
+
             final double n2 = -sin(toRadians(player.rotationYaw)) * cos(toRadians(player.rotationPitch)) * n;
-            final double n3 =  cos(toRadians(player.rotationYaw)) * cos(toRadians(player.rotationPitch)) * n;
+            final double n3 = cos(toRadians(player.rotationYaw)) * cos(toRadians(player.rotationPitch)) * n;
             final double n4 = -sin(toRadians(player.rotationPitch)) * n;
             for (int i = 0; i < 8; ++i) {
                 float n5 = (float) ((i & 0x1) * 2 - 1);
@@ -189,7 +196,9 @@ public class EntityRenderer {
                 n5 *= 0.1f;
                 n6 *= 0.1f;
                 n7 *= 0.1f;
-                final MovingObjectPosition rayTraceBlocks = this.mc.clientWorld.rayTraceBlocks(Vec3.newTemp(double1 + n5, double2 + n6, double3 + n7), Vec3.newTemp(double1 - n2 + n5 + n7, double2 - n4 + n6, double3 - n3 + n7));
+                final MovingObjectPosition rayTraceBlocks = this.mc.clientWorld.rayTraceBlocks(
+                        Vec3.newTemp(double1 + n5, double2 + n6, double3 + n7),
+                        Vec3.newTemp(double1 - n2 + n5 + n7, double2 - n4 + n6, double3 - n3 + n7));
                 if (rayTraceBlocks != null) {
                     final double distanceTo = rayTraceBlocks.hitVec.distance(Vec3.newTemp(double1, double2, double3));
                     if (distanceTo < n) {
@@ -201,8 +210,8 @@ public class EntityRenderer {
         } else {
             GL11.glTranslatef(0.0f, 0.0f, -0.1f);
         }
-        GL11.glRotatef(player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * multiplier, 1.0f, 0.0f, 0.0f);
-        GL11.glRotatef(player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * multiplier + 180.0f, 0.0f, 1.0f, 0.0f);
+        GL11.glRotatef(player.rotationPitch, 1.0f, 0.0f, 0.0f);
+        GL11.glRotatef(player.rotationYaw + 180.0f, 0.0f, 1.0f, 0.0f);
     }
 
     private void orientCamera(final float float1, final int integer) {
@@ -213,7 +222,8 @@ public class EntityRenderer {
         if (this.mc.options.anaglyph) {
             GL11.glTranslatef(-(integer * 2 - 1) * n, 0.0f, 0.0f);
         }
-        gluPerspective(this.getFOVModifier(float1), (float) this.mc.width / (float) this.mc.height, 0.05f, this.farPlaneDistance);
+        gluPerspective(this.getFOVModifier(float1), (float) this.mc.width / (float) this.mc.height, 0.05f,
+                this.farPlaneDistance);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
         if (this.mc.options.anaglyph) {
@@ -228,14 +238,14 @@ public class EntityRenderer {
 
     public static void gluPerspective(float fovy, float aspect, float near, float far) {
         // Create JOML Matrix
-    	Matrix4f objMatrix = new Matrix4f()
-    			// Use perspective
-    			.perspective(toRadians(fovy), aspect, near, far);
-    	
-    	// Save in array
+        Matrix4f objMatrix = new Matrix4f()
+                // Use perspective
+                .perspective(toRadians(fovy), aspect, near, far);
+
+        // Save in array
         float[] arrMatrix = new float[16];
         objMatrix.get(arrMatrix);
-        
+
         // Send array to OpenGL
         GL11.glMultMatrixf(arrMatrix);
     }
@@ -264,11 +274,13 @@ public class EntityRenderer {
     }
 
     public void updateCameraAndRender(final float float1) {
-        /* TODO: reimplement whatever this does. I think it shows the pause menu when the window is not focused
-        if (this.anaglyphEnable && !Display.isActive()) {
-            this.mc.displayInGameMenu();
-        }
-        */
+        /*
+         * TODO: reimplement whatever this does. I think it shows the pause menu when
+         * the window is not focused
+         * if (this.anaglyphEnable && !Display.isActive()) {
+         * this.mc.displayInGameMenu();
+         * }
+         */
         this.anaglyphEnable = glfwGetWindowAttrib(this.mc.window, GLFW_FOCUSED) == GLFW_TRUE;
         if (this.mc.inGameHasFocus) {
             final int scaledHeight = (int) (mc.mouse.position.deltaX() * 1);
@@ -280,7 +292,10 @@ public class EntityRenderer {
             final int n = scaledHeight;// + this.mc.mouseHelper.deltaX;
             final int n2 = scaledWidth;// - this.mc.mouseHelper.deltaY;
             if (scaledHeight != 0 || this.entityRendererInt1 != 0) {
-//                System.out.println(new StringBuilder().append("xxo: ").append(entityRendererInt1).append(", ").append(this.entityRendererInt1).append(": ").append(this.entityRendererInt1).append(", xo: ").append(n).toString());
+                // System.out.println(new StringBuilder().append("xxo:
+                // ").append(entityRendererInt1).append(",
+                // ").append(this.entityRendererInt1).append(":
+                // ").append(this.entityRendererInt1).append(", xo: ").append(n).toString());
             }
             if (this.entityRendererInt1 != 0) {
                 this.entityRendererInt1 = 0;
@@ -344,7 +359,7 @@ public class EntityRenderer {
             GL11.glClear(16640);
             GL11.glEnable(2884);
             this.orientCamera(float1, i);
-            //Frustum.getInstance();
+            // Frustum.getInstance();
             if (this.mc.options.renderDistance < 2) {
                 this.setupFog(-1);
                 renderGlobal.renderSky(float1);
@@ -368,8 +383,10 @@ public class EntityRenderer {
             effectRenderer.renderParticles(thePlayer, float1);
             if (this.mc.objectMouseOver != null && thePlayer.isInsideOfMaterial(Material.WATER)) {
                 GL11.glDisable(3008);
-                renderGlobal.drawBlockBreaking(thePlayer, this.mc.objectMouseOver, 0, thePlayer.inventory.getCurrentItem(), float1);
-                renderGlobal.drawSelectionBox(thePlayer, this.mc.objectMouseOver, 0, thePlayer.inventory.getCurrentItem(), float1);
+                renderGlobal.drawBlockBreaking(thePlayer, this.mc.objectMouseOver, 0,
+                        thePlayer.inventory.getCurrentItem(), float1);
+                renderGlobal.drawSelectionBox(thePlayer, this.mc.objectMouseOver, 0,
+                        thePlayer.inventory.getCurrentItem(), float1);
                 GL11.glEnable(3008);
             }
             GL11.glBlendFunc(770, 771);
@@ -399,8 +416,10 @@ public class EntityRenderer {
             GL11.glDisable(3042);
             if (this.mc.objectMouseOver != null && !thePlayer.isInsideOfMaterial(Material.WATER)) {
                 GL11.glDisable(3008);
-                renderGlobal.drawBlockBreaking(thePlayer, this.mc.objectMouseOver, 0, thePlayer.inventory.getCurrentItem(), float1);
-                renderGlobal.drawSelectionBox(thePlayer, this.mc.objectMouseOver, 0, thePlayer.inventory.getCurrentItem(), float1);
+                renderGlobal.drawBlockBreaking(thePlayer, this.mc.objectMouseOver, 0,
+                        thePlayer.inventory.getCurrentItem(), float1);
+                renderGlobal.drawSelectionBox(thePlayer, this.mc.objectMouseOver, 0,
+                        thePlayer.inventory.getCurrentItem(), float1);
                 GL11.glEnable(3008);
             }
             GL11.glDisable(2912);
@@ -439,7 +458,8 @@ public class EntityRenderer {
                 final float nextFloat = this.random.nextFloat();
                 final float nextFloat2 = this.random.nextFloat();
                 if (blockId > 0) {
-                    this.mc.effectRenderer.addEffect(new EntityRainFX(theWorld, n2 + nextFloat, topSolidBlock + 0.1f - Block.blocksList[blockId].minY, n3 + nextFloat2));
+                    this.mc.effectRenderer.addEffect(new EntityRainFX(theWorld, n2 + nextFloat,
+                            topSolidBlock + 0.1f - Block.blocksList[blockId].minY, n3 + nextFloat2));
                 }
             }
         }
@@ -535,7 +555,8 @@ public class EntityRenderer {
         this.fogColorGreen *= n5;
         this.fogColorBlue *= n5;
         if (this.mc.options.anaglyph) {
-            final float fogColorRed = (this.fogColorRed * 30.0f + this.fogColorGreen * 59.0f + this.fogColorBlue * 11.0f) / 100.0f;
+            final float fogColorRed = (this.fogColorRed * 30.0f + this.fogColorGreen * 59.0f
+                    + this.fogColorBlue * 11.0f) / 100.0f;
             final float fogColorGreen = (this.fogColorRed * 30.0f + this.fogColorGreen * 70.0f) / 100.0f;
             final float fogColorBlue = (this.fogColorRed * 30.0f + this.fogColorBlue * 70.0f) / 100.0f;
             this.fogColorRed = fogColorRed;
@@ -547,7 +568,8 @@ public class EntityRenderer {
 
     private void setupFog(final int integer) {
         final EntityPlayerSP thePlayer = this.mc.player;
-        GL11.glFogfv(GL11.GL_FOG_COLOR, this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0f));
+        GL11.glFogfv(GL11.GL_FOG_COLOR,
+                this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0f));
         GL11.glNormal3f(0.0f, -1.0f, 0.0f);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         if (thePlayer.isInsideOfMaterial(Material.WATER)) {
@@ -594,7 +616,8 @@ public class EntityRenderer {
         GL11.glColorMaterial(1028, 4608);
     }
 
-    private FloatBuffer setFogColorBuffer(final float float1, final float float2, final float float3, final float float4) {
+    private FloatBuffer setFogColorBuffer(final float float1, final float float2, final float float3,
+            final float float4) {
         this.fogColorBuffer.clear();
         this.fogColorBuffer.put(float1).put(float2).put(float3).put(float4);
         this.fogColorBuffer.flip();

@@ -89,7 +89,10 @@ public class OpenCraft implements Runnable {
 	// Track keyboard state to prevent continuous triggering of key-based actions
 	private java.util.Set<Integer> prevPressedKeys = new java.util.HashSet<>();
 
-	/** Holds the function called when the window is resized, otherwise the function would be garbage collected */
+	/**
+	 * Holds the function called when the window is resized, otherwise the function
+	 * would be garbage collected
+	 */
 	private GLFWFramebufferSizeCallback frameBufferResizeCallback;
 	private GLFWWindowFocusCallback windowFocusCallback;
 	public MouseInput mouse;
@@ -153,18 +156,18 @@ public class OpenCraft implements Runnable {
 	}
 
 	public void init() {
-        if (Platform.get() == Platform.LINUX)
-            glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+		if (Platform.get() == Platform.LINUX)
+			glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
 		glfwInit();
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 		window = glfwCreateWindow(width, height, Main.TITLE, 0, 0);
-		if(window == 0) {
+		if (window == 0) {
 			throw new RuntimeException("Failed to create the GLFW window");
 		}
 		glfwMakeContextCurrent(window);
-		if(GL.createCapabilities() == null)
+		if (GL.createCapabilities() == null)
 			throw new RuntimeException("Failed to create OpenGL capabilities");
 		glfwShowWindow(window);
 
@@ -190,7 +193,7 @@ public class OpenCraft implements Runnable {
 		font = new FontRenderer(options, "/assets/default.png", renderer);
 		loadScreen();
 		try {
-//            Controllers.create();
+			// Controllers.create();
 		} catch (Exception ex2) {
 			ex2.printStackTrace();
 		}
@@ -260,14 +263,14 @@ public class OpenCraft implements Runnable {
 		t.draw();
 		glEnable(3008);
 		glAlphaFunc(516, 0.1f);
-		// magic numbers for x and y coordinates because I have no idea how to calculate it
-		font.drawStringWithShadow2("Loading...", 32, 32, 0xFFFFFF);
+		font.drawStringWithShadow2("Loading...", (scaledWidth - font.getStringWidth("Loading...")) / 2,
+				(scaledHeight - 8) / 2, 0xFFFFFF);
 		glfwSwapBuffers(window);
 	}
 
 	public void displayGuiScreen(GuiScreen screen) {
-		 // if (currentScreen instanceof GuiEmptyScreen)
-		//	return;
+		// if (currentScreen instanceof GuiEmptyScreen)
+		// return;
 
 		if (currentScreen != null)
 			currentScreen.onGuiClosed();
@@ -275,8 +278,9 @@ public class OpenCraft implements Runnable {
 		if (screen == null) {
 			if (clientWorld == null)
 				screen = new GuiMainMenu();
-			else if (player.health <= 0)
+			else if (player != null && player.health <= 0) {
 				screen = new GuiGameOver();
+			}
 		}
 
 		if ((currentScreen = screen) != null) {
@@ -358,22 +362,23 @@ public class OpenCraft implements Runnable {
 				sndManager.setListener(player, timer.renderPartialTicks);
 				glEnable(GL_TEXTURE_2D);
 				if (clientWorld != null)
-					while (clientWorld.updatingLighting());
-				
+					while (clientWorld.updatingLighting())
+						;
+
 				if (!skipRenderWorld) {
 					playerController.setPartialTime(timer.renderPartialTicks);
 					entityRenderer.updateCameraAndRender(timer.renderPartialTicks);
 				}
 
 				prevFrameTime = System.nanoTime();
-				
+
 				// Thread.yield();
 				mouse.reset();
 
 				glfwSwapBuffers(window);
 
 				glfwPollEvents();
-				
+
 				checkGLError();
 				++n;
 				isGamePaused = (!isMultiplayerWorld() && currentScreen != null
@@ -460,7 +465,8 @@ public class OpenCraft implements Runnable {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		// Center the mouse cursor when focus is regained for camera control
 		glfwSetCursorPos(window, width / 2.0, height / 2.0);
-		// Reset mouse position and delta tracking to avoid camera movement from cursor movement during GUI interaction
+		// Reset mouse position and delta tracking to avoid camera movement from cursor
+		// movement during GUI interaction
 		mouse.position.x = width / 2.0;
 		mouse.position.y = height / 2.0;
 		mouse.position.prevX = width / 2.0;
@@ -534,17 +540,19 @@ public class OpenCraft implements Runnable {
 			} else {
 				final ItemStack currentItem = player.inventory.getCurrentItem();
 				final int blockId = clientWorld.getBlockId(blockX, n, blockZ);
-                // TODO: re-architecture block interaction system to do client -> server communication properly
-//				if (blockId > 0 && Block.blocksList[blockId].blockActivated(clientWorld, blockX, n, blockZ, player)) {
-//					return;
-//				}
+				// TODO: re-architecture block interaction system to do client -> server
+				// communication properly
+				// if (blockId > 0 && Block.blocksList[blockId].blockActivated(clientWorld,
+				// blockX, n, blockZ, player)) {
+				// return;
+				// }
 				if (currentItem == null) {
 					return;
 				}
 				final int stackSize = currentItem.stackSize;
-//				if (currentItem.useItem(player, clientWorld, blockX, n, blockZ, sideHit)) {
-//					entityRenderer.itemRenderer.resetEquippedProgress();
-//				}
+				// if (currentItem.useItem(player, clientWorld, blockX, n, blockZ, sideHit)) {
+				// entityRenderer.itemRenderer.resetEquippedProgress();
+				// }
 				if (currentItem.stackSize == 0) {
 					player.inventory.mainInventory[player.inventory.currentItem] = null;
 				} else if (currentItem.stackSize != stackSize) {
@@ -556,15 +564,17 @@ public class OpenCraft implements Runnable {
 			final ItemStack currentItem2 = player.inventory.getCurrentItem();
 			if (currentItem2 != null) {
 				final int n = currentItem2.stackSize;
-//				final ItemStack useItemRightClick = currentItem2.useItemRightClick(clientWorld, player);
-//				if (useItemRightClick != currentItem2
-//						|| (useItemRightClick != null && useItemRightClick.stackSize != n)) {
-//					player.inventory.mainInventory[player.inventory.currentItem] = useItemRightClick;
-//					entityRenderer.itemRenderer.d();
-//					if (useItemRightClick.stackSize == 0) {
-//						player.inventory.mainInventory[player.inventory.currentItem] = null;
-//					}
-//				}
+				// final ItemStack useItemRightClick =
+				// currentItem2.useItemRightClick(clientWorld, player);
+				// if (useItemRightClick != currentItem2
+				// || (useItemRightClick != null && useItemRightClick.stackSize != n)) {
+				// player.inventory.mainInventory[player.inventory.currentItem] =
+				// useItemRightClick;
+				// entityRenderer.itemRenderer.d();
+				// if (useItemRightClick.stackSize == 0) {
+				// player.inventory.mainInventory[player.inventory.currentItem] = null;
+				// }
+				// }
 			}
 		}
 	}
@@ -632,7 +642,7 @@ public class OpenCraft implements Runnable {
 			// Process mouse events for appropriate context only - once per event
 			if (currentScreen == null) {
 				// Process mouse events for world context only
-				for(MouseInput.ButtonEvent event : mouse.buttons.events) {
+				for (MouseInput.ButtonEvent event : mouse.buttons.events) {
 					if (System.currentTimeMillis() - systemTime > 200L) {
 						continue;
 					}
@@ -646,34 +656,37 @@ public class OpenCraft implements Runnable {
 					}
 				}
 			}
-			// For GUI screens, mouse events will be processed in handleInputEvents() method later
+			// For GUI screens, mouse events will be processed in handleInputEvents() method
+			// later
 			// and should not be processed here to prevent double-processing
 
 			// Process keys that were just pressed (not held down from previous tick)
-			for(Integer key : keyboard.pressedKeys) {
-				// Only process keys that weren't pressed in the previous tick to prevent continuous triggering
+			for (Integer key : keyboard.pressedKeys) {
+				// Only process keys that weren't pressed in the previous tick to prevent
+				// continuous triggering
 				if (!prevPressedKeys.contains(key)) {
-					if(key == GLFW_KEY_ESCAPE) {
+					if (key == GLFW_KEY_ESCAPE) {
 						displayInGameMenu();
 					}
 
-					if(key == GLFW_KEY_F5) {
+					if (key == GLFW_KEY_F5) {
 						options.thirdPersonView = !options.thirdPersonView;
 						isRaining = !isRaining;
 					}
 
-					if(key == options.keyBindings.get(GameSettings.PlayerInput.INVENTORY)) {
-						if(currentScreen instanceof GuiInventory)
+					if (key == options.keyBindings.get(GameSettings.PlayerInput.INVENTORY)) {
+						if (currentScreen instanceof GuiInventory)
 							displayGuiScreen(null);
-						else if(currentScreen == null)
+						else if (currentScreen == null)
 							displayGuiScreen(new GuiInventory(player.inventory));
 					}
 
-					if(key == options.keyBindings.get(GameSettings.PlayerInput.DROP))
-						player.dropPlayerItemWithRandomChoice(player.inventory.decrStackSize(player.inventory.currentItem, 1), false);
+					if (key == options.keyBindings.get(GameSettings.PlayerInput.DROP))
+						player.dropPlayerItemWithRandomChoice(
+								player.inventory.decrStackSize(player.inventory.currentItem, 1), false);
 
-					for(int i = 0; i < 9; ++i) {
-						if(key == GLFW_KEY_0 + i) {
+					for (int i = 0; i < 9; ++i) {
+						if (key == GLFW_KEY_0 + i) {
 							player.inventory.currentItem = i;
 						}
 					}
@@ -685,13 +698,14 @@ public class OpenCraft implements Runnable {
 			prevPressedKeys.addAll(keyboard.pressedKeys);
 			if (currentScreen == null) {
 				// Only process clicks if not already cooling down from previous click
-				// This prevents the issue where startup mouse state or air-clicking causes blocking behavior
+				// This prevents the issue where startup mouse state or air-clicking causes
+				// blocking behavior
 				if (leftClickCounter <= 0 && mouse.isButton1Pressed() && ticksRan - mouseTicksRan >= timer.tps / 4.0f
 						&& inGameHasFocus) {
 					clickMouse(0);
 					mouseTicksRan = ticksRan;
 				}
-				if(leftClickCounter <= 0 && mouse.isButton2Pressed() && ticksRan - mouseTicksRan >= timer.tps / 4.0f
+				if (leftClickCounter <= 0 && mouse.isButton2Pressed() && ticksRan - mouseTicksRan >= timer.tps / 4.0f
 						&& inGameHasFocus) {
 					clickMouse(1);
 					mouseTicksRan = ticksRan;
@@ -717,6 +731,11 @@ public class OpenCraft implements Runnable {
 			clientNetworkManager.processNetworkData();
 		}
 
+		// Process integrated server network data if applicable
+		if (integratedServer != null && integratedServer.getNetworkSystem() != null) {
+			integratedServer.getNetworkSystem().processIntegratedClientPackets();
+		}
+
 		// Reset mouse events after all processing
 		mouse.reset();
 		if (clientWorld != null) {
@@ -728,31 +747,17 @@ public class OpenCraft implements Runnable {
 				renderGlobal.updateClouds();
 			}
 			if (!isGamePaused) {
+				// Always update entities on the client side for interpolation
 				clientWorld.updateEntities();
 			}
-			if (!isGamePaused && !isMultiplayerWorld()) {
+			if (!isGamePaused) {
+				// Always tick the client world to handle animations, entity interpolation, etc.
 				clientWorld.tick();
-			} else if (!isGamePaused && isMultiplayerWorld()) {
-				// Send player position update to server if connected
-				if (player != null && clientNetworkManager != null) {
-					try {
-						// Only send updates periodically to reduce network traffic
-						// Send more frequently (every 5 ticks) but only if significant movement
-						if (ticksRan % 5 == 0) { // Send about 4 times per second
-							// Check if player has moved significantly before sending an update
-							if (hasPlayerMovedSignificantly()) {
-								net.opencraft.shared.network.packets.PacketPlayerPosition posPacket =
-									new net.opencraft.shared.network.packets.PacketPlayerPosition(
-										player.posX, player.posY, player.posZ,
-										player.rotationYaw, player.rotationPitch, player.onGround);
-								clientNetworkManager.sendPacket(posPacket);
-							}
-						}
-					} catch (Exception e) {
-						System.err.println("Error sending player position: " + e.getMessage());
-					}
-				}
-				clientWorld.tick();
+			}
+
+			// Tick the integrated server in singleplayer mode
+			if (integratedServer != null && !isGamePaused) {
+				integratedServer.tick();
 			}
 			if (!isGamePaused) {
 				clientWorld.randomDisplayUpdates(Mth.floor_double(player.posX), Mth.floor_double(player.posY),
@@ -765,7 +770,7 @@ public class OpenCraft implements Runnable {
 		systemTime = System.currentTimeMillis();
 	}
 
-	private Server integratedServer; // For singleplayer integrated server
+	public Server integratedServer; // For singleplayer integrated server
 
 	public boolean isMultiplayerWorld() {
 		return integratedServer != null;
@@ -827,25 +832,15 @@ public class OpenCraft implements Runnable {
 		}
 		clientNetworkManager.connectToIntegratedServer();
 
-		// In a proper client-server architecture, the client doesn't create its own world
-		// Instead, world data is received from the server
-        ClientWorld world = null;
+		// For integrated server mode, we need to wait for the server to provide world
+		// data
+		// but we can create a client world that will be populated with server data
+		ClientWorld world = new ClientWorld(new File(getGameDir(), "saves"), string);
 
-		if (isMultiplayerWorld()) {
-			// Wait for world data from server
-			System.out.println("Waiting for world data from server...");
-			// For remote multiplayer, we'd wait for a world init packet from the server
+		if (world.isNewWorld) {
+			changeWorld2(world, "Generating level");
 		} else {
-			// Singleplayer - create client world from local save
-			world = new ClientWorld(new File(getGameDir(), "saves"), string);
-		}
-
-		if (world != null) {
-			if (world.isNewWorld) {
-				changeWorld2(world, "Generating level");
-			} else {
-				changeWorld2(world, "Loading level");
-			}
+			changeWorld2(world, "Loading level");
 		}
 	}
 
@@ -855,59 +850,69 @@ public class OpenCraft implements Runnable {
 
 	public void changeWorld2(final ClientWorld fe, final String string) {
 		if (clientWorld != null) {
-			clientWorld.saveWorldIndirectly(loadingScreen);
+			// Client should not save world, server handles it
+			// clientWorld.saveWorldIndirectly(loadingScreen);
+
+			// Always stop the integrated server when leaving a world
+			// This ensures proper cleanup whether going to title screen or loading another
+			// world
+			stopIntegratedServer();
 		}
 		if ((clientWorld = fe) != null) {
 			playerController.func_717_a(fe);
 			fe.h = font;
 
-			// Handle player based on multiplayer vs singleplayer
-			if (!isMultiplayerWorld()) {
-				// Singleplayer: player is already in the world
-				player = (EntityPlayerSP) fe.func_4085_a(EntityPlayerSP.class);
-				if (player == null) {
-					// Create player if not in world yet
-					(player = new EntityPlayerSP(oc, fe, sessionData)).preparePlayerToSpawn();
-					fe.entityJoinedWorld(player);
-				}
+			// For integrated server (singleplayer), create the player immediately
+			// For multiplayer, player creation is handled by PacketPlayerSpawn
+			if (player == null) {
+				// Create the player
+				(player = new EntityPlayerSP(oc, fe, sessionData)).preparePlayerToSpawn();
+				playerController.flipPlayer(player);
 				fe.player = player;
 			} else {
-				// Multiplayer: need to handle player from server
-				if (player == null) {
-					// Create the player for multiplayer
-					(player = new EntityPlayerSP(oc, fe, sessionData)).preparePlayerToSpawn();
-					playerController.flipPlayer(player);
-					fe.entityJoinedWorld(player);
-				} else {
-					// Player already exists, just update position
-					player.preparePlayerToSpawn();
-					fe.player = player;
-					fe.entityJoinedWorld(player);
-				}
+				// Player already exists, just update world reference
+				player.setWorld(fe);
+				fe.player = player;
 			}
 
 			func_6255_d(string);
 
 			// Ensure player exists and is properly set up
-			if (player == null) {
-				(player = new EntityPlayerSP(oc, fe, sessionData)).preparePlayerToSpawn();
-				playerController.flipPlayer(player);
+			/*
+			 * if (player == null) {
+			 * (player = new EntityPlayerSP(oc, fe, sessionData)).preparePlayerToSpawn();
+			 * playerController.flipPlayer(player);
+			 * }
+			 */
+
+			if (player != null) {
+				player.movementInput = new net.opencraft.client.input.MovementInput(options, keyboard);
 			}
 
-			player.movementInput = new MovementInput(options, keyboard);
 			if (renderGlobal != null) {
 				renderGlobal.changeWorld(fe);
 			}
 			if (effectRenderer != null) {
 				effectRenderer.clearEffects(fe);
 			}
-			playerController.func_6473_b(player);
-			fe.player = player;
-			fe.spawnPlayerWithLoadedChunks();
-			if (fe.isNewWorld) {
-				fe.saveWorldIndirectly(loadingScreen);
+
+			if (player != null) {
+				playerController.func_6473_b(player);
+				fe.player = player;
 			}
-			displayGuiScreen(new GuiInventory(player.inventory));
+
+			// Spawn player immediately for integrated server
+			if (player != null && isMultiplayerWorld()) {
+				fe.spawnPlayerWithLoadedChunks();
+			}
+
+			if (fe.isNewWorld) {
+				// Client should not save world
+				// fe.saveWorldIndirectly(loadingScreen);
+			}
+			if (player != null) {
+				displayGuiScreen(new GuiInventory(player.inventory));
+			}
 		}
 		System.gc();
 		systemTime = 0L;
@@ -980,17 +985,17 @@ public class OpenCraft implements Runnable {
 	}
 
 	public static File getGameDir() {
-		if(gameDir == null)
+		if (gameDir == null)
 			gameDir = new File(PROJECT_NAME_LOWERCASE);
 		return gameDir;
 	}
 
-    /**
-     * Get the client network manager for sending packets to the server
-     */
-    public net.opencraft.client.network.ClientNetworkManager getClientNetworkManager() {
-        return clientNetworkManager;
-    }
+	/**
+	 * Get the client network manager for sending packets to the server
+	 */
+	public net.opencraft.client.network.ClientNetworkManager getClientNetworkManager() {
+		return clientNetworkManager;
+	}
 
 	// Track last position for movement optimization
 	private double lastSentX = Double.MAX_VALUE;

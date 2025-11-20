@@ -173,6 +173,10 @@ public interface World extends IBlockAccess {
 
     void neighborLightPropagationChanged(EnumSkyBlock enumSkyBlock, int x, int y, int z, int value);
 
+    // Difficulty setting property
+    int getDifficultySetting();
+    void setDifficultySetting(int difficulty);
+
     private void notifyBlockChange(int x, int y, int z, int blockid) {
 
     }

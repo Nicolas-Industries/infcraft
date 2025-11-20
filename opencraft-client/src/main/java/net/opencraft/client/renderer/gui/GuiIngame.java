@@ -56,7 +56,8 @@ public class GuiIngame extends GuiElement {
         final InventoryPlayer inventory = this.mc.player.inventory;
         this.zLevel = -90.0f;
         this.drawTexturedModalRect(scaledWidth / 2 - 91, scaledHeight - 22, 0, 0, 182, 22);
-        this.drawTexturedModalRect(scaledWidth / 2 - 91 - 1 + inventory.currentItem * 20, scaledHeight - 22 - 1, 0, 22, 24, 22);
+        this.drawTexturedModalRect(scaledWidth / 2 - 91 - 1 + inventory.currentItem * 20, scaledHeight - 22 - 1, 0, 22,
+                24, 22);
         GL11.glBindTexture(3553, this.mc.renderer.loadTexture("/assets/gui/icons.png"));
         GL11.glEnable(3042);
         GL11.glBlendFunc(775, 769);
@@ -110,7 +111,8 @@ public class GuiIngame extends GuiElement {
                 }
             }
             if (this.mc.player.isInsideOfMaterial(Material.WATER)) {
-                for (int j = (int) ceil((this.mc.player.air - 2) * 10.0 / 300.0), integer5 = (int) ceil(this.mc.player.air * 10.0 / 300.0) - j, k = 0; k < j + integer5; ++k) {
+                for (int j = (int) ceil((this.mc.player.air - 2) * 10.0 / 300.0),
+                        integer5 = (int) ceil(this.mc.player.air * 10.0 / 300.0) - j, k = 0; k < j + integer5; ++k) {
                     if (k < j) {
                         this.drawTexturedModalRect(scaledWidth / 2 - 91 + k * 8, scaledHeight - 32 - 9, 16, 18, 9, 9);
                     } else {
@@ -133,27 +135,33 @@ public class GuiIngame extends GuiElement {
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL_FULLBRIGHT_RENDERING);
         if (this.mc.options.showDebugInfo) {
-            font.drawStringWithShadow2(Main.TITLE +" (" + this.mc.debug + ")", 2, 2, 16777215);
+            font.drawStringWithShadow2(Main.TITLE + " (" + this.mc.debug + ")", 2, 2, 16777215);
             font.drawStringWithShadow2(this.mc.debugInfoRenders(), 2, 12, 16777215);
             font.drawStringWithShadow2(this.mc.entityRenderingInfo(), 2, 22, 16777215);
             font.drawStringWithShadow2(this.mc.debugInfoEntities(), 2, 32, 16777215);
             // display current coordinates and orientation
-            font.drawStringWithShadow2("X: " + this.mc.player.posX + " Y: " + this.mc.player.posY + " Z: " + this.mc.player.posZ, 2, 42, 16777215);
-            font.drawStringWithShadow2("Yaw: " + this.mc.player.rotationYaw + " Pitch: " + this.mc.player.rotationPitch, 2, 52, 16777215);
+            font.drawStringWithShadow2(
+                    "X: " + this.mc.player.posX + " Y: " + this.mc.player.posY + " Z: " + this.mc.player.posZ, 2, 42,
+                    16777215);
+            font.drawStringWithShadow2("Yaw: " + this.mc.player.rotationYaw + " Pitch: " + this.mc.player.rotationPitch,
+                    2, 52, 16777215);
             final long maxMemory = Runtime.getRuntime().maxMemory();
             final long totalMemory = Runtime.getRuntime().totalMemory();
             final long allocatedMemory = totalMemory - Runtime.getRuntime().freeMemory();
-            final String string = "Used memory: " + allocatedMemory * 100L / maxMemory + "% (" + allocatedMemory / 1024L / 1024L + "MB) of " + maxMemory / 1024L / 1024L + "MB";
+            final String string = "Used memory: " + allocatedMemory * 100L / maxMemory + "% ("
+                    + allocatedMemory / 1024L / 1024L + "MB) of " + maxMemory / 1024L / 1024L + "MB";
             this.drawString(font, string, scaledWidth - font.getStringWidth(string) - 2, 2, 14737632);
-            final String string2 = "Allocated memory: " + totalMemory * 100L / maxMemory + "% (" + totalMemory / 1024L / 1024L + "MB)";
+            final String string2 = "Allocated memory: " + totalMemory * 100L / maxMemory + "% ("
+                    + totalMemory / 1024L / 1024L + "MB)";
             this.drawString(font, string2, scaledWidth - font.getStringWidth(string2) - 2, 12, 14737632);
         }
-        
+
         int i = 10;
         final boolean b2 = true;
         for (int integer5 = 0; integer5 < this.chatMessageList.size() && integer5 < i; ++integer5) {
             if ((chatMessageList.get(integer5)).updateCounter < 200 || b2) {
-                font.drawStringWithShadow2(((ChatLine) this.chatMessageList.get(integer5)).message, 2, scaledHeight - 8 - integer5 * 9 - 20, 16777215);
+                font.drawStringWithShadow2(((ChatLine) this.chatMessageList.get(integer5)).message, 2,
+                        scaledHeight - 8 - integer5 * 9 - 20, 16777215);
             }
         }
     }
@@ -210,6 +218,13 @@ public class GuiIngame extends GuiElement {
         for (int i = 0; i < this.chatMessageList.size(); ++i) {
             final ChatLine chatLine = (ChatLine) this.chatMessageList.get(i);
             ++chatLine.updateCounter;
+        }
+    }
+
+    public void addChatMessage(String message) {
+        this.chatMessageList.add(0, new ChatLine(message));
+        while (this.chatMessageList.size() > 50) {
+            this.chatMessageList.remove(this.chatMessageList.size() - 1);
         }
     }
 

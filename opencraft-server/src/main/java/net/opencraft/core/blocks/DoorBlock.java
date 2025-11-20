@@ -64,9 +64,9 @@ public class DoorBlock extends Block {
     }
 
     @Override
-    public AABB getCollisionBoundingBoxFromPool(final ServerWorld serverWorld, final int xCoord, final int yCoord, final int zCoord) {
-        this.setBlockBoundsBasedOnState(serverWorld, xCoord, yCoord, zCoord);
-        return super.getCollisionBoundingBoxFromPool(serverWorld, xCoord, yCoord, zCoord);
+    public AABB getCollisionBoundingBoxFromPool(final World world, final int xCoord, final int yCoord, final int zCoord) {
+        this.setBlockBoundsBasedOnState(world, xCoord, yCoord, zCoord);
+        return super.getCollisionBoundingBoxFromPool(world, xCoord, yCoord, zCoord);
     }
 
     @Override

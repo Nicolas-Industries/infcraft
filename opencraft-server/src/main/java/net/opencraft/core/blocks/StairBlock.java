@@ -7,6 +7,7 @@ import net.opencraft.core.physics.AABB;
 import net.opencraft.core.util.Vec3;
 import net.opencraft.core.world.IBlockAccess;
 import net.opencraft.core.world.World;
+import net.opencraft.server.Server;
 import net.opencraft.server.world.ServerWorld;
 
 import java.util.List;
@@ -45,7 +46,13 @@ public class StairBlock extends Block {
     }
 
     @Override
-    public void getCollidingBoundingBoxes(ServerWorld serverWorld, int xCoord, int yCoord, final int zCoord, AABB aabb, List<AABB> arrayList) {
+    public void getCollidingBoundingBoxes(World world, int xCoord, int yCoord, final int zCoord, AABB aabb, List<AABB> arrayList) {
+        if (!(world instanceof ServerWorld serverWorld)) {
+            System.out.println("WARNING:LadderBlock: Attempt to use getCollisionBoundingBoxFromPool from Client!");
+        }
+
+        assert world instanceof ServerWorld;
+        ServerWorld serverWorld = (ServerWorld) world;
         final int blockMetadata = serverWorld.getBlockMetadata(xCoord, yCoord, zCoord);
         if (blockMetadata == 0) {
             this.setShape(0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 1.0f);

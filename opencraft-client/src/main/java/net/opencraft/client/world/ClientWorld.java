@@ -96,6 +96,24 @@ public class ClientWorld implements World {
         this.field_1012_M = new ArrayList();
         this.p = string;
         file.mkdirs();
+        (this.C = new File(file, string)).mkdirs();
+        final File file2 = new File(this.C, "level.dat");
+        this.isNewWorld = !file2.exists();
+        if (file2.exists()) {
+            try {
+                final NBTTagCompound compoundTag = CompressedStreamTools
+                        .loadGzippedCompoundFromOutputStream(new FileInputStream(file2)).getCompoundTag("Data");
+                this.n = compoundTag.getLong("RandomSeed");
+                this.x = compoundTag.getInteger("SpawnX");
+                this.y = compoundTag.getInteger("SpawnY");
+                this.z = compoundTag.getInteger("SpawnZ");
+                this.getWorldTime = compoundTag.getLong("Time");
+                this.setSizeOnDisk = compoundTag.getLong("SizeOnDisk");
+                this.D = compoundTag.getCompoundTag("Player");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
         boolean b = false;
         if (this.n == 0L) {
             this.n = long3;
@@ -103,22 +121,33 @@ public class ClientWorld implements World {
         }
         this.chunkProvider = this.a(this.C);
         if (b) {
+            // Client should not generate spawn point - it will be received from the server
+            // The server handles spawn point generation in ServerWorld
             this.x = 0;
             this.y = 64;
             this.z = 0;
-            while (!this.e(this.x, this.z)) {
-                this.x += this.rand.nextInt(64) - this.rand.nextInt(64);
-                this.z += this.rand.nextInt(64) - this.rand.nextInt(64);
-            }
+            // REMOVED: Infinite loop that was causing the game to freeze
+            // while (!this.e(this.x, this.z)) {
+            // this.x += this.rand.nextInt(64) - this.rand.nextInt(64);
+            // this.z += this.rand.nextInt(64) - this.rand.nextInt(64);
+            // }
         }
         this.calculateInitialSkylight();
     }
 
-
     protected IChunkProvider a(final File file) {
-        // For client world, create a client-specific chunk provider
+        // Client should ONLY receive chunks from the server via packets
+        // Never generate or load chunks locally - that's the server's job
         IChunkLoader chunkLoader = new ChunkLoader();
         return new ChunkProviderClient(this, chunkLoader);
+    }
+
+    /**
+     * Get the chunk provider for this world
+     * Used by ClientNetworkManager to load chunks from packets
+     */
+    public IChunkProvider getChunkProvider() {
+        return this.chunkProvider;
     }
 
     public void a() {
@@ -142,12 +171,29 @@ public class ClientWorld implements World {
     public void spawnPlayerWithLoadedChunks() {
         try {
             if (this.D != null) {
-                this.player.readFromNBT(this.D);
+                // In integrated server mode, player data may come from server
+                // rather than from local save files
+                if (net.opencraft.client.OpenCraft.oc != null
+                        && net.opencraft.client.OpenCraft.oc.isMultiplayerWorld()) {
+                    // For integrated server, we might want to get player data from server
+                    // For now, initialize with basic player data
+                    this.player.preparePlayerToSpawn();
+                } else {
+                    // In standalone mode, read from saved data
+                    this.player.readFromNBT(this.D);
+                }
                 this.D = null;
+            } else {
+                // No saved data, prepare player with defaults
+                this.player.preparePlayerToSpawn();
             }
             this.entityJoinedWorld(this.player);
         } catch (Exception ex) {
+            System.err.println("Error spawning player: " + ex.getMessage());
             ex.printStackTrace();
+            // Still add the player even if there was an error reading saved data
+            this.player.preparePlayerToSpawn();
+            this.entityJoinedWorld(this.player);
         }
     }
 
@@ -169,7 +215,8 @@ public class ClientWorld implements World {
         return yCoord >= 0 && yCoord < 128 && this.chunkExists(xCoord >> 4, zCoord >> 4);
     }
 
-    public boolean checkChunksExist(int xCoordNegative, int yCoordNegative, int zCoordNegative, int xCoordPositive, int yCoordPositive, int zCoordPositive) {
+    public boolean checkChunksExist(int xCoordNegative, int yCoordNegative, int zCoordNegative, int xCoordPositive,
+            int yCoordPositive, int zCoordPositive) {
         if (yCoordPositive < 0 || yCoordNegative >= 128) {
             return false;
         }
@@ -198,18 +245,21 @@ public class ClientWorld implements World {
     }
 
     public boolean setBlock(final int xCoord, final int yCoord, final int zCoord, final int blockid) {
-        // In client-server architecture, the client should send a packet to the server to modify the block
+        // In client-server architecture, the client should send a packet to the server
+        // to modify the block
         // rather than modifying the block directly
         if (net.opencraft.client.OpenCraft.oc != null) {
-            net.opencraft.client.network.ClientNetworkManager networkManager = net.opencraft.client.OpenCraft.oc.getClientNetworkManager();
+            net.opencraft.client.network.ClientNetworkManager networkManager = net.opencraft.client.OpenCraft.oc
+                    .getClientNetworkManager();
             if (networkManager != null) {
                 try {
                     // Send packet to server requesting block change (with metadata 0)
-                    net.opencraft.shared.network.packets.PacketBlockChange blockChangePacket =
-                        new net.opencraft.shared.network.packets.PacketBlockChange(xCoord, yCoord, zCoord, blockid, 0);
+                    net.opencraft.shared.network.packets.PacketBlockChange blockChangePacket = new net.opencraft.shared.network.packets.PacketBlockChange(
+                            xCoord, yCoord, zCoord, blockid);
                     networkManager.sendPacket(blockChangePacket);
                     // Return true to indicate that the packet was sent successfully
-                    // The actual block change will be confirmed when the server sends back the update
+                    // The actual block change will be confirmed when the server sends back the
+                    // update
                     return true;
                 } catch (Exception e) {
                     System.err.println("Error sending block change packet to server: " + e.getMessage());
@@ -298,7 +348,8 @@ public class ClientWorld implements World {
         this.markBlocksDirty(nya1, nya3, nya2, nya1, nya4, nya2);
     }
 
-    public void markBlocksDirty(final int nya1, final int nya2, final int nya3, final int nya4, final int nya5, final int nya6) {
+    public void markBlocksDirty(final int nya1, final int nya2, final int nya3, final int nya4, final int nya5,
+            final int nya6) {
         for (int i = 0; i < this.worldAccesses.size(); ++i) {
             ((IWorldAccess) this.worldAccesses.get(i)).markBlockRangeNeedsUpdate(nya1, nya2, nya3, nya4, nya5, nya6);
         }
@@ -319,16 +370,18 @@ public class ClientWorld implements World {
         }
         final Block block = Block.blocksList[this.getBlockId(nya1, nya2, nya3)];
         if (block != null) {
-            // In client-server architecture, neighbor block changes should be handled by the server
+            // In client-server architecture, neighbor block changes should be handled by
+            // the server
             // The client shouldn't directly call onNeighborBlockChange with itself
             // Instead, the client should send an update to the server
             if (net.opencraft.client.OpenCraft.oc != null) {
-                net.opencraft.client.network.ClientNetworkManager networkManager = net.opencraft.client.OpenCraft.oc.getClientNetworkManager();
+                net.opencraft.client.network.ClientNetworkManager networkManager = net.opencraft.client.OpenCraft.oc
+                        .getClientNetworkManager();
                 if (networkManager != null) {
                     try {
                         // Send a block change notification to the server
-                        net.opencraft.shared.network.packets.PacketBlockChange blockChangePacket =
-                            new net.opencraft.shared.network.packets.PacketBlockChange(nya1, nya2, nya3, this.getBlockId(nya1, nya2, nya3), this.getBlockMetadata(nya1, nya2, nya3));
+                        net.opencraft.shared.network.packets.PacketBlockChange blockChangePacket = new net.opencraft.shared.network.packets.PacketBlockChange(
+                                nya1, nya2, nya3, this.getBlockId(nya1, nya2, nya3));
                         networkManager.sendPacket(blockChangePacket);
                     } catch (Exception e) {
                         // Just log the error, don't let it break the execution flow
@@ -420,7 +473,8 @@ public class ClientWorld implements World {
         return this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).getHeightValue(xCoord & 0xF, zCoord & 0xF);
     }
 
-    public void neighborLightPropagationChanged(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord, final int zCoord, int nya4) {
+    public void neighborLightPropagationChanged(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord,
+            final int zCoord, int nya4) {
         if (!this.blockExists(xCoord, yCoord, zCoord)) {
             return;
         }
@@ -439,8 +493,10 @@ public class ClientWorld implements World {
         }
     }
 
-    public int getSavedLightValue(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord, final int zCoord) {
-        if (yCoord < 0 || yCoord >= 128 || xCoord < -32000000 || zCoord < -32000000 || xCoord >= 32000000 || zCoord > 32000000) {
+    public int getSavedLightValue(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord,
+            final int zCoord) {
+        if (yCoord < 0 || yCoord >= 128 || xCoord < -32000000 || zCoord < -32000000 || xCoord >= 32000000
+                || zCoord > 32000000) {
             return enumSkyBlock.defaultLightValue;
         }
         final int n = xCoord >> 4;
@@ -451,7 +507,8 @@ public class ClientWorld implements World {
         return this.getChunkFromChunkCoords(n, n2).getSavedLightValue(enumSkyBlock, xCoord & 0xF, yCoord, zCoord & 0xF);
     }
 
-    public void setLightValue(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord, final int zCoord, final int nya4) {
+    public void setLightValue(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord, final int zCoord,
+            final int nya4) {
         if (xCoord < -32000000 || zCoord < -32000000 || xCoord >= 32000000 || zCoord > 32000000) {
             return;
         }
@@ -464,7 +521,8 @@ public class ClientWorld implements World {
         if (!this.chunkExists(xCoord >> 4, zCoord >> 4)) {
             return;
         }
-        this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).setLightValue(enumSkyBlock, xCoord & 0xF, yCoord, zCoord & 0xF, nya4);
+        this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).setLightValue(enumSkyBlock, xCoord & 0xF, yCoord,
+                zCoord & 0xF, nya4);
         for (int i = 0; i < this.worldAccesses.size(); ++i) {
             ((IWorldAccess) this.worldAccesses.get(i)).markBlockAndNeighborsNeedsUpdate(xCoord, yCoord, zCoord);
         }
@@ -597,7 +655,8 @@ public class ClientWorld implements World {
             int n10 = this.getBlockMetadata(floor_double4, floor_double5, floor_double6);
             final Block block = Block.blocksList[n9];
             if (n9 > 0 && block.canCollideCheck(n10, var3)) {
-                final MovingObjectPosition collisionRayTrace = block.collisionRayTrace(null, floor_double4, floor_double5, floor_double6, var1, var2);
+                final MovingObjectPosition collisionRayTrace = block.collisionRayTrace(null, floor_double4,
+                        floor_double5, floor_double6, var1, var2);
                 if (collisionRayTrace != null) {
                     return collisionRayTrace;
                 }
@@ -608,7 +667,8 @@ public class ClientWorld implements World {
             if (n9 <= 0 || !block2.canCollideCheck(n10, var3)) {
                 continue;
             }
-            final MovingObjectPosition collisionRayTrace2 = block2.collisionRayTrace(null, floor_double4, floor_double5 - 1, floor_double6, var1, var2);
+            final MovingObjectPosition collisionRayTrace2 = block2.collisionRayTrace(null, floor_double4,
+                    floor_double5 - 1, floor_double6, var1, var2);
             if (collisionRayTrace2 != null) {
                 return collisionRayTrace2;
             }
@@ -628,7 +688,27 @@ public class ClientWorld implements World {
 
     @Override
     public List getCollidingBoundingBoxes(Entity entity, AABB aabb) {
-        return List.of();
+        ArrayList list = new ArrayList();
+        int floor_double = Mth.floor_double(aabb.minX);
+        int floor_double2 = Mth.floor_double(aabb.maxX + 1.0);
+        int floor_double3 = Mth.floor_double(aabb.minY);
+        int floor_double4 = Mth.floor_double(aabb.maxY + 1.0);
+        int floor_double5 = Mth.floor_double(aabb.minZ);
+        int floor_double6 = Mth.floor_double(aabb.maxZ + 1.0);
+        for (int i = floor_double; i < floor_double2; ++i) {
+            for (int j = floor_double5; j < floor_double6; ++j) {
+                if (!this.blockExists(i, 64, j)) {
+                    continue;
+                }
+                for (int k = floor_double3 - 1; k < floor_double4; ++k) {
+                    Block block = Block.blocksList[this.getBlockId(i, k, j)];
+                    if (block != null) {
+                        block.getCollidingBoundingBoxes(this, i, k, j, aabb, list);
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     @Override
@@ -636,7 +716,8 @@ public class ClientWorld implements World {
 
     }
 
-    public void playSoundEffect(final double xCoord, final double yCoord, final double zCoord, final String soundName, final float volume, final float pitch) {
+    public void playSoundEffect(final double xCoord, final double yCoord, final double zCoord, final String soundName,
+            final float volume, final float pitch) {
         try {
             for (int i = 0; i < this.worldAccesses.size(); ++i) {
                 float n = 16.0f;
@@ -647,7 +728,8 @@ public class ClientWorld implements World {
                 final double n3 = yCoord - this.player.posY;
                 final double n4 = zCoord - this.player.posZ;
                 if (n2 * n2 + n3 * n3 + n4 * n4 < n * n) {
-                    ((IWorldAccess) this.worldAccesses.get(i)).playSound(soundName, xCoord, yCoord, zCoord, volume, pitch);
+                    ((IWorldAccess) this.worldAccesses.get(i)).playSound(soundName, xCoord, yCoord, zCoord, volume,
+                            pitch);
                 }
             }
         } catch (Exception ex) {
@@ -663,14 +745,24 @@ public class ClientWorld implements World {
     public void entityJoinedWorld(final Entity entity) {
         final int floor_double = Mth.floor_double(entity.posX / 16.0);
         final int floor_double2 = Mth.floor_double(entity.posZ / 16.0);
-        if (this.chunkExists(floor_double, floor_double2)) {
-            this.getChunkFromChunkCoords(floor_double, floor_double2).addEntity(entity);
-            this.loadedEntityList.add(entity);
-            for (int i = 0; i < this.worldAccesses.size(); ++i) {
-                ((IWorldAccess) this.worldAccesses.get(i)).obtainEntitySkin(entity);
-            }
-        } else {
-            System.out.println("Failed to add entity " + entity + ", Can't find chunk x: " + floor_double + " z: " + floor_double2);
+
+        // Fix: Force chunk creation if it doesn't exist.
+        // In client-server architecture, we might receive the player spawn packet
+        // before the chunk data packet. We should create a placeholder chunk
+        // so the entity can be added, rather than failing.
+        // The chunk data will fill in later when the packet arrives.
+        boolean chunkExists = this.chunkExists(floor_double, floor_double2);
+        if (!chunkExists) {
+            System.out.println(
+                    "Forcing chunk creation for entity " + entity + " at " + floor_double + ", " + floor_double2);
+        }
+
+        // provideChunk will create a blank chunk if it doesn't exist (in
+        // ChunkProviderClient)
+        this.getChunkFromChunkCoords(floor_double, floor_double2).addEntity(entity);
+        this.loadedEntityList.add(entity);
+        for (int i = 0; i < this.worldAccesses.size(); ++i) {
+            ((IWorldAccess) this.worldAccesses.get(i)).obtainEntitySkin(entity);
         }
     }
 
@@ -720,7 +812,7 @@ public class ClientWorld implements World {
     public int calculateSkylightSubtracted(final float float1) {
         float n = 1.0f - (cos(this.getCelestialAngle(float1) * PI_TIMES_2_f) * 2.0f + 0.5f);
         n = clamp(0, 1, n);
-        
+
         return (int) (n * 11.0f);
     }
 
@@ -819,6 +911,16 @@ public class ClientWorld implements World {
     }
 
     public void updateEntities() {
+        // In integrated server mode, the server handles entity updates
+        // The client should only update entities if not connected to server
+        if (net.opencraft.client.OpenCraft.oc != null && net.opencraft.client.OpenCraft.oc.isMultiplayerWorld()) {
+            // When connected to integrated server, client should receive entity updates
+            // from server
+            // rather than updating them locally
+            // For now, we'll still allow client-side update for rendering purposes
+            // but in a full implementation, we'd sync entity positions from server
+        }
+
         this.loadedEntityList.removeAll((Collection) this.unloadedEntityList);
         for (int i = 0; i < this.worldAccesses.size(); ++i) {
             final IWorldAccess worldAccess = (IWorldAccess) this.worldAccesses.get(i);
@@ -862,6 +964,11 @@ public class ClientWorld implements World {
         final int floor_double2 = Mth.floor_double(entity.posZ);
         final int n = 16;
         if (!this.checkChunksExist(floor_double - n, 0, floor_double2 - n, floor_double + n, 128, floor_double2 + n)) {
+            // Debug: This is preventing entity updates!
+            if (entity == this.player) {
+                System.out.println("CLIENT: Skipping player update - chunks not loaded in 16-block radius around (" +
+                        floor_double + ", " + floor_double2 + ")");
+            }
             return;
         }
         entity.lastTickPosX = entity.posX;
@@ -935,7 +1042,8 @@ public class ClientWorld implements World {
             ++var1;
         }
         if (this.getBlockId(var1, var2, var3) == Block.fire.blockID) {
-            this.playSoundEffect((var1 + 0.5f), (var2 + 0.5f), (var3 + 0.5f), "random.fizz", 0.5f, 2.6f + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.8f);
+            this.playSoundEffect((var1 + 0.5f), (var2 + 0.5f), (var3 + 0.5f), "random.fizz", 0.5f,
+                    2.6f + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.8f);
             this.setBlockWithNotify(var1, var2, var3, 0);
         }
     }
@@ -1016,24 +1124,29 @@ public class ClientWorld implements World {
             if (--n <= 0) {
                 return true;
             }
-            ((MetadataChunkBlock) this.lightingToUpdate.remove(this.lightingToUpdate.size() - 1)).updateLightingChunk(this);
+            ((MetadataChunkBlock) this.lightingToUpdate.remove(this.lightingToUpdate.size() - 1))
+                    .updateLightingChunk(this);
         }
         return false;
     }
 
-    public void scheduleLightingUpdate(final EnumSkyBlock enumSkyBlock, final int integer2, final int integer3, final int integer4, final int integer5, final int integer6, final int integer7) {
+    public void scheduleLightingUpdate(final EnumSkyBlock enumSkyBlock, final int integer2, final int integer3,
+            final int integer4, final int integer5, final int integer6, final int integer7) {
         final int size = this.lightingToUpdate.size();
         int n = 4;
         if (n > size) {
             n = size;
         }
         for (int i = 0; i < n; ++i) {
-            final MetadataChunkBlock metadataChunkBlock = (MetadataChunkBlock) this.lightingToUpdate.get(this.lightingToUpdate.size() - i - 1);
-            if (metadataChunkBlock.field_1299_a == enumSkyBlock && metadataChunkBlock.func_866_a(integer2, integer3, integer4, integer5, integer6, integer7)) {
+            final MetadataChunkBlock metadataChunkBlock = (MetadataChunkBlock) this.lightingToUpdate
+                    .get(this.lightingToUpdate.size() - i - 1);
+            if (metadataChunkBlock.field_1299_a == enumSkyBlock
+                    && metadataChunkBlock.func_866_a(integer2, integer3, integer4, integer5, integer6, integer7)) {
                 return;
             }
         }
-        this.lightingToUpdate.add(new MetadataChunkBlock(enumSkyBlock, integer2, integer3, integer4, integer5, integer6, integer7));
+        this.lightingToUpdate
+                .add(new MetadataChunkBlock(enumSkyBlock, integer2, integer3, integer4, integer5, integer6, integer7));
         if (this.lightingToUpdate.size() > 100000) {
             while (this.lightingToUpdate.size() > 50000) {
                 this.updatingLighting();
@@ -1060,27 +1173,35 @@ public class ClientWorld implements World {
                 ((IWorldAccess) this.worldAccesses.get(i)).updateAllRenderers();
             }
         }
-        ++this.getWorldTime;
-        if (this.getWorldTime % 20L == 0L) { // this may be too often?
-            // FIXME: attempt to save world on client-side, signal event to integrated server instead
-            //this.saveWorld(false, null);
-        }
-        this.TickUpdates(false);
-        int i = Mth.floor_double(this.player.posX);
-        final int floor_double = Mth.floor_double(this.player.posZ);
-        final int n = 64;
-        final ChunkCache chunkCache = new ChunkCache(this, i - n, 0, floor_double - n, i + n, 128, floor_double + n);
-        for (int j = 0; j < 8000; ++j) {
-            this.randInt = this.randInt * 3 + this.zz;
-            final int n2 = this.randInt >> 2;
-            final int n3 = (n2 & 0x7F) - 64 + i;
-            final int n4 = (n2 >> 8 & 0x7F) - 64 + floor_double;
-            final int n5 = n2 >> 16 & 0x7F;
-            final int blockId = chunkCache.getBlockId(n3, n5, n4);
-            // FIXME: attempt to tick server blocks from client
-//            if (Block.tickOnLoad[blockId]) {
-//                Block.blocksList[blockId].updateTick(this, n3, n5, n4, this.rand);
-//            }
+        // Only update world time on client if not connected to integrated server
+        if (net.opencraft.client.OpenCraft.oc == null || !net.opencraft.client.OpenCraft.oc.isMultiplayerWorld()) {
+            ++this.getWorldTime;
+            if (this.getWorldTime % 20L == 0L) { // this may be too often?
+                // FIXME: attempt to save world on client-side, signal event to integrated
+                // server instead
+                // this.saveWorld(false, null);
+            }
+            this.TickUpdates(false);
+            int i = Mth.floor_double(this.player.posX);
+            final int floor_double = Mth.floor_double(this.player.posZ);
+            final int n = 64;
+            final ChunkCache chunkCache = new ChunkCache(this, i - n, 0, floor_double - n, i + n, 128,
+                    floor_double + n);
+            for (int j = 0; j < 8000; ++j) {
+                this.randInt = this.randInt * 3 + this.zz;
+                final int n2 = this.randInt >> 2;
+                final int n3 = (n2 & 0x7F) - 64 + i;
+                final int n4 = (n2 >> 8 & 0x7F) - 64 + floor_double;
+                final int n5 = n2 >> 16 & 0x7F;
+                final int blockId = chunkCache.getBlockId(n3, n5, n4);
+                // FIXME: attempt to tick server blocks from client
+                // if (Block.tickOnLoad[blockId]) {
+                // Block.blocksList[blockId].updateTick(this, n3, n5, n4, this.rand);
+                // }
+            }
+        } else {
+            // When connected to integrated server, the server handles world ticking
+            // The client should receive updates from the server instead
         }
     }
 
@@ -1101,12 +1222,17 @@ public class ClientWorld implements World {
             this.scheduledTickSet.remove(nextTickListEntry);
             final int n = 8;
             // FIXME: attempt to tick server blocks from client
-//            if (this.checkChunksExist(nextTickListEntry.xCoord - n, nextTickListEntry.yCoord - n, nextTickListEntry.zCoord - n, nextTickListEntry.xCoord + n, nextTickListEntry.yCoord + n, nextTickListEntry.zCoord + n)) {
-//                final int blockId = this.getBlockId(nextTickListEntry.xCoord, nextTickListEntry.yCoord, nextTickListEntry.zCoord);
-//                if (blockId == nextTickListEntry.blockID && blockId > 0) {
-//                    Block.blocksList[blockId].updateTick(this, nextTickListEntry.xCoord, nextTickListEntry.yCoord, nextTickListEntry.zCoord, this.rand);
-//                }
-//            }
+            // if (this.checkChunksExist(nextTickListEntry.xCoord - n,
+            // nextTickListEntry.yCoord - n, nextTickListEntry.zCoord - n,
+            // nextTickListEntry.xCoord + n, nextTickListEntry.yCoord + n,
+            // nextTickListEntry.zCoord + n)) {
+            // final int blockId = this.getBlockId(nextTickListEntry.xCoord,
+            // nextTickListEntry.yCoord, nextTickListEntry.zCoord);
+            // if (blockId == nextTickListEntry.blockID && blockId > 0) {
+            // Block.blocksList[blockId].updateTick(this, nextTickListEntry.xCoord,
+            // nextTickListEntry.yCoord, nextTickListEntry.zCoord, this.rand);
+            // }
+            // }
         }
         return !this.scheduledTickTreeSet.isEmpty();
     }
@@ -1121,7 +1247,7 @@ public class ClientWorld implements World {
             final int blockId = this.getBlockId(n2, n3, n4);
             if (blockId > 0) {
                 // FIXME: attempt to tick server from client
-                //Block.blocksList[blockId].randomDisplayTick(this, n2, n3, n4, random);
+                // Block.blocksList[blockId].randomDisplayTick(this, n2, n3, n4, random);
             }
         }
     }
@@ -1204,7 +1330,8 @@ public class ClientWorld implements World {
         final File file3 = new File(file2, "level.dat");
         if (file3.exists()) {
             try {
-                return CompressedStreamTools.loadGzippedCompoundFromOutputStream(new FileInputStream(file3)).getCompoundTag("Data");
+                return CompressedStreamTools.loadGzippedCompoundFromOutputStream(new FileInputStream(file3))
+                        .getCompoundTag("Data");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -1225,6 +1352,16 @@ public class ClientWorld implements World {
             }
         }
         return arr2;
+    }
+
+    @Override
+    public int getDifficultySetting() {
+        return this.difficultySetting;
+    }
+
+    @Override
+    public void setDifficultySetting(int difficulty) {
+        this.difficultySetting = difficulty;
     }
 
     public static void deleteWorldDirectory(final File file, final String string) {

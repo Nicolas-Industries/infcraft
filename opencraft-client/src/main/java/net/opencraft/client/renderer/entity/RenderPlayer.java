@@ -3,6 +3,7 @@ package net.opencraft.client.renderer.entity;
 
 import static org.joml.Math.*;
 
+import net.opencraft.client.entity.EntityPlayerSP;
 import net.opencraft.core.entity.EntityPlayer;
 import net.opencraft.core.item.Item;
 import net.opencraft.core.item.ItemArmor;
@@ -30,7 +31,8 @@ public class RenderPlayer extends RenderLiving {
         if (armorItemInSlot != null) {
             final Item item = armorItemInSlot.getItem();
             if (item instanceof ItemArmor) {
-                this.loadTexture("/assets/armor/" + RenderPlayer.armorFilenamePrefix[((ItemArmor) item).renderIndex] + "_" + ((i == 2) ? 2 : 1) + ".png");
+                this.loadTexture("/assets/armor/" + RenderPlayer.armorFilenamePrefix[((ItemArmor) item).renderIndex]
+                        + "_" + ((i == 2) ? 2 : 1) + ".png");
                 final ModelBiped renderPassModel = (i == 2) ? this.modelArmor : this.modelArmorChestplate;
                 renderPassModel.bipedHead.showModel = (i == 0);
                 renderPassModel.bipedHeadwear.showModel = (i == 0);
@@ -46,15 +48,20 @@ public class RenderPlayer extends RenderLiving {
         return false;
     }
 
-    public void doRender(EntityPlayer entityLiving, double xCoord, double sqrt_double, double yCoord, float nya1, float nya2) {
-        //super.doRender(entityLiving, xCoord, sqrt_double - entityLiving.yOffset, yCoord, nya1, nya2);
-    	sqrt_double -= entityLiving.yOffset;
+    public void doRender(EntityPlayer entityLiving, double xCoord, double sqrt_double, double yCoord, float nya1,
+            float nya2) {
+        // super.doRender(entityLiving, xCoord, sqrt_double - entityLiving.yOffset,
+        // yCoord, nya1, nya2);
+        sqrt_double -= entityLiving.yOffset;
         GL11.glPushMatrix();
         GL11.glDisable(2884);
         try {
-            final float n = entityLiving.prevRenderYawOffset + (entityLiving.renderYawOffset - entityLiving.prevRenderYawOffset) * nya2;
-            final float n2 = entityLiving.prevRotationYaw + (entityLiving.rotationYaw - entityLiving.prevRotationYaw) * nya2;
-            final float n3 = entityLiving.prevRotationPitch + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * nya2;
+            final float n = entityLiving.prevRenderYawOffset
+                    + (entityLiving.renderYawOffset - entityLiving.prevRenderYawOffset) * nya2;
+            final float n2 = entityLiving.prevRotationYaw
+                    + (entityLiving.rotationYaw - entityLiving.prevRotationYaw) * nya2;
+            final float n3 = entityLiving.prevRotationPitch
+                    + (entityLiving.rotationPitch - entityLiving.prevRotationPitch) * nya2;
             GL11.glTranslatef((float) xCoord, (float) sqrt_double, (float) yCoord);
             final float n4 = entityLiving.ticksExisted + nya2;
             GL11.glRotatef(180.0f - n, 0.0f, 1.0f, 0.0f);
@@ -137,6 +144,6 @@ public class RenderPlayer extends RenderLiving {
     }
 
     static {
-        armorFilenamePrefix = new String[]{"cloth", "chain", "iron", "diamond", "gold"};
+        armorFilenamePrefix = new String[] { "cloth", "chain", "iron", "diamond", "gold" };
     }
 }

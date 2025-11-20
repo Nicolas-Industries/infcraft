@@ -328,14 +328,14 @@ public class Block {
         return AABB.getBoundingBoxFromPool(xCoord + this.minX, yCoord + this.minY, zCoord + this.minZ, xCoord + this.maxX, yCoord + this.maxY, zCoord + this.maxZ);
     }
 
-    public void getCollidingBoundingBoxes(ServerWorld serverWorld, int xCoord, int yCoord, int zCoord, AABB aabb, List<AABB> list) {
-        AABB aabb1 = this.getCollisionBoundingBoxFromPool(serverWorld, xCoord, yCoord, zCoord);
+    public void getCollidingBoundingBoxes(World world, int xCoord, int yCoord, int zCoord, AABB aabb, List<AABB> list) {
+        AABB aabb1 = this.getCollisionBoundingBoxFromPool(world, xCoord, yCoord, zCoord);
         if (aabb1 != null && aabb.intersectsWith(aabb1)) {
             list.add(aabb1);
         }
     }
 
-    public AABB getCollisionBoundingBoxFromPool(final ServerWorld serverWorld, final int xCoord, final int yCoord, final int zCoord) {
+    public AABB getCollisionBoundingBoxFromPool(final World world, final int xCoord, final int yCoord, final int zCoord) {
         return AABB.getBoundingBoxFromPool(xCoord + this.minX, yCoord + this.minY, zCoord + this.minZ, xCoord + this.maxX, yCoord + this.maxY, zCoord + this.maxZ);
     }
 

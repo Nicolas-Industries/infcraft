@@ -22,7 +22,7 @@ public class RailBlock extends Block {
     }
 
     @Override
-    public AABB getCollisionBoundingBoxFromPool(final ServerWorld serverWorld, final int xCoord, final int yCoord, final int zCoord) {
+    public AABB getCollisionBoundingBoxFromPool(final World world, final int xCoord, final int yCoord, final int zCoord) {
         return null;
     }
 

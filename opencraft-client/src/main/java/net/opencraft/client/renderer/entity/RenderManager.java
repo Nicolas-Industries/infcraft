@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.opencraft.client.config.GameSettings;
+import net.opencraft.client.entity.EntityPlayerSP;
 import net.opencraft.client.renderer.entity.models.*;
 import net.opencraft.client.renderer.font.FontRenderer;
 import net.opencraft.client.world.ClientWorld;
@@ -22,7 +23,7 @@ public class RenderManager {
     public static double renderPosZ;
     public Renderer renderEngine;
     public ClientWorld clientWorldObj;
-    public EntityPlayer livingPlayer;
+    public EntityPlayerSP livingPlayer;
     public float playerViewY;
     public float playerViewX;
     public GameSettings options;
@@ -65,7 +66,7 @@ public class RenderManager {
         return this.getEntityClassRenderObject(eq2.getClass());
     }
 
-    public void cacheActiveRenderInfo(ClientWorld fe2, Renderer id2, FontRenderer ej2, EntityPlayer gi2, GameSettings ja2, float f2) {
+    public void cacheActiveRenderInfo(ClientWorld fe2, Renderer id2, FontRenderer ej2, EntityPlayerSP gi2, GameSettings ja2, float f2) {
         this.clientWorldObj = fe2;
         this.renderEngine = id2;
         this.options = ja2;

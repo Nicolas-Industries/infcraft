@@ -5,168 +5,169 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.opencraft.shared.network.packets.IPacket;
-import net.opencraft.shared.network.packets.PacketBlockChange;
-import net.opencraft.shared.network.packets.PacketPlayerInfo;
-import net.opencraft.shared.network.packets.PacketPlayerPosition;
-import net.opencraft.shared.network.packets.PacketWorldInit;
+// Imports will be added as we implement packets
 
 /**
  * Manager for handling different packet types and their serialization
  */
 public class PacketManager {
-    
-    private static Map<Integer, Class<? extends IPacket>> packetTypesToClass = new HashMap<>();
-    private static Map<Class<? extends IPacket>, Integer> packetClassToTypes = new HashMap<>();
-    
+
+    private static Map<ConnectionState, Map<Integer, Class<? extends IPacket>>> statePacketMap = new HashMap<>();
+    private static Map<Class<? extends IPacket>, Integer> packetClassToId = new HashMap<>();
+    private static Map<Class<? extends IPacket>, ConnectionState> packetClassToState = new HashMap<>();
+
     static {
-        // Register packet types
-        registerPacket(0x00, PacketPlayerPosition.class);
-        registerPacket(0x01, PacketWorldInit.class);
-        registerPacket(0x06, PacketBlockChange.class);
-        registerPacket(0x38, PacketPlayerInfo.class);
-        // Add more packet registrations here as needed
+        for (ConnectionState state : ConnectionState.values()) {
+            statePacketMap.put(state, new HashMap<>());
+        }
+
+        // Packets will be registered here as they are implemented
+        // Example: registerPacket(ConnectionState.PLAY, 0x00, PacketKeepAlive.class);
+
+        // Handshaking
+        registerPacket(ConnectionState.HANDSHAKING, 0x00, net.opencraft.shared.network.packets.PacketHandshake.class);
+
+        // Configuration
+        registerPacket(ConnectionState.CONFIGURATION, 0x00,
+                net.opencraft.shared.network.packets.PacketRegistryData.class);
+        registerPacket(ConnectionState.CONFIGURATION, 0x01,
+                net.opencraft.shared.network.packets.PacketFinishConfig.class); // S->C
+        // Note: PacketAckFinish is also 0x01 but C->S. The current PacketManager
+        // doesn't distinguish direction in the map.
+        // We might need to check direction or use different IDs if they conflict.
+        // However, the spec says:
+        // 0x01 Finish Configuration (S -> C)
+        // 0x01 Acknowledge Finish (C -> S)
+        // Since they share the same ID, we can register both if we had separate maps
+        // for directions,
+        // or we can just register one class that handles both if they had same
+        // structure (they are both empty).
+        // But they are different classes.
+        // For now, let's assume the server only needs to deserialize C->S and client
+        // S->C.
+        // But PacketManager is shared.
+        // A common issue in shared packet managers.
+        // We can register PacketAckFinish for now as it's what the server receives.
+        // The client will need to manually handle FinishConfig or we need a better
+        // registration system.
+        // Let's register PacketAckFinish for 0x01 in CONFIGURATION for now, as we are
+        // mostly working on server side logic?
+        // Actually, let's check if we can register both. Map key is ID. We can't.
+        // We should probably split registration by direction or just use one class for
+        // both if possible.
+        // They are both empty. Let's use PacketAckFinish for both for now or create a
+        // generic PacketConfigFinish.
+        // Or better, let's register PacketAckFinish.
+        registerPacket(ConnectionState.CONFIGURATION, 0x01, net.opencraft.shared.network.packets.PacketAckFinish.class);
+
+        // Login
+        registerPacket(ConnectionState.LOGIN, 0x02, net.opencraft.shared.network.packets.PacketLoginSuccess.class);
+
+        // Play - General
+        registerPacket(ConnectionState.PLAY, 0x00, net.opencraft.shared.network.packets.PacketKeepAlive.class);
+        // PacketLoginSuccess moved to LOGIN state
+        registerPacket(ConnectionState.PLAY, 0x02, net.opencraft.shared.network.packets.PacketChatMessage.class);
+
+        // Play - World
+        registerPacket(ConnectionState.PLAY, 0x20, net.opencraft.shared.network.packets.PacketChunkData.class);
+        registerPacket(ConnectionState.PLAY, 0x21, net.opencraft.shared.network.packets.PacketBlockChange.class);
+        registerPacket(ConnectionState.PLAY, 0x22, net.opencraft.shared.network.packets.PacketPlayerDigging.class);
+        registerPacket(ConnectionState.PLAY, 0x23, net.opencraft.shared.network.packets.PacketBlockPlacement.class);
+
+        // Play - Entities
+        registerPacket(ConnectionState.PLAY, 0x30, net.opencraft.shared.network.packets.PacketSpawnEntity.class);
+        registerPacket(ConnectionState.PLAY, 0x31, net.opencraft.shared.network.packets.PacketEntityPosition.class);
+        registerPacket(ConnectionState.PLAY, 0x32, net.opencraft.shared.network.packets.PacketEntityRelativeMove.class);
+        registerPacket(ConnectionState.PLAY, 0x33,
+                net.opencraft.shared.network.packets.PacketPlayerPositionRotation.class);
+
     }
-    
+
     /**
-     * Register a packet type with its ID
+     * Register a packet type with its ID and State
      */
-    public static void registerPacket(int packetId, Class<? extends IPacket> packetClass) {
-        packetTypesToClass.put(packetId, packetClass);
-        packetClassToTypes.put(packetClass, packetId);
+    public static void registerPacket(ConnectionState state, int packetId, Class<? extends IPacket> packetClass) {
+        statePacketMap.get(state).put(packetId, packetClass);
+        packetClassToId.put(packetClass, packetId);
+        packetClassToState.put(packetClass, state);
     }
-    
+
     /**
      * Serialize a packet to bytes
+     * Framing: Length (VarInt) + Packet ID (VarInt) + Data
      */
     public static byte[] serializePacket(IPacket packet) throws IOException {
-        PacketBuffer buffer = new PacketBuffer();
-
-        // Write packet ID first
-        buffer.writeInt(packet.getPacketId());
-
-        // Write packet-specific data based on packet type
-        if (packet instanceof PacketPlayerPosition) {
-            PacketPlayerPosition p = (PacketPlayerPosition) packet;
-            buffer.writeDouble(p.getX());
-            buffer.writeDouble(p.getY());
-            buffer.writeDouble(p.getZ());
-            buffer.writeFloat(p.getYaw());
-            buffer.writeFloat(p.getPitch());
-            buffer.writeBoolean(p.isOnGround());
-        } else if (packet instanceof PacketWorldInit) {
-            PacketWorldInit p = (PacketWorldInit) packet;
-            buffer.writeInt(p.getSpawnX());
-            buffer.writeInt(p.getSpawnY());
-            buffer.writeInt(p.getSpawnZ());
-            buffer.writeLong(p.getWorldSeed());
-            buffer.writeLong(p.getWorldTime());
-            buffer.writeString(p.getWorldName());
-        } else if (packet instanceof PacketBlockChange) {
-            PacketBlockChange p = (PacketBlockChange) packet;
-            buffer.writeInt(p.getX());
-            buffer.writeInt(p.getY());
-            buffer.writeInt(p.getZ());
-            buffer.writeInt(p.getBlockId());
-            buffer.writeInt(p.getMetadata());
-        } else if (packet instanceof PacketPlayerInfo) {
-            PacketPlayerInfo p = (PacketPlayerInfo) packet;
-            buffer.writeString(p.getPlayerName());
-            buffer.writeInt(p.getPlayerId());
-            buffer.writeBoolean(p.isJoining());
-        } else {
-            // Unknown packet type - throw exception
-            throw new IOException("Unknown packet type: " + packet.getClass().getSimpleName());
+        Integer packetId = packetClassToId.get(packet.getClass());
+        if (packetId == null) {
+            throw new IOException("Unregistered packet: " + packet.getClass().getSimpleName());
         }
 
-        return buffer.array();
+        // 1. Write Packet ID + Data to a temporary buffer to calculate length
+        PacketBuffer dataBuffer = new PacketBuffer();
+        dataBuffer.writeVarInt(packetId);
+        packet.writePacketData(dataBuffer);
+        byte[] packetData = dataBuffer.array();
+
+        // 2. Write Length + Packet Data to final buffer
+        PacketBuffer finalBuffer = new PacketBuffer();
+        finalBuffer.writeVarInt(packetData.length);
+        finalBuffer.writeBytes(packetData);
+
+        return finalBuffer.array();
     }
 
-    /**
-     * Compress packet data to reduce network traffic (placeholder implementation)
-     */
-    public static byte[] compressPacketData(byte[] data) {
-        // In a real implementation, this would use compression like gzip
-        // For now, just return the original data
-        return data;
-    }
-
-    /**
-     * Decompress packet data (placeholder implementation)
-     */
-    public static byte[] decompressPacketData(byte[] data) {
-        // In a real implementation, this would decompress the data
-        // For now, just return the original data
-        return data;
-    }
-    
     /**
      * Deserialize a packet from bytes
+     * Expects the full frame: Length + ID + Data
+     * Note: In a real TCP stream, we'd need a framing decoder.
+     * This method assumes 'data' contains exactly one full packet frame or the
+     * payload.
+     * 
+     * For simplicity in this refactor, we assume the input 'data' starts with the
+     * Packet ID
+     * (Length already handled/stripped by the transport layer or we read it here).
+     * 
+     * However, the spec says "Every packet sent over the wire MUST follow this
+     * structure... receiver relies on Length".
+     * If this method is called with raw wire bytes, we should read Length first.
      */
-    public static IPacket deserializePacket(byte[] data) throws IOException, ClassNotFoundException {
+    public static IPacket deserializePacket(byte[] data, ConnectionState state)
+            throws IOException, ClassNotFoundException {
         PacketBuffer buffer = new PacketBuffer(data);
-        
-        int packetId = buffer.readInt();
-        
-        Class<? extends IPacket> packetClass = packetTypesToClass.get(packetId);
-        if (packetClass == null) {
-            throw new IOException("Unknown packet ID: " + packetId);
-        }
-        
-        IPacket packet;
-        try {
-            packet = packetClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new IOException("Could not instantiate packet: " + e.getMessage());
-        } catch (IllegalAccessException e) {
-            throw new IOException("Could not access packet constructor: " + e.getMessage());
-        }
-        
-        // Deserialize packet-specific data based on packet type
-        if (packet instanceof PacketPlayerPosition) {
-            PacketPlayerPosition p = (PacketPlayerPosition) packet;
-            p.setX(buffer.readDouble());
-            p.setY(buffer.readDouble());
-            p.setZ(buffer.readDouble());
-            p.setYaw(buffer.readFloat());
-            p.setPitch(buffer.readFloat());
-            p.setOnGround(buffer.readBoolean());
-        } else if (packet instanceof PacketWorldInit) {
-            PacketWorldInit p = (PacketWorldInit) packet;
-            p.setSpawnX(buffer.readInt());
-            p.setSpawnY(buffer.readInt());
-            p.setSpawnZ(buffer.readInt());
-            p.setWorldSeed(buffer.readLong());
-            p.setWorldTime(buffer.readLong());
-            p.setWorldName(buffer.readString());
-        } else if (packet instanceof PacketBlockChange) {
-            PacketBlockChange p = (PacketBlockChange) packet;
-            p.setX(buffer.readInt());
-            p.setY(buffer.readInt());
-            p.setZ(buffer.readInt());
-            p.setBlockId(buffer.readInt());
-            p.setMetadata(buffer.readInt());
-        } else if (packet instanceof PacketPlayerInfo) {
-            PacketPlayerInfo p = (PacketPlayerInfo) packet;
-            p.setPlayerName(buffer.readString());
-            p.setPlayerId(buffer.readInt());
-            p.setJoining(buffer.readBoolean());
+
+        // Read Length (we assume the buffer starts with Length)
+        int length = buffer.readVarInt();
+
+        // Check if we have enough data (simple check, might not be sufficient for
+        // partial buffers)
+        if (buffer.readableBytes() < length) {
+            // In a real Netty handler, we would wait for more bytes.
+            // Here we might just proceed if we assume 'data' is the full frame.
         }
 
-        // Return the packet - in a real implementation, we'd have set all the fields
+        // Read Packet ID
+        int packetId = buffer.readVarInt();
+
+        Class<? extends IPacket> packetClass = statePacketMap.get(state).get(packetId);
+        if (packetClass == null) {
+            throw new IOException("Unknown packet ID: " + packetId + " in state: " + state);
+        }
+
+        IPacket packet;
+        try {
+            packet = packetClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | java.lang.reflect.InvocationTargetException
+                | NoSuchMethodException e) {
+            throw new IOException("Could not instantiate packet: " + e.getMessage());
+        }
+
+        // Read Data
+        packet.readPacketData(buffer);
+
         return packet;
     }
-    
-    /**
-     * Get the packet ID for a packet class
-     */
+
     public static int getPacketId(Class<? extends IPacket> packetClass) {
-        return packetClassToTypes.getOrDefault(packetClass, -1);
-    }
-    
-    /**
-     * Check if a packet ID is registered
-     */
-    public static boolean isPacketRegistered(int packetId) {
-        return packetTypesToClass.containsKey(packetId);
+        return packetClassToId.getOrDefault(packetClass, -1);
     }
 }

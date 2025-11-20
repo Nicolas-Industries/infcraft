@@ -7,6 +7,7 @@ import net.opencraft.core.blocks.LiquidBlock;
 import net.opencraft.core.blocks.material.Material;
 import net.opencraft.core.input.MovingObjectPosition;
 import net.opencraft.core.entity.Entity;
+import net.opencraft.core.entity.EntityPlayer;
 import net.opencraft.core.enums.EnumSkyBlock;
 import net.opencraft.core.nbt.NBTTagCompound;
 import net.opencraft.core.pathfinder.PathEntity;
@@ -56,6 +57,7 @@ public class ServerWorld implements World {
     public List worldAccesses;
     private IChunkProvider chunkProvider;
     private File C;
+    private File playerDataDir;
     public long n;
     private NBTTagCompound D;
     public long setSizeOnDisk;
@@ -101,18 +103,23 @@ public class ServerWorld implements World {
         this.p = string;
         file.mkdirs();
         (this.C = new File(file, string)).mkdirs();
+        this.playerDataDir = new File(this.C, "playerdata");
+        this.playerDataDir.mkdirs();
         final File file2 = new File(this.C, "level.dat");
         this.isNewWorld = !file2.exists();
         if (file2.exists()) {
             try {
-                final NBTTagCompound compoundTag = CompressedStreamTools.loadGzippedCompoundFromOutputStream(new FileInputStream(file2)).getCompoundTag("Data");
+                final NBTTagCompound compoundTag = CompressedStreamTools
+                        .loadGzippedCompoundFromOutputStream(new FileInputStream(file2)).getCompoundTag("Data");
                 this.n = compoundTag.getLong("RandomSeed");
                 this.x = compoundTag.getInteger("SpawnX");
                 this.y = compoundTag.getInteger("SpawnY");
                 this.z = compoundTag.getInteger("SpawnZ");
                 this.getWorldTime = compoundTag.getLong("Time");
                 this.setSizeOnDisk = compoundTag.getLong("SizeOnDisk");
-                this.D = compoundTag.getCompoundTag("Player");
+                if (compoundTag.hasKey("Player")) {
+                    this.D = compoundTag.getCompoundTag("Player");
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -131,12 +138,32 @@ public class ServerWorld implements World {
                 this.x += this.rand.nextInt(64) - this.rand.nextInt(64);
                 this.z += this.rand.nextInt(64) - this.rand.nextInt(64);
             }
+            // Fix: Update y to the actual surface height
+            int surfaceY = 63;
+            while (this.getBlockId(this.x, surfaceY + 1, this.z) != 0) {
+                surfaceY++;
+            }
+            this.y = surfaceY + 3; // Spawn 3 blocks above surface to be safe
         }
         this.calculateInitialSkylight();
+
+        // Safety check: Ensure spawn is not inside a block
+        // This fixes issues where players get stuck in existing worlds with bad spawn
+        // points
+        int surfaceY = 63;
+        while (this.getBlockId(this.x, surfaceY + 1, this.z) != 0) {
+            surfaceY++;
+        }
+        if (this.y <= surfaceY) {
+            System.out.println(
+                    "Spawn point was inside a block (Y=" + this.y + ", Surface=" + surfaceY + "). Moving to surface.");
+            this.y = surfaceY + 3;
+        }
     }
 
     protected IChunkProvider a(final File file) {
-        return new ChunkProviderLoadOrGenerate(this, new ChunkLoader(file, true), new ChunkProviderGenerate(this, this.n));
+        return new ChunkProviderLoadOrGenerate(this, new ChunkLoader(file, true),
+                new ChunkProviderGenerate(this, this.n));
     }
 
     public void a() {
@@ -158,20 +185,63 @@ public class ServerWorld implements World {
     }
 
     public void saveWorld(final boolean nya1, final IProgressUpdate nya2) {
+        saveWorld(nya1, nya2, null);
+    }
+
+    public void saveWorld(final boolean nya1, final IProgressUpdate nya2, EntityPlayer player) {
         if (!this.chunkProvider.canSave()) {
             return;
         }
         if (nya2 != null) {
             nya2.displayProgressMessage("Saving level");
         }
-        this.saveLevel();
+        this.saveLevel(player);
+        if (player != null) {
+            this.writePlayerData(player);
+        }
         if (nya2 != null) {
             nya2.displayLoadingString("Saving chunks");
         }
         this.chunkProvider.saveChunks(nya1, nya2);
     }
 
+    public NBTTagCompound readPlayerData(EntityPlayer player) {
+        NBTTagCompound nbttagcompound = null;
+        try {
+            File file1 = new File(this.playerDataDir, player.getUuid() + ".dat");
+            if (file1.exists()) {
+                nbttagcompound = CompressedStreamTools.loadGzippedCompoundFromOutputStream(new FileInputStream(file1));
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        if (nbttagcompound != null) {
+            player.readFromNBT(nbttagcompound);
+        }
+        return nbttagcompound;
+    }
+
+    public void writePlayerData(EntityPlayer player) {
+        try {
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+            player.writeToNBT(nbttagcompound);
+            File file1 = new File(this.playerDataDir, player.getUuid() + ".dat.tmp");
+            File file2 = new File(this.playerDataDir, player.getUuid() + ".dat");
+            CompressedStreamTools.writeGzippedCompoundToOutputStream(nbttagcompound, new FileOutputStream(file1));
+            if (file2.exists()) {
+                file2.delete();
+            }
+            file1.renameTo(file2);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
     private void saveLevel() {
+        saveLevel(null);
+    }
+
+    private void saveLevel(EntityPlayer player) {
         final NBTTagCompound hm = new NBTTagCompound();
         hm.setLong("RandomSeed", this.n);
         hm.setInteger("SpawnX", this.x);
@@ -179,12 +249,12 @@ public class ServerWorld implements World {
         hm.setInteger("SpawnZ", this.z);
         hm.setLong("Time", this.getWorldTime);
         hm.setLong("SizeOnDisk", this.setSizeOnDisk);
-//        hm.setLong("LastPlayed", System.currentTimeMillis());
-//        if (this.player != null) {
-//            final NBTTagCompound nbtTagCompound = new NBTTagCompound();
-//            this.player.writeToNBT(nbtTagCompound);
-//            hm.setCompoundTag("Player", nbtTagCompound);
-//        }
+        // hm.setLong("LastPlayed", System.currentTimeMillis());
+        // hm.setLong("LastPlayed", System.currentTimeMillis());
+
+        // Legacy player saving removed - now handled by writePlayerData in playerdata/
+        // directory
+
         final NBTTagCompound ae = new NBTTagCompound();
         ae.setTag("Data", hm);
         try {
@@ -236,7 +306,8 @@ public class ServerWorld implements World {
         return yCoord >= 0 && yCoord < 128 && this.chunkExists(xCoord >> 4, zCoord >> 4);
     }
 
-    public boolean checkChunksExist(int xCoordNegative, int yCoordNegative, int zCoordNegative, int xCoordPositive, int yCoordPositive, int zCoordPositive) {
+    public boolean checkChunksExist(int xCoordNegative, int yCoordNegative, int zCoordNegative, int xCoordPositive,
+            int yCoordPositive, int zCoordPositive) {
         if (yCoordPositive < 0 || yCoordNegative >= 128) {
             return false;
         }
@@ -268,12 +339,17 @@ public class ServerWorld implements World {
         return this.chunkProvider.provideChunk(nya1, nya2);
     }
 
-    public boolean setBlockAndMetadata(final int xCoord, final int yCoord, final int zCoord, final int blockid, final int metadataValue) {
-        return xCoord >= -32000000 && zCoord >= -32000000 && xCoord < 32000000 && zCoord <= 32000000 && yCoord >= 0 && yCoord < 128 && this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).setBlockIDWithMetadata(xCoord & 0xF, yCoord, zCoord & 0xF, blockid, metadataValue);
+    public boolean setBlockAndMetadata(final int xCoord, final int yCoord, final int zCoord, final int blockid,
+            final int metadataValue) {
+        return xCoord >= -32000000 && zCoord >= -32000000 && xCoord < 32000000 && zCoord <= 32000000 && yCoord >= 0
+                && yCoord < 128 && this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4)
+                        .setBlockIDWithMetadata(xCoord & 0xF, yCoord, zCoord & 0xF, blockid, metadataValue);
     }
 
     public boolean setBlock(final int xCoord, final int yCoord, final int zCoord, final int blockid) {
-        return xCoord >= -32000000 && zCoord >= -32000000 && xCoord < 32000000 && zCoord <= 32000000 && yCoord >= 0 && yCoord < 128 && this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).setBlockID(xCoord & 0xF, yCoord, zCoord & 0xF, blockid);
+        return xCoord >= -32000000 && zCoord >= -32000000 && xCoord < 32000000 && zCoord <= 32000000 && yCoord >= 0
+                && yCoord < 128 && this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).setBlockID(xCoord & 0xF,
+                        yCoord, zCoord & 0xF, blockid);
     }
 
     @Override
@@ -302,7 +378,8 @@ public class ServerWorld implements World {
         return chunkFromChunkCoords.getBlockMetadata(xCoord, yCoord, zCoord);
     }
 
-    public void setBlockMetadataWithNotify(final int xCoord, final int yCoord, final int zCoord, final int metadataValue) {
+    public void setBlockMetadataWithNotify(final int xCoord, final int yCoord, final int zCoord,
+            final int metadataValue) {
         this.setBlockMetadata(xCoord, yCoord, zCoord, metadataValue);
     }
 
@@ -331,7 +408,8 @@ public class ServerWorld implements World {
         return false;
     }
 
-    public boolean setBlockAndMetadataWithNotify(final int xCoord, final int yCoord, final int zCoord, final int blockid, final int metadataValue) {
+    public boolean setBlockAndMetadataWithNotify(final int xCoord, final int yCoord, final int zCoord,
+            final int blockid, final int metadataValue) {
         if (this.setBlockAndMetadata(xCoord, yCoord, zCoord, blockid, metadataValue)) {
             this.notifyBlockChange(xCoord, yCoord, zCoord, blockid);
             return true;
@@ -355,7 +433,8 @@ public class ServerWorld implements World {
         this.markBlocksDirty(nya1, nya3, nya2, nya1, nya4, nya2);
     }
 
-    public void markBlocksDirty(final int nya1, final int nya2, final int nya3, final int nya4, final int nya5, final int nya6) {
+    public void markBlocksDirty(final int nya1, final int nya2, final int nya3, final int nya4, final int nya5,
+            final int nya6) {
         for (int i = 0; i < this.worldAccesses.size(); ++i) {
             ((IWorldAccess) this.worldAccesses.get(i)).markBlockRangeNeedsUpdate(nya1, nya2, nya3, nya4, nya5, nya6);
         }
@@ -381,7 +460,8 @@ public class ServerWorld implements World {
     }
 
     public boolean canBlockSeeTheSky(final int xCoord, final int yCoord, final int zCoord) {
-        return this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).canBlockSeeTheSky(xCoord & 0xF, yCoord, zCoord & 0xF);
+        return this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).canBlockSeeTheSky(xCoord & 0xF, yCoord,
+                zCoord & 0xF);
     }
 
     public int getBlockLightValue(final int xCoord, final int yCoord, final int zCoord) {
@@ -460,7 +540,8 @@ public class ServerWorld implements World {
         return this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).getHeightValue(xCoord & 0xF, zCoord & 0xF);
     }
 
-    public void neighborLightPropagationChanged(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord, final int zCoord, int nya4) {
+    public void neighborLightPropagationChanged(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord,
+            final int zCoord, int nya4) {
         if (!this.blockExists(xCoord, yCoord, zCoord)) {
             return;
         }
@@ -479,8 +560,10 @@ public class ServerWorld implements World {
         }
     }
 
-    public int getSavedLightValue(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord, final int zCoord) {
-        if (yCoord < 0 || yCoord >= 128 || xCoord < -32000000 || zCoord < -32000000 || xCoord >= 32000000 || zCoord > 32000000) {
+    public int getSavedLightValue(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord,
+            final int zCoord) {
+        if (yCoord < 0 || yCoord >= 128 || xCoord < -32000000 || zCoord < -32000000 || xCoord >= 32000000
+                || zCoord > 32000000) {
             return enumSkyBlock.defaultLightValue;
         }
         final int n = xCoord >> 4;
@@ -491,7 +574,8 @@ public class ServerWorld implements World {
         return this.getChunkFromChunkCoords(n, n2).getSavedLightValue(enumSkyBlock, xCoord & 0xF, yCoord, zCoord & 0xF);
     }
 
-    public void setLightValue(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord, final int zCoord, final int nya4) {
+    public void setLightValue(final EnumSkyBlock enumSkyBlock, final int xCoord, final int yCoord, final int zCoord,
+            final int nya4) {
         if (xCoord < -32000000 || zCoord < -32000000 || xCoord >= 32000000 || zCoord > 32000000) {
             return;
         }
@@ -504,7 +588,8 @@ public class ServerWorld implements World {
         if (!this.chunkExists(xCoord >> 4, zCoord >> 4)) {
             return;
         }
-        this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).setLightValue(enumSkyBlock, xCoord & 0xF, yCoord, zCoord & 0xF, nya4);
+        this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4).setLightValue(enumSkyBlock, xCoord & 0xF, yCoord,
+                zCoord & 0xF, nya4);
         for (int i = 0; i < this.worldAccesses.size(); ++i) {
             ((IWorldAccess) this.worldAccesses.get(i)).markBlockAndNeighborsNeedsUpdate(xCoord, yCoord, zCoord);
         }
@@ -641,7 +726,8 @@ public class ServerWorld implements World {
             int n10 = this.getBlockMetadata(floor_double4, floor_double5, floor_double6);
             final Block block = Block.blocksList[n9];
             if (n9 > 0 && block.canCollideCheck(n10, var3)) {
-                final MovingObjectPosition collisionRayTrace = block.collisionRayTrace(null, floor_double4, floor_double5, floor_double6, var1, var2);
+                final MovingObjectPosition collisionRayTrace = block.collisionRayTrace(null, floor_double4,
+                        floor_double5, floor_double6, var1, var2);
                 if (collisionRayTrace != null) {
                     return collisionRayTrace;
                 }
@@ -652,7 +738,8 @@ public class ServerWorld implements World {
             if (n9 <= 0 || !block2.canCollideCheck(n10, var3)) {
                 continue;
             }
-            final MovingObjectPosition collisionRayTrace2 = block2.collisionRayTrace(null, floor_double4, floor_double5 - 1, floor_double6, var1, var2);
+            final MovingObjectPosition collisionRayTrace2 = block2.collisionRayTrace(null, floor_double4,
+                    floor_double5 - 1, floor_double6, var1, var2);
             if (collisionRayTrace2 != null) {
                 return collisionRayTrace2;
             }
@@ -665,14 +752,16 @@ public class ServerWorld implements World {
             float n = 16.0f;
             if (volume > 1.0f) {
                 n *= volume;
-            }// TODO: handle multiple players for sound effects
-//            if (this.player.getDistanceSqToEntity(entity) < n * n) {
-//                ((IWorldAccess) this.worldAccesses.get(i)).playSound(soundName, entity.posX, entity.posY - entity.yOffset, entity.posZ, volume, pitch);
-//            }
+            } // TODO: handle multiple players for sound effects
+              // if (this.player.getDistanceSqToEntity(entity) < n * n) {
+              // ((IWorldAccess) this.worldAccesses.get(i)).playSound(soundName, entity.posX,
+              // entity.posY - entity.yOffset, entity.posZ, volume, pitch);
+              // }
         }
     }
 
-    public void playSoundEffect(final double xCoord, final double yCoord, final double zCoord, final String soundName, final float volume, final float pitch) {
+    public void playSoundEffect(final double xCoord, final double yCoord, final double zCoord, final String soundName,
+            final float volume, final float pitch) {
         try {
             for (int i = 0; i < this.worldAccesses.size(); ++i) {
                 float n = 16.0f;
@@ -680,24 +769,28 @@ public class ServerWorld implements World {
                     n *= volume;
                 }
                 // TODO: handle multiple players for sound effects
-//                final double n2 = xCoord - this.player.posX;
-//                final double n3 = yCoord - this.player.posY;
-//                final double n4 = zCoord - this.player.posZ;
-//                if (n2 * n2 + n3 * n3 + n4 * n4 < n * n) {
-//                    ((IWorldAccess) this.worldAccesses.get(i)).playSound(soundName, xCoord, yCoord, zCoord, volume, pitch);
-//                }
+                // final double n2 = xCoord - this.player.posX;
+                // final double n3 = yCoord - this.player.posY;
+                // final double n4 = zCoord - this.player.posZ;
+                // if (n2 * n2 + n3 * n3 + n4 * n4 < n * n) {
+                // ((IWorldAccess) this.worldAccesses.get(i)).playSound(soundName, xCoord,
+                // yCoord, zCoord, volume, pitch);
+                // }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    public void playSoundEffect(final double double1, final double double2, final double double3, final String string, final float float5) {
+    public void playSoundEffect(final double double1, final double double2, final double double3, final String string,
+            final float float5) {
     }
 
-    public void spawnParticle(final String particle, final double xCoordBlock, final double yCoordBlock, final double zCoordBlock, final double xPosition, final double yPosition, final double zPosition) {
+    public void spawnParticle(final String particle, final double xCoordBlock, final double yCoordBlock,
+            final double zCoordBlock, final double xPosition, final double yPosition, final double zPosition) {
         for (int i = 0; i < this.worldAccesses.size(); ++i) {
-            ((IWorldAccess) this.worldAccesses.get(i)).spawnParticle(particle, xCoordBlock, yCoordBlock, zCoordBlock, xPosition, yPosition, zPosition);
+            ((IWorldAccess) this.worldAccesses.get(i)).spawnParticle(particle, xCoordBlock, yCoordBlock, zCoordBlock,
+                    xPosition, yPosition, zPosition);
         }
     }
 
@@ -711,7 +804,8 @@ public class ServerWorld implements World {
                 ((IWorldAccess) this.worldAccesses.get(i)).obtainEntitySkin(entity);
             }
         } else {
-            System.out.println("Failed to add entity " + entity + ", Can't find chunk x: " + floor_double + " z: " + floor_double2);
+            System.out.println("Failed to add entity " + entity + ", Can't find chunk x: " + floor_double + " z: "
+                    + floor_double2);
         }
     }
 
@@ -725,6 +819,10 @@ public class ServerWorld implements World {
 
     public void removeWorldAccess(final IWorldAccess worldAccess) {
         this.worldAccesses.remove(worldAccess);
+    }
+
+    public NBTTagCompound getPlayerNBT() {
+        return this.D;
     }
 
     public List getCollidingBoundingBoxes(final Entity entity, final AABB aabb) {
@@ -746,7 +844,8 @@ public class ServerWorld implements World {
             }
         }
         final double n = 0.25;
-        final List entitiesWithinAABBExcludingEntity = this.getEntitiesWithinAABBExcludingEntity(entity, aabb.expand(n, n, n));
+        final List entitiesWithinAABBExcludingEntity = this.getEntitiesWithinAABBExcludingEntity(entity,
+                aabb.expand(n, n, n));
         for (int l = 0; l < entitiesWithinAABBExcludingEntity.size(); ++l) {
             final AABB boundingBox = ((Entity) entitiesWithinAABBExcludingEntity.get(l)).getBoundingBox();
             if (boundingBox != null) {
@@ -763,7 +862,7 @@ public class ServerWorld implements World {
     public int calculateSkylightSubtracted(final float float1) {
         float n = 1.0f - (cos(this.getCelestialAngle(float1) * PI_TIMES_2_f) * 2.0f + 0.5f);
         n = clamp(0, 1, n);
-        
+
         return (int) (n * 11.0f);
     }
 
@@ -1009,7 +1108,8 @@ public class ServerWorld implements World {
             for (int j = floor_double3; j < floor_double4; ++j) {
                 for (int k = floor_double5; k < floor_double6; ++k) {
                     final int blockId = this.getBlockId(i, j, k);
-                    if (blockId == Block.fire.blockID || blockId == Block.lavaMoving.blockID || blockId == Block.lavaStill.blockID) {
+                    if (blockId == Block.fire.blockID || blockId == Block.lavaMoving.blockID
+                            || blockId == Block.lavaStill.blockID) {
                         return true;
                     }
                 }
@@ -1031,7 +1131,8 @@ public class ServerWorld implements World {
             for (int j = floor_double3; j < floor_double4; ++j) {
                 for (int k = floor_double5; k < floor_double6; ++k) {
                     final Block block = Block.blocksList[this.getBlockId(i, j, k)];
-                    if (block != null && block.blockMaterial == material && floor_double4 >= (j + 1 - LiquidBlock.getPercentAir(this.getBlockMetadata(i, j, k)))) {
+                    if (block != null && block.blockMaterial == material
+                            && floor_double4 >= (j + 1 - LiquidBlock.getPercentAir(this.getBlockMetadata(i, j, k)))) {
                         b = true;
                         block.velocityToAddToEntity(this, i, j, k, entity, vector);
                     }
@@ -1068,7 +1169,8 @@ public class ServerWorld implements World {
         return false;
     }
 
-    public void createExplosion(final Entity entity, final double double2, final double double3, final double double4, final float float5) {
+    public void createExplosion(final Entity entity, final double double2, final double double3, final double double4,
+            final float float5) {
         new Explosion().doExplosion(this, entity, double2, double3, double4, float5);
     }
 
@@ -1081,7 +1183,10 @@ public class ServerWorld implements World {
         for (float n6 = 0.0f; n6 <= 1.0f; n6 += (float) n) {
             for (float n7 = 0.0f; n7 <= 1.0f; n7 += (float) n2) {
                 for (float n8 = 0.0f; n8 <= 1.0f; n8 += (float) n3) {
-                    if (this.rayTraceBlocks(Vec3.newTemp(aabb.minX + (aabb.maxX - aabb.minX) * n6, aabb.minY + (aabb.maxY - aabb.minY) * n7, aabb.minZ + (aabb.maxZ - aabb.minZ) * n8), var1) == null) {
+                    if (this.rayTraceBlocks(
+                            Vec3.newTemp(aabb.minX + (aabb.maxX - aabb.minX) * n6,
+                                    aabb.minY + (aabb.maxY - aabb.minY) * n7, aabb.minZ + (aabb.maxZ - aabb.minZ) * n8),
+                            var1) == null) {
                         ++n4;
                     }
                     ++n5;
@@ -1111,7 +1216,8 @@ public class ServerWorld implements World {
             ++var1;
         }
         if (this.getBlockId(var1, var2, var3) == Block.fire.blockID) {
-            this.playSoundEffect((var1 + 0.5f), (var2 + 0.5f), (var3 + 0.5f), "random.fizz", 0.5f, 2.6f + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.8f);
+            this.playSoundEffect((var1 + 0.5f), (var2 + 0.5f), (var3 + 0.5f), "random.fizz", 0.5f,
+                    2.6f + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.8f);
             this.setBlockWithNotify(var1, var2, var3, 0);
         }
     }
@@ -1122,6 +1228,16 @@ public class ServerWorld implements World {
 
     public String func_687_d() {
         return new StringBuilder().append("All: ").append(this.loadedEntityList.size()).toString();
+    }
+
+    @Override
+    public int getDifficultySetting() {
+        return this.difficultySetting;
+    }
+
+    @Override
+    public void setDifficultySetting(int difficulty) {
+        this.difficultySetting = difficulty;
     }
 
     @Override
@@ -1163,24 +1279,29 @@ public class ServerWorld implements World {
             if (--n <= 0) {
                 return true;
             }
-            ((MetadataChunkBlock) this.lightingToUpdate.remove(this.lightingToUpdate.size() - 1)).updateLightingChunk(this);
+            ((MetadataChunkBlock) this.lightingToUpdate.remove(this.lightingToUpdate.size() - 1))
+                    .updateLightingChunk(this);
         }
         return false;
     }
 
-    public void scheduleLightingUpdate(final EnumSkyBlock enumSkyBlock, final int integer2, final int integer3, final int integer4, final int integer5, final int integer6, final int integer7) {
+    public void scheduleLightingUpdate(final EnumSkyBlock enumSkyBlock, final int integer2, final int integer3,
+            final int integer4, final int integer5, final int integer6, final int integer7) {
         final int size = this.lightingToUpdate.size();
         int n = 4;
         if (n > size) {
             n = size;
         }
         for (int i = 0; i < n; ++i) {
-            final MetadataChunkBlock metadataChunkBlock = (MetadataChunkBlock) this.lightingToUpdate.get(this.lightingToUpdate.size() - i - 1);
-            if (metadataChunkBlock.field_1299_a == enumSkyBlock && metadataChunkBlock.func_866_a(integer2, integer3, integer4, integer5, integer6, integer7)) {
+            final MetadataChunkBlock metadataChunkBlock = (MetadataChunkBlock) this.lightingToUpdate
+                    .get(this.lightingToUpdate.size() - i - 1);
+            if (metadataChunkBlock.field_1299_a == enumSkyBlock
+                    && metadataChunkBlock.func_866_a(integer2, integer3, integer4, integer5, integer6, integer7)) {
                 return;
             }
         }
-        this.lightingToUpdate.add(new MetadataChunkBlock(enumSkyBlock, integer2, integer3, integer4, integer5, integer6, integer7));
+        this.lightingToUpdate
+                .add(new MetadataChunkBlock(enumSkyBlock, integer2, integer3, integer4, integer5, integer6, integer7));
         if (this.lightingToUpdate.size() > 100000) {
             while (this.lightingToUpdate.size() > 50000) {
                 this.updatingLighting();
@@ -1198,9 +1319,9 @@ public class ServerWorld implements World {
     public void tick() {
         this.chunkProvider.unload100OldestChunks();
         // TODO: handle multiple players
-//        if (!this.loadedEntityList.contains(this.player) && this.player != null) {
-//            this.entityJoinedWorld(this.player);
-//        }
+        // if (!this.loadedEntityList.contains(this.player) && this.player != null) {
+        // this.entityJoinedWorld(this.player);
+        // }
         final int calculateSkylightSubtracted = this.calculateSkylightSubtracted(1.0f);
         if (calculateSkylightSubtracted != this.skylightSubtracted) {
             this.skylightSubtracted = calculateSkylightSubtracted;
@@ -1213,22 +1334,29 @@ public class ServerWorld implements World {
             this.saveWorld(false, null);
         }
         this.TickUpdates(false);
-        // TODO: figure out what this does, it depends on player, so it needs to be reworked for multiple players
-//        int i = Mth.floor_double(this.player.posX);
-//        final int floor_double = Mth.floor_double(this.player.posZ);
-//        final int n = 64;
-//        final ChunkCache chunkCache = new ChunkCache(this, i - n, 0, floor_double - n, i + n, 128, floor_double + n);
-//        for (int j = 0; j < 8000; ++j) {
-//            this.randInt = this.randInt * 3 + this.zz;
-//            final int n2 = this.randInt >> 2;
-//            final int n3 = (n2 & 0x7F) - 64 + i;
-//            final int n4 = (n2 >> 8 & 0x7F) - 64 + floor_double;
-//            final int n5 = n2 >> 16 & 0x7F;
-//            final int blockId = chunkCache.getBlockId(n3, n5, n4);
-//            if (Block.tickOnLoad[blockId]) {
-//                Block.blocksList[blockId].updateTick(this, n3, n5, n4, this.rand);
-//            }
-//        }
+        // TODO: figure out what this does, it depends on player, so it needs to be
+        // reworked for multiple players
+        // int i = Mth.floor_double(this.player.posX);
+        // final int floor_double = Mth.floor_double(this.player.posZ);
+        // final int n = 64;
+        // final ChunkCache chunkCache = new ChunkCache(this, i - n, 0, floor_double -
+        // n, i + n, 128, floor_double + n);
+        // for (int j = 0; j < 8000; ++j) {
+        // this.randInt = this.randInt * 3 + this.zz;
+        // final int n2 = this.randInt >> 2;
+        // final int n3 = (n2 & 0x7F) - 64 + i;
+        // final int n4 = (n2 >> 8 & 0x7F) - 64 + floor_double;
+        // final int n5 = n2 >> 16 & 0x7F;
+        // final int blockId = chunkCache.getBlockId(n3, n5, n4);
+        // if (Block.tickOnLoad[blockId]) {
+        // Block.blocksList[blockId].updateTick(this, n3, n5, n4, this.rand);
+        // }
+        // }
+        // CRITICAL: In integrated server mode, do NOT update player entities on the
+        // server side
+        // The client is fully authoritative for the local player's movement and physics
+        // Updating the player on both client and server causes them to fight each other
+        // this.updateEntities();
     }
 
     public boolean TickUpdates(final boolean boolean1) {
@@ -1247,10 +1375,14 @@ public class ServerWorld implements World {
             this.scheduledTickTreeSet.remove(nextTickListEntry);
             this.scheduledTickSet.remove(nextTickListEntry);
             final int n = 8;
-            if (this.checkChunksExist(nextTickListEntry.xCoord - n, nextTickListEntry.yCoord - n, nextTickListEntry.zCoord - n, nextTickListEntry.xCoord + n, nextTickListEntry.yCoord + n, nextTickListEntry.zCoord + n)) {
-                final int blockId = this.getBlockId(nextTickListEntry.xCoord, nextTickListEntry.yCoord, nextTickListEntry.zCoord);
+            if (this.checkChunksExist(nextTickListEntry.xCoord - n, nextTickListEntry.yCoord - n,
+                    nextTickListEntry.zCoord - n, nextTickListEntry.xCoord + n, nextTickListEntry.yCoord + n,
+                    nextTickListEntry.zCoord + n)) {
+                final int blockId = this.getBlockId(nextTickListEntry.xCoord, nextTickListEntry.yCoord,
+                        nextTickListEntry.zCoord);
                 if (blockId == nextTickListEntry.blockID && blockId > 0) {
-                    Block.blocksList[blockId].updateTick(this, nextTickListEntry.xCoord, nextTickListEntry.yCoord, nextTickListEntry.zCoord, this.rand);
+                    Block.blocksList[blockId].updateTick(this, nextTickListEntry.xCoord, nextTickListEntry.yCoord,
+                            nextTickListEntry.zCoord, this.rand);
                 }
             }
         }
@@ -1342,14 +1474,18 @@ public class ServerWorld implements World {
         }
     }
 
-    public boolean canBlockBePlacedAt(final int blockid, final int xCoord, final int yCoord, final int zCoord, final boolean boolean5) {
+    public boolean canBlockBePlacedAt(final int blockid, final int xCoord, final int yCoord, final int zCoord,
+            final boolean boolean5) {
         final Block block = Block.blocksList[this.getBlockId(xCoord, yCoord, zCoord)];
         final Block block2 = Block.blocksList[blockid];
         AABB collisionBoundingBoxFromPool = block2.getCollisionBoundingBoxFromPool(this, xCoord, yCoord, zCoord);
         if (boolean5) {
             collisionBoundingBoxFromPool = null;
         }
-        return ((blockid > 0 && block == null) || block == Block.waterMoving || block == Block.waterStill || block == Block.lavaMoving || block == Block.lavaStill || block == Block.fire) && (collisionBoundingBoxFromPool == null || this.checkIfAABBIsClear1(collisionBoundingBoxFromPool)) && block2.canPlaceBlockAt(this, xCoord, yCoord, zCoord);
+        return ((blockid > 0 && block == null) || block == Block.waterMoving || block == Block.waterStill
+                || block == Block.lavaMoving || block == Block.lavaStill || block == Block.fire)
+                && (collisionBoundingBoxFromPool == null || this.checkIfAABBIsClear1(collisionBoundingBoxFromPool))
+                && block2.canPlaceBlockAt(this, xCoord, yCoord, zCoord);
     }
 
     public PathEntity getPathToEntity(final Entity entity, final Entity entity2, final float float3) {
@@ -1357,15 +1493,19 @@ public class ServerWorld implements World {
         final int floor_double2 = Mth.floor_double(entity.posY);
         final int floor_double3 = Mth.floor_double(entity.posZ);
         final int n = (int) (float3 + 32.0f);
-        return new Pathfinder(new ChunkCache(this, floor_double - n, floor_double2 - n, floor_double3 - n, floor_double + n, floor_double2 + n, floor_double3 + n)).createEntityPathTo(entity, entity2, float3);
+        return new Pathfinder(new ChunkCache(this, floor_double - n, floor_double2 - n, floor_double3 - n,
+                floor_double + n, floor_double2 + n, floor_double3 + n)).createEntityPathTo(entity, entity2, float3);
     }
 
-    public PathEntity getEntityPathToXYZ(final Entity entity, final int xCoord, final int yCoord, final int zCoord, final float float5) {
+    public PathEntity getEntityPathToXYZ(final Entity entity, final int xCoord, final int yCoord, final int zCoord,
+            final float float5) {
         final int floor_double = Mth.floor_double(entity.posX);
         final int floor_double2 = Mth.floor_double(entity.posY);
         final int floor_double3 = Mth.floor_double(entity.posZ);
         final int n = (int) (float5 + 32.0f);
-        return new Pathfinder(new ChunkCache(this, floor_double - n, floor_double2 - n, floor_double3 - n, floor_double + n, floor_double2 + n, floor_double3 + n)).createEntityPathTo(entity, xCoord, yCoord, zCoord, float5);
+        return new Pathfinder(new ChunkCache(this, floor_double - n, floor_double2 - n, floor_double3 - n,
+                floor_double + n, floor_double2 + n, floor_double3 + n))
+                .createEntityPathTo(entity, xCoord, yCoord, zCoord, float5);
     }
 
     public static NBTTagCompound potentiallySavesFolderLocation(final File file, final String string) {
@@ -1376,7 +1516,8 @@ public class ServerWorld implements World {
         final File file3 = new File(file2, "level.dat");
         if (file3.exists()) {
             try {
-                return CompressedStreamTools.loadGzippedCompoundFromOutputStream(new FileInputStream(file3)).getCompoundTag("Data");
+                return CompressedStreamTools.loadGzippedCompoundFromOutputStream(new FileInputStream(file3))
+                        .getCompoundTag("Data");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

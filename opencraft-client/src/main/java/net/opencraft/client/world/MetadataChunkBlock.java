@@ -14,7 +14,8 @@ public class MetadataChunkBlock {
     public int field_1301_f;
     public int field_1300_g;
 
-    public MetadataChunkBlock(final EnumSkyBlock ec, final int integer2, final int integer3, final int integer4, final int integer5, final int integer6, final int integer7) {
+    public MetadataChunkBlock(final EnumSkyBlock ec, final int integer2, final int integer3, final int integer4,
+            final int integer5, final int integer6, final int integer7) {
         this.field_1299_a = ec;
         this.field_1298_b = integer2;
         this.field_1304_c = integer3;
@@ -85,17 +86,23 @@ public class MetadataChunkBlock {
                                     if (savedLightValue2 < 0) {
                                         savedLightValue2 = 0;
                                     }
-                                    fe.neighborLightPropagationChanged(this.field_1299_a, i - 1, k, j, savedLightValue2);
-                                    fe.neighborLightPropagationChanged(this.field_1299_a, i, k - 1, j, savedLightValue2);
-                                    fe.neighborLightPropagationChanged(this.field_1299_a, i, k, j - 1, savedLightValue2);
+                                    fe.neighborLightPropagationChanged(this.field_1299_a, i - 1, k, j,
+                                            savedLightValue2);
+                                    fe.neighborLightPropagationChanged(this.field_1299_a, i, k - 1, j,
+                                            savedLightValue2);
+                                    fe.neighborLightPropagationChanged(this.field_1299_a, i, k, j - 1,
+                                            savedLightValue2);
                                     if (i + 1 >= this.field_1302_e) {
-                                        fe.neighborLightPropagationChanged(this.field_1299_a, i + 1, k, j, savedLightValue2);
+                                        fe.neighborLightPropagationChanged(this.field_1299_a, i + 1, k, j,
+                                                savedLightValue2);
                                     }
                                     if (k + 1 >= this.field_1301_f) {
-                                        fe.neighborLightPropagationChanged(this.field_1299_a, i, k + 1, j, savedLightValue2);
+                                        fe.neighborLightPropagationChanged(this.field_1299_a, i, k + 1, j,
+                                                savedLightValue2);
                                     }
                                     if (j + 1 >= this.field_1300_g) {
-                                        fe.neighborLightPropagationChanged(this.field_1299_a, i, k, j + 1, savedLightValue2);
+                                        fe.neighborLightPropagationChanged(this.field_1299_a, i, k, j + 1,
+                                                savedLightValue2);
                                     }
                                 }
                             }
@@ -106,12 +113,16 @@ public class MetadataChunkBlock {
         }
     }
 
-    public boolean func_866_a(final int integer1, final int integer2, final int integer3, final int integer4, final int integer5, final int integer6) {
-        if (integer1 >= this.field_1298_b && integer2 >= this.field_1304_c && integer3 >= this.field_1303_d && integer4 <= this.field_1302_e && integer5 <= this.field_1301_f && integer6 <= this.field_1300_g) {
+    public boolean func_866_a(final int integer1, final int integer2, final int integer3, final int integer4,
+            final int integer5, final int integer6) {
+        if (integer1 >= this.field_1298_b && integer2 >= this.field_1304_c && integer3 >= this.field_1303_d
+                && integer4 <= this.field_1302_e && integer5 <= this.field_1301_f && integer6 <= this.field_1300_g) {
             return true;
         }
         final int n = 1;
-        if (integer1 >= this.field_1298_b - n && integer2 >= this.field_1304_c - n && integer3 >= this.field_1303_d - n && integer4 <= this.field_1302_e + n && integer5 <= this.field_1301_f + n && integer6 <= this.field_1300_g + n) {
+        if (integer1 >= this.field_1298_b - n && integer2 >= this.field_1304_c - n && integer3 >= this.field_1303_d - n
+                && integer4 <= this.field_1302_e + n && integer5 <= this.field_1301_f + n
+                && integer6 <= this.field_1300_g + n) {
             if (integer1 < this.field_1298_b) {
                 this.field_1298_b = integer1;
             }

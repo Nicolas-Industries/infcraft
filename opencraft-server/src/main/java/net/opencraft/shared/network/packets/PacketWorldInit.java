@@ -60,18 +60,52 @@ public class PacketWorldInit implements IPacket {
     }
 
     // Getters
-    public int getSpawnX() { return spawnX; }
-    public int getSpawnY() { return spawnY; }
-    public int getSpawnZ() { return spawnZ; }
-    public long getWorldSeed() { return worldSeed; }
-    public long getWorldTime() { return worldTime; }
-    public String getWorldName() { return worldName; }
+    public int getSpawnX() {
+        return spawnX;
+    }
+
+    public int getSpawnY() {
+        return spawnY;
+    }
+
+    public int getSpawnZ() {
+        return spawnZ;
+    }
+
+    public long getWorldSeed() {
+        return worldSeed;
+    }
+
+    public long getWorldTime() {
+        return worldTime;
+    }
+
+    public String getWorldName() {
+        return worldName;
+    }
 
     // Setters for deserialization
-    public void setSpawnX(int spawnX) { this.spawnX = spawnX; }
-    public void setSpawnY(int spawnY) { this.spawnY = spawnY; }
-    public void setSpawnZ(int spawnZ) { this.spawnZ = spawnZ; }
-    public void setWorldSeed(long worldSeed) { this.worldSeed = worldSeed; }
-    public void setWorldTime(long worldTime) { this.worldTime = worldTime; }
-    public void setWorldName(String worldName) { this.worldName = worldName; }
+    public void setSpawnX(int spawnX) {
+        this.spawnX = spawnX;
+    }
+
+    public void setSpawnY(int spawnY) {
+        this.spawnY = spawnY;
+    }
+
+    public void setSpawnZ(int spawnZ) {
+        this.spawnZ = spawnZ;
+    }
+
+    public void setWorldSeed(long worldSeed) {
+        this.worldSeed = worldSeed;
+    }
+
+    public void setWorldTime(long worldTime) {
+        this.worldTime = worldTime;
+    }
+
+    public void setWorldName(String worldName) {
+        this.worldName = worldName;
+    }
 }

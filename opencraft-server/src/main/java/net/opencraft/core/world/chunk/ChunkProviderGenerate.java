@@ -116,8 +116,10 @@ public class ChunkProviderGenerate implements IChunkProvider {
 				final double n2 = integer1 * 16 + i;
 				final double n3 = integer2 * 16 + j;
 				final double n4 = 0.03125;
-				final boolean b = this.field_909_n.getNoise3D(n2 * n4, n3 * n4, 0.0) + this.rand.nextDouble() * 0.2 > 0.0;
-				final boolean b2 = this.field_909_n.getNoise3D(n3 * n4, 109.0134, n2 * n4) + this.rand.nextDouble() * 0.2 > 3.0;
+				final boolean b = this.field_909_n.getNoise3D(n2 * n4, n3 * n4, 0.0)
+						+ this.rand.nextDouble() * 0.2 > 0.0;
+				final boolean b2 = this.field_909_n.getNoise3D(n3 * n4, 109.0134, n2 * n4)
+						+ this.rand.nextDouble() * 0.2 > 3.0;
 				final int n5 = (int) (this.field_908_o.getNoise2D(n2 * n4 * 2.0, n3 * n4 * 2.0) / 3.0 + 3.0
 						+ this.rand.nextDouble() * 0.25);
 				int n6 = -1;
@@ -367,15 +369,20 @@ public class ChunkProviderGenerate implements IChunkProvider {
 		}
 		final double n = 684.412;
 		final double n2 = 684.412;
-		this.field_4182_g = this.field_922_a.generateNoiseArray(this.field_4182_g, integer2, integer3, integer4, integer5, 1, integer7,
+		this.field_4182_g = this.field_922_a.generateNoiseArray(this.field_4182_g, integer2, integer3, integer4,
+				integer5, 1, integer7,
 				1.0, 0.0, 1.0);
-		this.field_4181_h = this.field_921_b.generateNoiseArray(this.field_4181_h, integer2, integer3, integer4, integer5, 1, integer7,
+		this.field_4181_h = this.field_921_b.generateNoiseArray(this.field_4181_h, integer2, integer3, integer4,
+				integer5, 1, integer7,
 				100.0, 0.0, 100.0);
-		this.field_4185_d = this.field_910_m.generateNoiseArray(this.field_4185_d, integer2, integer3, integer4, integer5, integer6,
+		this.field_4185_d = this.field_910_m.generateNoiseArray(this.field_4185_d, integer2, integer3, integer4,
+				integer5, integer6,
 				integer7, n / 80.0, n2 / 160.0, n / 80.0);
-		this.field_4184_e = this.field_912_k.generateNoiseArray(this.field_4184_e, integer2, integer3, integer4, integer5, integer6,
+		this.field_4184_e = this.field_912_k.generateNoiseArray(this.field_4184_e, integer2, integer3, integer4,
+				integer5, integer6,
 				integer7, n, n2, n);
-		this.field_4183_f = this.field_911_l.generateNoiseArray(this.field_4183_f, integer2, integer3, integer4, integer5, integer6,
+		this.field_4183_f = this.field_911_l.generateNoiseArray(this.field_4183_f, integer2, integer3, integer4,
+				integer5, integer6,
 				integer7, n, n2, n);
 		int n3 = 0;
 		int n4 = 0;
@@ -476,19 +483,22 @@ public class ChunkProviderGenerate implements IChunkProvider {
 			final int integer4 = n + this.rand.nextInt(16);
 			final int j = this.rand.nextInt(128);
 			final int integer5 = n2 + this.rand.nextInt(16);
-			new WorldGenMinable(Block.gravel.blockID, 32).generate(this.serverWorldObj, this.rand, integer4, j, integer5);
+			new WorldGenMinable(Block.gravel.blockID, 32).generate(this.serverWorldObj, this.rand, integer4, j,
+					integer5);
 		}
 		for (int i = 0; i < 20; ++i) {
 			final int integer4 = n + this.rand.nextInt(16);
 			final int j = this.rand.nextInt(128);
 			final int integer5 = n2 + this.rand.nextInt(16);
-			new WorldGenMinable(Block.oreCoal.blockID, 16).generate(this.serverWorldObj, this.rand, integer4, j, integer5);
+			new WorldGenMinable(Block.oreCoal.blockID, 16).generate(this.serverWorldObj, this.rand, integer4, j,
+					integer5);
 		}
 		for (int i = 0; i < 20; ++i) {
 			final int integer4 = n + this.rand.nextInt(16);
 			final int j = this.rand.nextInt(64);
 			final int integer5 = n2 + this.rand.nextInt(16);
-			new WorldGenMinable(Block.oreIron.blockID, 8).generate(this.serverWorldObj, this.rand, integer4, j, integer5);
+			new WorldGenMinable(Block.oreIron.blockID, 8).generate(this.serverWorldObj, this.rand, integer4, j,
+					integer5);
 		}
 		if (this.rand.nextInt(1) == 0) {
 			final int i = n + this.rand.nextInt(16);
@@ -503,7 +513,8 @@ public class ChunkProviderGenerate implements IChunkProvider {
 			new WorldGenMinable(Block.oreDiamond.blockID, 8).generate(this.serverWorldObj, this.rand, i, integer4, j);
 		}
 		n3 = 0.5;
-		int i = (int) ((this.mobSpawnerNoise.getNoise2D(n * n3, n2 * n3) / 8.0 + this.rand.nextDouble() * 4.0 + 4.0) / 3.0);
+		int i = (int) ((this.mobSpawnerNoise.getNoise2D(n * n3, n2 * n3) / 8.0 + this.rand.nextDouble() * 4.0 + 4.0)
+				/ 3.0);
 		if (i < 0) {
 			i = 0;
 		}
@@ -515,13 +526,15 @@ public class ChunkProviderGenerate implements IChunkProvider {
 			final int integer5 = n + this.rand.nextInt(16) + 8;
 			final int n4 = n2 + this.rand.nextInt(16) + 8;
 			worldGenTrees.func_517_a(1.0, 1.0, 1.0);
-			worldGenTrees.generate(this.serverWorldObj, this.rand, integer5, this.serverWorldObj.getHeightValue(integer5, n4), n4);
+			worldGenTrees.generate(this.serverWorldObj, this.rand, integer5,
+					this.serverWorldObj.getHeightValue(integer5, n4), n4);
 		}
 		for (int j = 0; j < 2; ++j) {
 			final int integer5 = n + this.rand.nextInt(16) + 8;
 			final int n4 = this.rand.nextInt(128);
 			final int integer6 = n2 + this.rand.nextInt(16) + 8;
-			new WorldGenFlowers(Block.plantYellow.blockID).generate(this.serverWorldObj, this.rand, integer5, n4, integer6);
+			new WorldGenFlowers(Block.plantYellow.blockID).generate(this.serverWorldObj, this.rand, integer5, n4,
+					integer6);
 		}
 		if (this.rand.nextInt(2) == 0) {
 			final int j = n + this.rand.nextInt(16) + 8;
@@ -545,13 +558,15 @@ public class ChunkProviderGenerate implements IChunkProvider {
 			final int integer5 = n + this.rand.nextInt(16) + 8;
 			final int n4 = this.rand.nextInt(this.rand.nextInt(120) + 8);
 			final int integer6 = n2 + this.rand.nextInt(16) + 8;
-			new WorldGenLiquids(Block.waterMoving.blockID).generate(this.serverWorldObj, this.rand, integer5, n4, integer6);
+			new WorldGenLiquids(Block.waterMoving.blockID).generate(this.serverWorldObj, this.rand, integer5, n4,
+					integer6);
 		}
 		for (int j = 0; j < 20; ++j) {
 			final int integer5 = n + this.rand.nextInt(16) + 8;
 			final int n4 = this.rand.nextInt(this.rand.nextInt(this.rand.nextInt(112) + 8) + 8);
 			final int integer6 = n2 + this.rand.nextInt(16) + 8;
-			new WorldGenLiquids(Block.lavaMoving.blockID).generate(this.serverWorldObj, this.rand, integer5, n4, integer6);
+			new WorldGenLiquids(Block.lavaMoving.blockID).generate(this.serverWorldObj, this.rand, integer5, n4,
+					integer6);
 		}
 	}
 
