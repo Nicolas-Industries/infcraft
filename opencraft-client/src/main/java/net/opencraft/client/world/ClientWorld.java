@@ -245,30 +245,17 @@ public class ClientWorld implements World {
     }
 
     public boolean setBlock(final int xCoord, final int yCoord, final int zCoord, final int blockid) {
-        // In client-server architecture, the client should send a packet to the server
-        // to modify the block
-        // rather than modifying the block directly
-        if (net.opencraft.client.OpenCraft.oc != null) {
-            net.opencraft.client.network.ClientNetworkManager networkManager = net.opencraft.client.OpenCraft.oc
-                    .getClientNetworkManager();
-            if (networkManager != null) {
-                try {
-                    // Send packet to server requesting block change (with metadata 0)
-                    net.opencraft.shared.network.packets.PacketBlockChange blockChangePacket = new net.opencraft.shared.network.packets.PacketBlockChange(
-                            xCoord, yCoord, zCoord, blockid);
-                    networkManager.sendPacket(blockChangePacket);
-                    // Return true to indicate that the packet was sent successfully
-                    // The actual block change will be confirmed when the server sends back the
-                    // update
-                    return true;
-                } catch (Exception e) {
-                    System.err.println("Error sending block change packet to server: " + e.getMessage());
-                    return false;
-                }
-            }
+        if (xCoord < -32000000 || zCoord < -32000000 || xCoord >= 32000000 || zCoord > 32000000) {
+            return false;
         }
-        // If no network manager (singleplayer or not connected), we can't modify
-        return false;
+        if (yCoord < 0) {
+            return false;
+        }
+        if (yCoord >= 128) {
+            return false;
+        }
+        final Chunk chunkFromChunkCoords = this.getChunkFromChunkCoords(xCoord >> 4, zCoord >> 4);
+        return chunkFromChunkCoords.setBlockID(xCoord & 0xF, yCoord, zCoord & 0xF, blockid);
     }
 
     @Override
@@ -374,21 +361,14 @@ public class ClientWorld implements World {
             // the server
             // The client shouldn't directly call onNeighborBlockChange with itself
             // Instead, the client should send an update to the server
-            if (net.opencraft.client.OpenCraft.oc != null) {
-                net.opencraft.client.network.ClientNetworkManager networkManager = net.opencraft.client.OpenCraft.oc
-                        .getClientNetworkManager();
-                if (networkManager != null) {
-                    try {
-                        // Send a block change notification to the server
-                        net.opencraft.shared.network.packets.PacketBlockChange blockChangePacket = new net.opencraft.shared.network.packets.PacketBlockChange(
-                                nya1, nya2, nya3, this.getBlockId(nya1, nya2, nya3));
-                        networkManager.sendPacket(blockChangePacket);
-                    } catch (Exception e) {
-                        // Just log the error, don't let it break the execution flow
-                        System.err.println("Error sending neighbor block change notification: " + e.getMessage());
-                    }
-                }
-            }
+            // The original instruction was to replace packet sending logic in setBlock,
+            // but setBlock already has chunk update logic.
+            // This section in notifyBlockOfNeighborChange contains packet sending logic.
+            // Assuming the intent was to remove this client-side packet sending logic
+            // and not replace it with anything specific here, as actual chunk updates
+            // are handled elsewhere (e.g., setBlock).
+            // If a server-side update is needed, it would be initiated by the client's
+            // action, not by this local neighbor change notification.
         }
     }
 

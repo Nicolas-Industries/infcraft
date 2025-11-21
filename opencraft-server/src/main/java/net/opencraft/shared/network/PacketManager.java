@@ -77,9 +77,13 @@ public class PacketManager {
         // Play - Entities
         registerPacket(ConnectionState.PLAY, 0x30, net.opencraft.shared.network.packets.PacketSpawnEntity.class);
         registerPacket(ConnectionState.PLAY, 0x31, net.opencraft.shared.network.packets.PacketEntityPosition.class);
-        registerPacket(ConnectionState.PLAY, 0x32, net.opencraft.shared.network.packets.PacketEntityRelativeMove.class);
         registerPacket(ConnectionState.PLAY, 0x33,
                 net.opencraft.shared.network.packets.PacketPlayerPositionRotation.class);
+
+        // Play - Inventory
+        registerPacket(ConnectionState.PLAY, 0x60, net.opencraft.shared.network.packets.PacketWindowClick.class);
+        registerPacket(ConnectionState.PLAY, 0x61, net.opencraft.shared.network.packets.PacketSetSlot.class);
+        registerPacket(ConnectionState.PLAY, 0x62, net.opencraft.shared.network.packets.PacketWindowItems.class);
 
     }
 

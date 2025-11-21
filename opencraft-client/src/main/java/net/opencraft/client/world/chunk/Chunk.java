@@ -204,6 +204,26 @@ public class Chunk {
         this.data.setNibble(integer1, integer2, integer3, integer4);
     }
 
+    public boolean setBlockID(int x, int y, int z, int id) {
+        return setBlockIDWithMetadata(x, y, z, id, 0);
+    }
+
+    public boolean setBlockIDWithMetadata(int x, int y, int z, int id, int metadata) {
+        int index = x << 11 | z << 7 | y;
+        if (index >= 0 && index < blocks.length) {
+            int oldId = blocks[index] & 0xFF;
+            if (oldId == id && data.getNibble(x, y, z) == metadata) {
+                return false;
+            }
+            blocks[index] = (byte) id;
+            data.setNibble(x, y, z, metadata);
+            relightBlock(x, y, z);
+            isModified = true;
+            return true;
+        }
+        return false;
+    }
+
     public int getSavedLightValue(final EnumSkyBlock enumSkyBlock, final int integer2, final int integer3,
             final int integer4) {
         if (enumSkyBlock == EnumSkyBlock.Sky) {

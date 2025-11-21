@@ -308,8 +308,57 @@ public class ClientNetworkManager implements INetworkManager {
             handleWorldStatePacket((net.opencraft.shared.network.packets.PacketWorldState) packet);
         } else if (packet instanceof net.opencraft.shared.network.packets.PacketPlayerSpawn) {
             handlePlayerSpawnPacket((net.opencraft.shared.network.packets.PacketPlayerSpawn) packet);
+        } else if (packet instanceof net.opencraft.shared.network.packets.PacketWindowItems) {
+            handleWindowItems((net.opencraft.shared.network.packets.PacketWindowItems) packet);
+        } else if (packet instanceof net.opencraft.shared.network.packets.PacketSetSlot) {
+            handleSetSlot((net.opencraft.shared.network.packets.PacketSetSlot) packet);
         } else {
             System.out.println("Unknown packet type: " + packet.getClass().getSimpleName());
+        }
+    }
+
+    private void handleWindowItems(net.opencraft.shared.network.packets.PacketWindowItems packet) {
+        if (gameInstance == null || gameInstance.player == null)
+            return;
+        if (packet.getWindowId() == 0) {
+            net.opencraft.core.item.ItemStack[] items = packet.getItems();
+            net.opencraft.core.inventory.InventoryPlayer inventory = gameInstance.player.inventory;
+
+            // 5-8: Armor
+            for (int i = 0; i < 4; i++) {
+                if (5 + i < items.length)
+                    inventory.armorInventory[i] = items[5 + i];
+            }
+            // 9-35: Main Inventory (storage)
+            for (int i = 9; i < 36; i++) {
+                if (i < items.length)
+                    inventory.mainInventory[i] = items[i];
+            }
+            // 36-44: Hotbar
+            for (int i = 0; i < 9; i++) {
+                if (36 + i < items.length)
+                    inventory.mainInventory[i] = items[36 + i];
+            }
+        }
+    }
+
+    private void handleSetSlot(net.opencraft.shared.network.packets.PacketSetSlot packet) {
+        if (gameInstance == null || gameInstance.player == null)
+            return;
+        if (packet.getWindowId() == 0) {
+            int slot = packet.getSlot();
+            net.opencraft.core.item.ItemStack item = packet.getItem();
+            net.opencraft.core.inventory.InventoryPlayer inventory = gameInstance.player.inventory;
+
+            if (slot == -1) {
+                inventory.setCursorItem(item);
+            } else if (slot >= 5 && slot < 9) {
+                inventory.armorInventory[slot - 5] = item;
+            } else if (slot >= 9 && slot < 36) {
+                inventory.mainInventory[slot] = item;
+            } else if (slot >= 36 && slot < 45) {
+                inventory.mainInventory[slot - 36] = item;
+            }
         }
     }
 
@@ -458,10 +507,13 @@ public class ClientNetworkManager implements INetworkManager {
     private void handleBlockChangePacket(PacketBlockChange packet) {
         // Update block in the client world
         if (gameInstance != null && gameInstance.clientWorld != null) {
-            // In a real implementation, this would update the client's world representation
             System.out.println("Received block change: (" +
                     packet.getX() + ", " + packet.getY() + ", " + packet.getZ() +
                     ") -> Block ID: " + packet.getBlockId());
+
+            // Actually update the world
+            gameInstance.clientWorld.setBlockWithNotify(packet.getX(), packet.getY(), packet.getZ(),
+                    packet.getBlockId());
         }
     }
 

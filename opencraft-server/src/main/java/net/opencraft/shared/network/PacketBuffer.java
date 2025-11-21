@@ -218,6 +218,26 @@ public class PacketBuffer {
     /**
      * Get the size of the buffer
      */
+    public void writeItemStack(net.opencraft.core.item.ItemStack stack) {
+        if (stack == null) {
+            writeShort(-1);
+        } else {
+            writeShort(stack.itemID);
+            writeByte(stack.stackSize);
+            writeShort(stack.itemDamage);
+        }
+    }
+
+    public net.opencraft.core.item.ItemStack readItemStack() {
+        short id = readShort();
+        if (id < 0) {
+            return null;
+        }
+        byte count = readByte();
+        short damage = readShort();
+        return new net.opencraft.core.item.ItemStack(id, count, damage);
+    }
+
     public int readableBytes() {
         return buffer.remaining();
     }

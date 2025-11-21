@@ -16,12 +16,21 @@ public class InventoryPlayer implements IInventory {
     public ItemStack[] armorInventory;
     public int currentItem;
     private EntityPlayer player;
+    public ItemStack cursorItem;
 
     public InventoryPlayer(final EntityPlayer gi) {
         this.mainInventory = new ItemStack[36];
         this.armorInventory = new ItemStack[4];
         this.currentItem = 0;
         this.player = gi;
+    }
+
+    public ItemStack getCursorItem() {
+        return this.cursorItem;
+    }
+
+    public void setCursorItem(ItemStack stack) {
+        this.cursorItem = stack;
     }
 
     public ItemStack getCurrentItem() {
@@ -39,7 +48,9 @@ public class InventoryPlayer implements IInventory {
 
     private int storeItemStack(final int integer) {
         for (int i = 0; i < this.mainInventory.length; ++i) {
-            if (this.mainInventory[i] != null && this.mainInventory[i].itemID == integer && this.mainInventory[i].stackSize < this.mainInventory[i].getMaxStackSize() && this.mainInventory[i].stackSize < this.getInventoryStackLimit()) {
+            if (this.mainInventory[i] != null && this.mainInventory[i].itemID == integer
+                    && this.mainInventory[i].stackSize < this.mainInventory[i].getMaxStackSize()
+                    && this.mainInventory[i].stackSize < this.getInventoryStackLimit()) {
                 return i;
             }
         }

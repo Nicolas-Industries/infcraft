@@ -200,8 +200,8 @@ public class NetworkSystem {
                             (float) ((PacketPlayerPosition) packet).getZ(),
                             ((net.opencraft.shared.network.packets.PacketPlayerPosition) packet).getYaw(),
                             ((net.opencraft.shared.network.packets.PacketPlayerPosition) packet).getPitch(),
-                            ((net.opencraft.shared.network.packets.PacketPlayerPosition) packet).isOnGround()
-                    ), networkManager); // Pass the networkManager
+                            ((net.opencraft.shared.network.packets.PacketPlayerPosition) packet).isOnGround()),
+                    networkManager); // Pass the networkManager
         } else if (packet instanceof net.opencraft.shared.network.packets.PacketPlayerPositionRotation) {
             // Handle new-style player position packet
             handlePlayerPositionRotation(
@@ -212,12 +212,20 @@ public class NetworkSystem {
             switch (packet.getPacketId()) {
                 case 0x22: // Player Digging
                     if (packet instanceof net.opencraft.shared.network.packets.PacketPlayerDigging) {
-                        // Handle digging
+                        handlePlayerDigging((net.opencraft.shared.network.packets.PacketPlayerDigging) packet,
+                                networkManager);
                     }
                     break;
                 case 0x23: // Block Placement
                     if (packet instanceof net.opencraft.shared.network.packets.PacketBlockPlacement) {
-                        // Handle placement
+                        handleBlockPlacement((net.opencraft.shared.network.packets.PacketBlockPlacement) packet,
+                                networkManager);
+                    }
+                    break;
+                case 0x60: // Window Click
+                    if (packet instanceof net.opencraft.shared.network.packets.PacketWindowClick) {
+                        handleWindowClick((net.opencraft.shared.network.packets.PacketWindowClick) packet,
+                                networkManager);
                     }
                     break;
                 default:
@@ -226,6 +234,237 @@ public class NetworkSystem {
                     break;
             }
         }
+    }
+
+    private void handleWindowClick(net.opencraft.shared.network.packets.PacketWindowClick packet,
+            INetworkManager networkManager) {
+        if (server.getWorld() == null)
+            return;
+
+        net.opencraft.core.entity.EntityPlayer player = getPlayerFromNetworkManager(networkManager);
+        if (player == null)
+            return;
+
+        if (packet.getWindowId() == 0) { // Player Inventory
+            int slot = packet.getSlot();
+            net.opencraft.core.item.ItemStack cursor = player.inventory.getCursorItem();
+            net.opencraft.core.item.ItemStack clickedStack = null;
+
+            // Map window slot to inventory slot
+            // 0-4: Crafting (ignore for now)
+            // 5-8: Armor
+            // 9-35: Main Inventory
+            // 36-44: Hotbar
+            if (slot >= 9 && slot < 36) {
+                clickedStack = player.inventory.mainInventory[slot - 9 + 9]; // 9-35 -> 9-35? No.
+                // InventoryPlayer: 0-8 is hotbar. 9-35 is storage.
+                // Window: 9-35 is storage. 36-44 is hotbar.
+                // So Window 9-35 maps to Inventory 9-35.
+                clickedStack = player.inventory.mainInventory[slot];
+            } else if (slot >= 36 && slot < 45) {
+                clickedStack = player.inventory.mainInventory[slot - 36]; // 36-44 -> 0-8
+            } else if (slot >= 5 && slot < 9) {
+                clickedStack = player.inventory.armorInventory[slot - 5];
+            }
+
+            // Basic swap logic (simplified)
+            if (clickedStack == null && cursor != null) {
+                // Place cursor into slot
+                setInventorySlot(player, slot, cursor);
+                player.inventory.setCursorItem(null);
+            } else if (clickedStack != null && cursor == null) {
+                // Pickup slot
+                player.inventory.setCursorItem(clickedStack);
+                setInventorySlot(player, slot, null);
+            } else if (clickedStack != null && cursor != null) {
+                // Swap
+                player.inventory.setCursorItem(clickedStack);
+                setInventorySlot(player, slot, cursor);
+            }
+
+            // Send update back to client to ensure sync
+            // We should send SetSlot for the clicked slot and the cursor (if we had a
+            // packet
+            // Update the clicked slot
+            net.opencraft.shared.network.packets.PacketSetSlot setSlot = new net.opencraft.shared.network.packets.PacketSetSlot(
+                    0, slot, getInventorySlot(player, slot));
+            try {
+                networkManager.sendPacket(setSlot);
+
+                // Update the cursor item (slot -1)
+                net.opencraft.shared.network.packets.PacketSetSlot setCursor = new net.opencraft.shared.network.packets.PacketSetSlot(
+                        0, -1, player.inventory.getCursorItem());
+                networkManager.sendPacket(setCursor);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void setInventorySlot(net.opencraft.core.entity.EntityPlayer player, int slot,
+            net.opencraft.core.item.ItemStack stack) {
+        if (slot >= 9 && slot < 36) {
+            player.inventory.mainInventory[slot] = stack;
+        } else if (slot >= 36 && slot < 45) {
+            player.inventory.mainInventory[slot - 36] = stack;
+        } else if (slot >= 5 && slot < 9) {
+            player.inventory.armorInventory[slot - 5] = stack;
+        }
+    }
+
+    private net.opencraft.core.item.ItemStack getInventorySlot(net.opencraft.core.entity.EntityPlayer player,
+            int slot) {
+        if (slot >= 9 && slot < 36) {
+            return player.inventory.mainInventory[slot];
+        } else if (slot >= 36 && slot < 45) {
+            return player.inventory.mainInventory[slot - 36];
+        } else if (slot >= 5 && slot < 9) {
+            return player.inventory.armorInventory[slot - 5];
+        }
+        return null;
+    }
+
+    private void handlePlayerDigging(net.opencraft.shared.network.packets.PacketPlayerDigging packet,
+            INetworkManager networkManager) {
+        if (server.getWorld() == null)
+            return;
+
+        net.opencraft.core.entity.EntityPlayer player = getPlayerFromNetworkManager(networkManager);
+        if (player == null)
+            return;
+
+        int x = packet.getX();
+        int y = packet.getY();
+        int z = packet.getZ();
+
+        // Distance check (Reach)
+        double distSq = player.getDistanceSq(x + 0.5, y + 0.5, z + 0.5);
+        if (distSq > 36.0) { // 6 blocks reach
+            System.out.println("Player " + player.getUsername() + " tried to dig too far: " + Math.sqrt(distSq));
+            return;
+        }
+
+        if (packet.getStatus() == 2) { // Finished digging (Block Broken)
+            // Verify block exists
+            int blockId = server.getWorld().getBlockId(x, y, z);
+            if (blockId > 0) {
+                // Drop items
+                net.opencraft.core.blocks.Block block = net.opencraft.core.blocks.Block.blocksList[blockId];
+                if (block != null) {
+                    int metadata = server.getWorld().getBlockMetadata(x, y, z);
+                    block.dropBlockAsItem((net.opencraft.server.world.ServerWorld) server.getWorld(), x, y, z,
+                            metadata);
+                }
+
+                // Break block
+                server.getWorld().setBlockWithNotify(x, y, z, 0);
+
+                // Broadcast change to all players (including self, to confirm)
+                net.opencraft.shared.network.packets.PacketBlockChange changePacket = new net.opencraft.shared.network.packets.PacketBlockChange(
+                        x, y, z, 0);
+                broadcastPacketToAll(changePacket);
+            }
+        } else if (packet.getStatus() == 4) { // Drop item
+            player.dropPlayerItemWithRandomChoice(player.inventory.getCurrentItem(), false);
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+        }
+    }
+
+    private void handleBlockPlacement(net.opencraft.shared.network.packets.PacketBlockPlacement packet,
+            INetworkManager networkManager) {
+        if (server.getWorld() == null)
+            return;
+
+        net.opencraft.core.entity.EntityPlayer player = getPlayerFromNetworkManager(networkManager);
+        if (player == null)
+            return;
+
+        int x = packet.getX();
+        int y = packet.getY();
+        int z = packet.getZ();
+        int face = packet.getFace();
+
+        // Distance check
+        double distSq = player.getDistanceSq(x + 0.5, y + 0.5, z + 0.5);
+        if (distSq > 36.0 && face != 255) { // 255 is special case for using item in air (not supported yet)
+            System.out.println("Player " + player.getUsername() + " tried to place too far: " + Math.sqrt(distSq));
+            return;
+        }
+
+        net.opencraft.core.item.ItemStack heldItem = player.inventory.getCurrentItem();
+        if (heldItem == null)
+            return; // Nothing to place
+
+        // Calculate target position based on face
+        int targetX = x;
+        int targetY = y;
+        int targetZ = z;
+
+        if (face == 0)
+            targetY--;
+        if (face == 1)
+            targetY++;
+        if (face == 2)
+            targetZ--;
+        if (face == 3)
+            targetZ++;
+        if (face == 4)
+            targetX--;
+        if (face == 5)
+            targetX++;
+
+        // Check if placement is valid (no collision with player, etc - simplified for
+        // now)
+        // Also check if block can be placed (id > 0 and < 256)
+        if (heldItem.itemID < 256) {
+            // It's a block
+            if (server.getWorld().setBlockAndMetadataWithNotify(targetX, targetY, targetZ, heldItem.itemID,
+                    heldItem.itemDamage)) {
+                // Consume item
+                heldItem.stackSize--;
+                if (heldItem.stackSize <= 0) {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                }
+
+                // Broadcast change
+                net.opencraft.shared.network.packets.PacketBlockChange changePacket = new net.opencraft.shared.network.packets.PacketBlockChange(
+                        targetX, targetY, targetZ, heldItem.itemID);
+                broadcastPacketToAll(changePacket);
+            }
+        }
+    }
+
+    private net.opencraft.core.entity.EntityPlayer getPlayerFromNetworkManager(INetworkManager networkManager) {
+        if (server.getWorld() != null) {
+            for (Object obj : server.getWorld().getLoadedEntityList()) {
+                if (obj instanceof net.opencraft.core.entity.EntityPlayer) {
+                    net.opencraft.core.entity.EntityPlayer player = (net.opencraft.core.entity.EntityPlayer) obj;
+                    // In singleplayer/integrated, there's only one player usually, or we match by
+                    // connection
+                    // For now, just return the first player found as a fallback or match if
+                    // possible.
+                    // Ideally we map NetworkManager -> Player.
+                    // We have playerNetworkManagers map (String -> NetworkManager).
+                    // We can iterate it to find the username.
+                    for (Map.Entry<String, INetworkManager> entry : playerNetworkManagers.entrySet()) {
+                        if (entry.getValue() == networkManager) {
+                            if (player.getUsername().equals(entry.getKey())) {
+                                return player;
+                            }
+                        }
+                    }
+                }
+            }
+            // Fallback for singleplayer if map isn't fully populated or for local
+            // connection
+            if (networkManager instanceof LocalNetworkManager && !server.getWorld().getLoadedEntityList().isEmpty()) {
+                Object p = server.getWorld().getLoadedEntityList().get(0);
+                if (p instanceof net.opencraft.core.entity.EntityPlayer) {
+                    return (net.opencraft.core.entity.EntityPlayer) p;
+                }
+            }
+        }
+        return null;
     }
 
     private void handleHandshake(net.opencraft.shared.network.packets.PacketHandshake packet,
@@ -293,6 +532,37 @@ public class NetworkSystem {
             for (Object obj : entities) {
                 if (obj instanceof net.opencraft.core.entity.EntityPlayer) {
                     net.opencraft.core.entity.EntityPlayer player = (net.opencraft.core.entity.EntityPlayer) obj;
+
+                    // Server-Authoritative Movement Validation
+                    double dx = packet.getX() - player.posX;
+                    double dy = packet.getY() - player.posY;
+                    double dz = packet.getZ() - player.posZ;
+                    double distanceSquared = dx * dx + dy * dy + dz * dz;
+
+                    // Threshold: 10 blocks per update (100 squared) is generous but catches
+                    // teleport hacks
+                    // Normal movement is < 1 block per tick. Sprinting is < 2.
+                    // We allow a bit more for lag/latency catch-up.
+                    if (distanceSquared > 100.0) {
+                        System.out.println("WARNING: Player " + player.getUsername() + " moved too fast! ("
+                                + Math.sqrt(distanceSquared) + " blocks). Teleporting back.");
+
+                        // Send authoritative position back to client to correct them
+                        net.opencraft.shared.network.packets.PacketPlayerPositionRotation correctionPacket = new net.opencraft.shared.network.packets.PacketPlayerPositionRotation(
+                                (float) player.posX,
+                                (float) player.posY,
+                                (float) player.posZ,
+                                player.rotationYaw,
+                                player.rotationPitch,
+                                player.onGround);
+
+                        try {
+                            networkManager.sendPacket(correctionPacket);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return; // Do not update server state
+                    }
 
                     // Update server entity position
                     int oldChunkX = Mth.floor_double(player.posX) >> 4;
@@ -694,28 +964,5 @@ public class NetworkSystem {
 
     public boolean isRunning() {
         return isRunning;
-    }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
+}

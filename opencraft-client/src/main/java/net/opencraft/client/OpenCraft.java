@@ -540,8 +540,16 @@ public class OpenCraft implements Runnable {
 			} else {
 				final ItemStack currentItem = player.inventory.getCurrentItem();
 				final int blockId = clientWorld.getBlockId(blockX, n, blockZ);
-				// TODO: re-architecture block interaction system to do client -> server
-				// communication properly
+
+				// Send block placement packet
+				net.opencraft.shared.network.packets.PacketBlockPlacement packet = new net.opencraft.shared.network.packets.PacketBlockPlacement(
+						blockX, n, blockZ, sideHit, 0);
+				try {
+					this.getClientNetworkManager().sendPacket(packet);
+				} catch (java.io.IOException e) {
+					e.printStackTrace();
+				}
+
 				// if (blockId > 0 && Block.blocksList[blockId].blockActivated(clientWorld,
 				// blockX, n, blockZ, player)) {
 				// return;
@@ -550,6 +558,9 @@ public class OpenCraft implements Runnable {
 					return;
 				}
 				final int stackSize = currentItem.stackSize;
+				// Predictively place block client-side for responsiveness
+				// FIXME: ItemStack.useItem requires ServerWorld, but we have ClientWorld.
+				// Disabling prediction for now to rely on server authority.
 				// if (currentItem.useItem(player, clientWorld, blockX, n, blockZ, sideHit)) {
 				// entityRenderer.itemRenderer.resetEquippedProgress();
 				// }

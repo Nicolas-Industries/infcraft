@@ -17,13 +17,13 @@ import org.lwjgl.opengl.GL11;
 public abstract class GuiContainer extends GuiScreen {
 
     private static RenderItem itemRenderer;
-    private ItemStack itemStack;
+    // private ItemStack itemStack; // Removed local itemStack
     public int xSize;
     public int ySize;
     protected List<Slot> inventorySlots;
 
     public GuiContainer() {
-        this.itemStack = null;
+        // this.itemStack = null;
         this.xSize = 176;
         this.ySize = 166;
         this.inventorySlots = new ArrayList<>();
@@ -46,21 +46,24 @@ public abstract class GuiContainer extends GuiScreen {
         for (int i = 0; i < this.inventorySlots.size(); ++i) {
             final Slot gq = this.inventorySlots.get(i);
             this.inventorySlots(gq);
-            // FIXME: attempts to use a clientside isAtCursorPos on a server side slot, which is not possible
-//            if (gq.isAtCursorPos(integer1, integer2)) {
-//                GL11.glDisable(2896);
-//                GL11.glDisable(2929);
-//                final int xPos = gq.xPos;
-//                final int yPos = gq.yPos;
-//                this.drawGradientRect(xPos, yPos, xPos + 16, yPos + 16, -2130706433, -2130706433);
-//                GL11.glEnable(2896);
-//                GL11.glEnable(2929);
-//            }
+            if (isMouseOverSlot(gq, integer1, integer2)) {
+                GL11.glDisable(2896);
+                GL11.glDisable(2929);
+                final int xPos = gq.xPos;
+                final int yPos = gq.yPos;
+                this.drawGradientRect(xPos, yPos, xPos + 16, yPos + 16, -2130706433, -2130706433);
+                GL11.glEnable(2896);
+                GL11.glEnable(2929);
+            }
         }
-        if (this.itemStack != null) {
+
+        ItemStack cursorItem = this.id.player.inventory.getCursorItem();
+        if (cursorItem != null) {
             GL11.glTranslatef(0.0f, 0.0f, 32.0f);
-            GuiContainer.itemRenderer.drawItemIntoGui(this.fontRenderer, this.id.renderer, this.itemStack, integer1 - n - 8, integer2 - n2 - 8);
-            GuiContainer.itemRenderer.renderItemOverlayIntoGUI(this.fontRenderer, this.id.renderer, this.itemStack, integer1 - n - 8, integer2 - n2 - 8);
+            GuiContainer.itemRenderer.drawItemIntoGui(this.fontRenderer, this.id.renderer, cursorItem,
+                    integer1 - n - 8, integer2 - n2 - 8);
+            GuiContainer.itemRenderer.renderItemOverlayIntoGUI(this.fontRenderer, this.id.renderer, cursorItem,
+                    integer1 - n - 8, integer2 - n2 - 8);
         }
         GL11.glDisable(32826);
         RenderHelper.disableStandardItemLighting();
@@ -88,22 +91,32 @@ public abstract class GuiContainer extends GuiScreen {
             if (backgroundIconIndex >= 0) {
                 GL11.glDisable(2896);
                 this.id.renderer.bindTexture(this.id.renderer.loadTexture("/assets/gui/items.png"));
-                this.drawTexturedModalRect(xPos, yPos, backgroundIconIndex % 16 * 16, backgroundIconIndex / 16 * 16, 16, 16);
+                this.drawTexturedModalRect(xPos, yPos, backgroundIconIndex % 16 * 16, backgroundIconIndex / 16 * 16, 16,
+                        16);
                 GL11.glEnable(2896);
                 return;
             }
         }
         GuiContainer.itemRenderer.drawItemIntoGui(this.fontRenderer, this.id.renderer, stackInSlot, xPos, yPos);
-        GuiContainer.itemRenderer.renderItemOverlayIntoGUI(this.fontRenderer, this.id.renderer, stackInSlot, xPos, yPos);
+        GuiContainer.itemRenderer.renderItemOverlayIntoGUI(this.fontRenderer, this.id.renderer, stackInSlot, xPos,
+                yPos);
     }
 
-    private Slot a(final int integer1, final int integer2) {
+    private boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY) {
+        int guiLeft = (this.width - this.xSize) / 2;
+        int guiTop = (this.height - this.ySize) / 2;
+        mouseX -= guiLeft;
+        mouseY -= guiTop;
+        return mouseX >= slot.xPos - 1 && mouseX < slot.xPos + 16 + 1 && mouseY >= slot.yPos - 1
+                && mouseY < slot.yPos + 16 + 1;
+    }
+
+    private Slot getSlotAtPosition(final int x, final int y) {
         for (int i = 0; i < this.inventorySlots.size(); ++i) {
             final Slot slot = this.inventorySlots.get(i);
-            // FIXME: attempts to use a clientside isAtCursorPos on a server side slot, which is not possible
-//            if (slot.isAtCursorPos(integer1, integer2)) {
-//                return slot;
-//            }
+            if (isMouseOverSlot(slot, x, y)) {
+                return slot;
+            }
         }
         return null;
     }
@@ -112,94 +125,31 @@ public abstract class GuiContainer extends GuiScreen {
     protected void onMouseButtonPressed(final int x, final int y, final int mouseButtonNumber) {
         System.out.println("Mouse button pressed: " + mouseButtonNumber);
         if (mouseButtonNumber == 0 || mouseButtonNumber == 1) {
-            final Slot a = this.a(x, y);
-            if (a != null) {
-                a.onSlotChanged();
-                final ItemStack slotIndex = a.slotIndex();
-                if (slotIndex != null || this.itemStack != null) {
-                    if (slotIndex != null && this.itemStack == null) {
-                        final int integer4 = (mouseButtonNumber == 0) ? slotIndex.stackSize : ((slotIndex.stackSize + 1) / 2);
-                        this.itemStack = a.inventory.decrStackSize(a.slotIndex, integer4);
-                        if (slotIndex.stackSize == 0) {
-                            a.putStack(null);
-                        }
-                        a.onPickupFromSlot();
-                    } else if (slotIndex == null && this.itemStack != null && a.isItemValid(this.itemStack)) {
-                        int integer4 = (mouseButtonNumber == 0) ? this.itemStack.stackSize : 1;
-                        if (integer4 > a.inventory.getInventoryStackLimit()) {
-                            integer4 = a.inventory.getInventoryStackLimit();
-                        }
-                        a.putStack(this.itemStack.splitStack(integer4));
-                        if (this.itemStack.stackSize == 0) {
-                            this.itemStack = null;
-                        }
-                    } else if (slotIndex != null && this.itemStack != null) {
-                        if (a.isItemValid(this.itemStack)) {
-                            if (slotIndex.itemID != this.itemStack.itemID) {
-                                if (this.itemStack.stackSize <= a.inventory.getInventoryStackLimit()) {
-                                    final ItemStack itemStack = slotIndex;
-                                    a.putStack(this.itemStack);
-                                    this.itemStack = itemStack;
-                                }
-                            } else if (slotIndex.itemID == this.itemStack.itemID) {
-                                if (mouseButtonNumber == 0) {
-                                    int integer4 = this.itemStack.stackSize;
-                                    if (integer4 > a.inventory.getInventoryStackLimit() - slotIndex.stackSize) {
-                                        integer4 = a.inventory.getInventoryStackLimit() - slotIndex.stackSize;
-                                    }
-                                    if (integer4 > this.itemStack.getMaxStackSize() - slotIndex.stackSize) {
-                                        integer4 = this.itemStack.getMaxStackSize() - slotIndex.stackSize;
-                                    }
-                                    this.itemStack.splitStack(integer4);
-                                    if (this.itemStack.stackSize == 0) {
-                                        this.itemStack = null;
-                                    }
-                                    final ItemStack itemStack2 = slotIndex;
-                                    itemStack2.stackSize += integer4;
-                                } else if (mouseButtonNumber == 1) {
-                                    int integer4 = 1;
-                                    if (integer4 > a.inventory.getInventoryStackLimit() - slotIndex.stackSize) {
-                                        integer4 = a.inventory.getInventoryStackLimit() - slotIndex.stackSize;
-                                    }
-                                    if (integer4 > this.itemStack.getMaxStackSize() - slotIndex.stackSize) {
-                                        integer4 = this.itemStack.getMaxStackSize() - slotIndex.stackSize;
-                                    }
-                                    this.itemStack.splitStack(integer4);
-                                    if (this.itemStack.stackSize == 0) {
-                                        this.itemStack = null;
-                                    }
-                                    final ItemStack itemStack3 = slotIndex;
-                                    itemStack3.stackSize += integer4;
-                                }
-                            }
-                        } else if (slotIndex.itemID == this.itemStack.itemID && this.itemStack.getMaxStackSize() > 1) {
-                            final int integer4 = slotIndex.stackSize;
-                            if (integer4 > 0 && integer4 + this.itemStack.stackSize <= this.itemStack.getMaxStackSize()) {
-                                final ItemStack itemStack4 = this.itemStack;
-                                itemStack4.stackSize += integer4;
-                                slotIndex.splitStack(integer4);
-                                if (slotIndex.stackSize == 0) {
-                                    a.putStack(null);
-                                }
-                                a.onPickupFromSlot();
-                            }
-                        }
-                    }
-                }
-            } else if (this.itemStack != null) {
-                final int n = (this.width - this.xSize) / 2;
-                final int integer4 = (this.height - this.ySize) / 2;
-                if (x < n || y < integer4 || x >= n + this.xSize || y >= integer4 + this.xSize) {
-                    final EntityPlayerSP thePlayer = this.id.player;
-                    if (mouseButtonNumber == 0) {
-                        thePlayer.dropPlayerItem(this.itemStack);
-                        this.itemStack = null;
-                    }
-                    if (mouseButtonNumber == 1) {
-                        thePlayer.dropPlayerItem(this.itemStack.splitStack(1));
-                        if (this.itemStack.stackSize == 0) {
-                            this.itemStack = null;
-                        }
+            final Slot clickedSlot = this.getSlotAtPosition(x, y);
+            int slotId = -1;
+            if (clickedSlot != null) {
+                slotId = clickedSlot.slotIndex;
+            }
+
+            // Send click packet to server
+            // Window ID 0 is player inventory
+            // Slot ID is the raw slot index (which maps to our window slots)
+            // Button 0 = Left Click, 1 = Right Click
+            // Shift = 0 (for now)
+            // Item = null (server tracks it)
+
+            // Only send if we clicked a slot or if we are clicking outside (drop)
+            // For now, just handle slot clicks
+            if (clickedSlot != null) {
+                net.opencraft.shared.network.packets.PacketWindowClick clickPacket = new net.opencraft.shared.network.packets.PacketWindowClick(
+                        0, slotId, mouseButtonNumber, 0, null, (short) 0);
+
+                // Send packet
+                if (this.id.getClientNetworkManager() != null) {
+                    try {
+                        this.id.getClientNetworkManager().sendPacket(clickPacket);
+                    } catch (java.io.IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -221,9 +171,9 @@ public abstract class GuiContainer extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        if (this.itemStack != null) {
-            this.id.player.dropPlayerItem(this.itemStack);
-        }
+        // if (this.itemStack != null) {
+        // this.id.player.dropPlayerItem(this.itemStack);
+        // }
     }
 
     public void onCraftMatrixChanged(final IInventory kd) {
@@ -235,6 +185,6 @@ public abstract class GuiContainer extends GuiScreen {
     }
 
     static {
-        GuiContainer.itemRenderer = new RenderItem();//(RenderItem)RenderItem.RenderCreeper();
+        GuiContainer.itemRenderer = new RenderItem();// (RenderItem)RenderItem.RenderCreeper();
     }
 }

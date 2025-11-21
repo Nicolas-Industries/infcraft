@@ -256,6 +256,26 @@ public class Server {
                     player.posX, player.posY, player.posZ,
                     player.rotationYaw, player.rotationPitch, player.onGround);
             networkSystem.sendPacketToPlayer(username, posPacket);
+
+            // Send initial inventory
+            net.opencraft.core.item.ItemStack[] windowItems = new net.opencraft.core.item.ItemStack[45];
+            // 0-4: Crafting (empty)
+            // 5-8: Armor
+            for (int i = 0; i < 4; i++) {
+                windowItems[5 + i] = player.inventory.armorInventory[i];
+            }
+            // 9-35: Main Inventory (storage)
+            for (int i = 9; i < 36; i++) {
+                windowItems[i] = player.inventory.mainInventory[i];
+            }
+            // 36-44: Hotbar
+            for (int i = 0; i < 9; i++) {
+                windowItems[36 + i] = player.inventory.mainInventory[i];
+            }
+
+            net.opencraft.shared.network.packets.PacketWindowItems inventoryPacket = new net.opencraft.shared.network.packets.PacketWindowItems(
+                    0, windowItems);
+            networkSystem.sendPacketToPlayer(username, inventoryPacket);
         }
 
         System.out.println("Player " + username + " joined the game");
