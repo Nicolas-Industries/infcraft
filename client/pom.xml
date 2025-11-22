@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.infcraft</groupId>
 		<artifactId>infcraft-parent</artifactId>
-		<version>24r14</version>
+		<version>a0.0.1</version>
 	</parent>
 
 	<artifactId>client</artifactId>
@@ -17,7 +17,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
-		<lwjgl.version>3.3.4</lwjgl.version>
+		<lwjgl.version>3.3.6</lwjgl.version>
 	</properties>
 
 

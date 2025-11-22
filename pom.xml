@@ -5,7 +5,7 @@
 
 	<groupId>net.infcraft</groupId>
 	<artifactId>infcraft-parent</artifactId>
-	<version>24r14</version>
+	<version>a0.0.1</version>
 	<packaging>pom</packaging>
 	<name>InfCraft - Parent</name>
 
@@ -19,7 +19,7 @@
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 		<lwjgl.version>3.3.4</lwjgl.version>
-		<infcraft.version>24r14</infcraft.version>
+		<infcraft.version>a0.0.1</infcraft.version>
 	</properties>
 
 	<scm>

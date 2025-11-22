@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.infcraft</groupId>
 		<artifactId>infcraft-parent</artifactId>
-		<version>24r14</version>
+		<version>a0.0.1</version>
 	</parent>
 
 	<artifactId>server</artifactId>
