@@ -34,17 +34,3 @@ jobs:
         with:
           SOURCE_FILE: 'target/infcraft.jar'
           DEST_NAME: 'infcraft.jar'
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: auto-release
-          name: auto-release-${{ github.sha }}
-          make_latest: true
-          token: ${{ secrets.RELEASE_TOKEN }}
-          files: |
-            target/infcraft.jar
-            src/scripts/infcraft-windows.bat
-      - name: Move auto-release tag to current commit
-        uses: EndBug/latest-tag@latest
-        with:
-          ref: auto-release
