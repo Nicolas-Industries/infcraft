@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.infcraft</groupId>
 		<artifactId>infcraft-parent</artifactId>
-		<version>a0.0.1</version>
+		<version>0.0.1-alpha</version>
 	</parent>
 
 	<artifactId>client</artifactId>
@@ -41,7 +41,6 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>infcraft</finalName>
                             <archive>
                                 <manifest>
                                     <mainClass>net.infcraft.client.Main</mainClass>
@@ -371,7 +370,7 @@
         <dependency>
             <groupId>net.infcraft</groupId>
             <artifactId>server</artifactId>
-            <version>a0.0.1</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 
