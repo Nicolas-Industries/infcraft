@@ -371,7 +371,7 @@
         <dependency>
             <groupId>net.infcraft</groupId>
             <artifactId>server</artifactId>
-            <version>24r14</version>
+            <version>a0.0.1</version>
             <scope>compile</scope>
         </dependency>
 
