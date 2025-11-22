@@ -1,9 +1,9 @@
 /target*
 /output*
-/opencraft/*
-!/opencraft/resources*
-/opencraft/saves
-/opencraft/options.txt
+/infcraft/*
+!/infcraft/resources*
+/infcraft/saves
+/infcraft/options.txt
 *.dat
 
 # compiled classes

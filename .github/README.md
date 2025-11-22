@@ -10,20 +10,20 @@
 
 <br /><br />
 <div align="center">
-  <a href="https://github.com/OpenCraft-Studios/OpenCraft">
-    <img src="https://github.com/OpenCraft-Studios/OpenCraft/blob/main/.github/assets/images/icon.png?raw=true" alt="" height="128" width="128" />
+  <a href="https://github.com/Nicolas-Industries/infcraft">
+    <img src="assets/images/logo.png" alt="" height="128" />
   </a>
 
-  <h3 align="center">OpenCraft</h3>
+  <h3 align="center">InfCraft</h3>
 
   <p align="center">
-    A roughly calculated clone of Minecraft
+    InfDev, but different.
     <br /><br />
-    <a href="https://github.com/OpenCraft-Studios/OpenCraft/wiki">
+    <a href="https://github.com/Nicolas-Industries/infcraft/wiki">
       <b>Explore the docs »</b>
     </a>
     <br />
-    <a href="https://github.com/OpenCraft-Studios/OpenCraft/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=">
+    <a href="https://github.com/Nicolas-Industries/infcraft/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=">
       Report Bugs
     </a>
     ·
@@ -31,7 +31,7 @@
       Download
     </a>
     ·
-    <a href="https://github.com/OpenCraft-Studios/OpenCraft/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=">
+    <a href="https://github.com/Nicolas-Industries/infcraft/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=">
       Feature Request
     </a>
   </p>
@@ -46,13 +46,12 @@
 <br />
 
 ## ✅ Getting started
-**OpenCraft** is a game programmed in Java, it has the same motor (LWJGL 2 + Java 17) that Minecraft.
+**InfCraft** is a game programmed in Java, it runs on the same engine as Minecraft (LWJGL 3 + Java 21).
 
 ### Why this project? 🤔
-I created this project because Minecraft is closed-source. I know that you can decompile it, but modification
-and redistribution of a modified copy of Minecraft is actually illegal. So I created a clone of Minecraft that
-allows modification and redistribution. I want to create a community around this project,
-I hope that you can be part of that community forking the repository or simply, bring us a star :heart:
+I created this project because Minecraft, because I haven't seen any good Minecraft InfDev forks out there,
+this one does that most of them don't!
+Such as our multiplayer implementation.
 
 ---
 
@@ -61,36 +60,15 @@ I hope that you can be part of that community forking the repository or simply, 
     <h3>Screenshots</h3>
   </summary><br />
   <p align="center">
-    <img width="49%" src="assets/images/screenshot1.png" alt="PNG"/>&nbsp;
-    <img width="49%" src="assets/images/screenshot2.png" alt="PNG"/>
+    <img width="80%" src="assets/images/screenshot1.png" alt="PNG"/>&nbsp;
+    <img width="80%" src="assets/images/screenshot2.png" alt="PNG"/>
   </p>
-  <div align="center">
-    <img width="80%" src="assets/images/screenshot3.png" alt="PNG"/>
-  </div>
 </details>
-
-<div align="right">[ <a href="#-getting-started">↑ Back to top ↑</a> ]</div>
 
 ---
 
 ## ☕ Downloading
-We already have prebuilt jars. They can be downloaded [here](https://github.com/OpenCraft-Studios/OpenCraft/actions).
-
-1. Execute OpenCraft
-
-   <details>
-   <summary>Windows / Powershell</summary>
-
-   > The recommended way to install OpenCraft is via the install script:
-   >
-   > ```powershell
-   > iex (iwr -Uri https://opencraft-studios.github.io/install.ps1)
-   > ```
-   >
-
-   </details>
-
-<div align="right">[ <a href="#-getting-started">↑ Back to top ↑</a> ]</div>
+We already have prebuilt jars. They can be downloaded [here](https://github.com/Nicolas-Industries/infcraft/actions).
 
 ---
 
@@ -119,26 +97,15 @@ We already have prebuilt jars. They can be downloaded [here](https://github.com/
 
 **The full license is at [BSL 1.0][license-url].**
 
-<div align="right">[ <a href="#-getting-started">↑ Back to top ↑</a> ]</div>
-
-<br />
-
-## 👷‍♂️ Contributors
-| [![CiroZDP](https://avatars.githubusercontent.com/u/161502824?v=4)](https://github.com/CiroZDP) | ![Community](https://cdni.iconscout.com/illustration/free/thumb/free-community-2103591-1768087.png)	|
-|:-----------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------:|
-|                                           **CiroZDP**                                           |                                          **The community**                                          |
-
-<div align="right">[ <a href="#-getting-started">↑ Back to top ↑</a> ]</div>
-
 ---
 
-[contributors-shield]: https://img.shields.io/github/contributors/OpenCraft-Studios/OpenCraft.svg?style=for-the-badge
-[contributors-url]: https://github.com/OpenCraft-Studios/OpenCraft/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/OpenCraft-Studios/OpenCraft.svg?style=for-the-badge
-[forks-url]: https://github.com/OpenCraft-Studios/OpenCraft/network/members
-[stars-shield]: https://img.shields.io/github/stars/OpenCraft-Studios/OpenCraft.svg?style=for-the-badge
-[stars-url]: https://github.com/OpenCraft-Studios/OpenCraft/stargazers
-[issues-shield]: https://img.shields.io/github/issues/OpenCraft-Studios/OpenCraft.svg?style=for-the-badge
-[issues-url]: https://github.com/OpenCraft-Studios/OpenCraft/issues
-[license-shield]: https://img.shields.io/github/license/OpenCraft-Studios/OpenCraft.svg?style=for-the-badge
-[license-url]: https://github.com/OpenCraft-Studios/OpenCraft/blob/main/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/InfCraft-Studios/InfCraft.svg?style=for-the-badge
+[contributors-url]: https://github.com/Nicolas-Industries/infcraft/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/InfCraft-Studios/InfCraft.svg?style=for-the-badge
+[forks-url]: https://github.com/Nicolas-Industries/infcraft/network/members
+[stars-shield]: https://img.shields.io/github/stars/InfCraft-Studios/InfCraft.svg?style=for-the-badge
+[stars-url]: https://github.com/Nicolas-Industries/infcraft/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Nicolas-Industries/infcraft.svg?style=for-the-badge
+[issues-url]: https://github.com/Nicolas-Industries/infcraft/issues
+[license-shield]: https://img.shields.io/github/license/Nicolas-Industries/infcraft.svg?style=for-the-badge
+[license-url]: https://github.com/Nicolas-Industries/infcraft/blob/main/LICENSE.txt

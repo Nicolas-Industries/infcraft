@@ -32,8 +32,8 @@ jobs:
         uses: ./.github/actions/upload_build
         if: ${{ always() && steps.package.outcome == 'success' }}
         with:
-          SOURCE_FILE: 'target/opencraft.jar'
-          DEST_NAME: 'opencraft.jar'
+          SOURCE_FILE: 'target/infcraft.jar'
+          DEST_NAME: 'infcraft.jar'
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -42,8 +42,8 @@ jobs:
           make_latest: true
           token: ${{ secrets.RELEASE_TOKEN }}
           files: |
-            target/opencraft.jar
-            src/scripts/opencraft-windows.bat
+            target/infcraft.jar
+            src/scripts/infcraft-windows.bat
       - name: Move auto-release tag to current commit
         uses: EndBug/latest-tag@latest
         with:

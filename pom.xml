@@ -3,15 +3,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.opencraft</groupId>
-	<artifactId>opencraft-parent</artifactId>
+	<groupId>net.infcraft</groupId>
+	<artifactId>infcraft-parent</artifactId>
 	<version>24r14</version>
 	<packaging>pom</packaging>
-	<name>OpenCraft - Parent</name>
+	<name>InfCraft - Parent</name>
 
 	<modules>
-		<module>opencraft-server</module>
-        <module>opencraft-client</module>
+		<module>server</module>
+        <module>client</module>
 	</modules>
 
 	<properties>
@@ -19,11 +19,11 @@
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 		<lwjgl.version>3.3.4</lwjgl.version>
-		<opencraft.version>24r14</opencraft.version>
+		<infcraft.version>24r14</infcraft.version>
 	</properties>
 
 	<scm>
-		<url>https://github.com/OpenCraft-Studios/OpenCraft.git</url>
+		<url>https://github.com/InfCraft-Studios/InfCraft.git</url>
 		<tag>HEAD</tag>
 		<connection>scm:git:${project.scm.url}</connection>
 		<developerConnection>scm:git:${project.scm.url}</developerConnection>
