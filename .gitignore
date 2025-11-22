@@ -12,6 +12,8 @@
 # Maven output
 **/out
 **/gen
+# keep the worldgen dir
+!server/src/main/java/net/infcraft/core/world/gen
 **/target
 
 # IntelliJ
