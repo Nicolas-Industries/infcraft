@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build with Maven
 
 # Build every time we push to main or master, or manually trigger the workflow
 on:
