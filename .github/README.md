@@ -39,9 +39,8 @@
 
 <br />
 
-> [!WARNING]
-> This project **IS NOT** affiliated with Mojang or other minecraft product. <br />
-> This is just a hobby and I do not take care of any uses provided to this utility.
+> [WARNING] This project **IS NOT** affiliated with Mojang or Microsoft. <br />
+> This is just a hobby, and I'm not liable for any misuse of this project.
 
 <br />
 
@@ -70,6 +69,12 @@ Such as our multiplayer implementation.
 ## ☕ Downloading
 We already have prebuilt jars. They can be downloaded [here](https://github.com/Nicolas-Industries/infcraft/actions).
 
+## Contributing
+For contributors, go ahead and fork the repository and clone it. Open it with the
+IDE of your choice, whether its IntelliJ IDEA, Eclipse or VS Code.
+Make your changes, commit them and make a pull requests. Then, we will
+review it, and if it's good enough, it will be merged!
+
 ---
 
 ## ⚖️ License
@@ -96,6 +101,16 @@ We already have prebuilt jars. They can be downloaded [here](https://github.com/
 ---
 
 **The full license is at [BSL 1.0][license-url].**
+
+**Licensing of assets**
+
+Assets are licensed differently, the game uses original textures from InfDev, and
+some other Minecraft sounds, including music made by C418. We are not
+affiliated with Mojang or Microsoft by any means.
+If the original authors of this content want us to remove the offending assets, contact us! We will
+remove them from the game without any problems. <br>
+We will find alternatives to put into the game, so that we do not violate any
+copyright laws.
 
 ---
 
