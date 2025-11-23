@@ -99,11 +99,11 @@ We already have prebuilt jars. They can be downloaded [here](https://github.com/
 
 ---
 
-[contributors-shield]: https://img.shields.io/github/contributors/InfCraft-Studios/InfCraft.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/Nicolas-Industries/infcraft.svg?style=for-the-badge
 [contributors-url]: https://github.com/Nicolas-Industries/infcraft/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/InfCraft-Studios/InfCraft.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/Nicolas-Industries/infcraft.svg?style=for-the-badge
 [forks-url]: https://github.com/Nicolas-Industries/infcraft/network/members
-[stars-shield]: https://img.shields.io/github/stars/InfCraft-Studios/InfCraft.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/Nicolas-Industries/infcraft.svg?style=for-the-badge
 [stars-url]: https://github.com/Nicolas-Industries/infcraft/stargazers
 [issues-shield]: https://img.shields.io/github/issues/Nicolas-Industries/infcraft.svg?style=for-the-badge
 [issues-url]: https://github.com/Nicolas-Industries/infcraft/issues

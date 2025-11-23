@@ -22,7 +22,7 @@
 	</properties>
 
 	<scm>
-		<url>https://github.com/InfCraft-Studios/InfCraft.git</url>
+		<url>https://github.com/Nicolas-Industries/infcraft.git</url>
 		<tag>HEAD</tag>
 		<connection>scm:git:${project.scm.url}</connection>
 		<developerConnection>scm:git:${project.scm.url}</developerConnection>
